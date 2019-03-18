@@ -1,15 +1,16 @@
 import { Bathingspot } from './../orm/entity/Bathingspot';
 import cors from 'cors';
 import errorHandler from 'errorhandler';
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import routes from './routes';
-import {createConnection, getRepository} from 'typeorm';
+import {createConnection, getRepository, getConnection} from 'typeorm';
 import { User } from '../orm/entity/User';
-import { UserRole, Regions } from './types-interfaces';
+import { UserRole, Regions, HttpCodes } from './types-interfaces';
 import { Region } from '../orm/entity/Region';
 import { createProtectedUser } from '../orm/fixtures/create-protected-user';
+import { responder, errorResponse } from './request-handlers/responders';
 
 const app = express();
 // let connection: Connection;
@@ -22,16 +23,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-app.get('/', (request, response) => {
-    response.send(`Server is running. You called ${request.url}`);
-  });
-app.use('/api/v1', routes);
-// app.use('/api/v1', router);
-if (process.env.NODE_ENV === 'development') {
-  // In Express an error handler,
-  // always has to be the last line before starting the server.
-  app.use(errorHandler());
-}
+
 (async ()=>{
   try{
     const connection = await createConnection();
@@ -85,7 +77,26 @@ if (process.env.NODE_ENV === 'development') {
   }catch(error){
     throw error;
   }
-
 })();
+
+app.get('/', (request, response) => {
+  response.send(`Server is running. You called ${request.url}`);
+});
+
+// app.use('/api/v1', async (err: Error, _req: Request, res: Response, next: NextFunction)=>{
+//   const con = await getConnection();
+//   if(con === undefined){
+//     responder(res, HttpCodes.internalError, errorResponse(err));
+//   }else{
+//     next(err);
+//   }
+// });
+app.use('/api/v1', routes);
+// app.use('/api/v1', router);
+if (process.env.NODE_ENV === 'development') {
+// In Express an error handler,
+// always has to be the last line before starting the server.
+app.use(errorHandler());
+}
 
 export = app;

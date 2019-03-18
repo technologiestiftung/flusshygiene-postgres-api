@@ -27,7 +27,7 @@ export const updateBathingspotOfUser: putResponse = async (request, response) =>
         const spot = spots[0];
         const filteredPropNames = await getEntityFields('Bathingspot');
         const providedValues = getMatchingValues(request.body, filteredPropNames.props);// Object.keys(request.body)
-        console.log(providedValues);
+        // console.log(providedValues);
         if(Object.keys(providedValues).length === 0){
         responderMissingBodyValue(response, example);
 

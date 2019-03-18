@@ -16,8 +16,8 @@ import { getEntityFields } from '../../utils/get-entity-fields';
 
 export const addUser: postResponse = async (request, response) => {
   const user: User = new User();
-  const example = getEntityFields('User');
   try {
+    const example = await getEntityFields('User');
     if (request.body.role === undefined) {
       responderMissingBodyValue(response, example);
     }
