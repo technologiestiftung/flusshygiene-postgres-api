@@ -1,3 +1,4 @@
+import { getBathingspotById } from './../../../repositories/custom-repo-helpers';
 import { responderMissingBodyValue, responder, errorResponse, responderWrongId, successResponse } from './../../responders';
 import { putResponse, HttpCodes, IObject } from '../../../types-interfaces';
 import { getEntityFields } from '../../../utils/get-entity-fields';
@@ -49,18 +50,17 @@ export const updateBathingspotOfUser: putResponse = async (request, response) =>
     if (user === undefined) {
       responderWrongId(response);
     } else {
-      const spots: Bathingspot[] = user.bathingspots.filter((spot: Bathingspot) => spot.id === parseInt(request.params.spotId, 10));
-      if (spots[0] === undefined) {
+      let spot = await getBathingspotById(request.params.spotId);
+      // const spots: Bathingspot[] = user.bathingspots.filter((spot: Bathingspot) => spot.id === parseInt(request.params.spotId, 10));
+      if (spot === undefined) {
         responderWrongId(response);
       } else {
-        let spot = spots[0];
         const filteredPropNames = await getEntityFields('Bathingspot');
         const providedValues = getMatchingValues(request.body, filteredPropNames.props);
 
         if (Object.keys(providedValues).length === 0) {
           responderMissingBodyValue(response, example);
         }
-
         try {
           spot = updateFields(spot, providedValues);
         } catch (err) {
