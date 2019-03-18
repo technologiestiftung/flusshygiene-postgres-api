@@ -19,20 +19,28 @@ export const getEntityFields: entityFields = async (type) => {
   try {
     propertyNames = await getPropertyNames(type); //await getConnection().getMetadata(Bathingspot).ownColumns.map(column => column.propertyName);
     propertyTypeList = await getPropertTypeList(type)//getConnection().getMetadata(Bathingspot).ownColumns.map(column => [column.propertyName, column.type]);
-    if (type === 'Bathingspot') {
+    switch(type){
+      case 'Bathingspot':
       notAllowedProps = ['id', 'user', 'region'];
+      break;
+      case 'User':
+      notAllowedProps = ['id', 'protected', 'role', 'region'];
+      break;
+      default:
+      notAllowedProps = [];
     }
-    if (type === 'User') {
-      // propertyNames =  await getPropertyNames(type);// await getConnection().getMetadata(User).ownColumns.map(column => column.propertyName);
-      // propertyTypeList = await getPropertTypeList(type); //await getConnection().getMetadata(User).ownColumns.map(column => [column.propertyName, column.type]);
-      notAllowedProps = ['id', 'protected', 'role', 'region']
-    }
+    // if (type === 'Bathingspot') {
+    // }
+    // if (type === 'User') {
+    //   // propertyNames =  await getPropertyNames(type);// await getConnection().getMetadata(User).ownColumns.map(column => column.propertyName);
+    //   // propertyTypeList = await getPropertTypeList(type); //await getConnection().getMetadata(User).ownColumns.map(column => [column.propertyName, column.type]);
+    // }
 
     if (propertyTypeList !== undefined && propertyNames !== undefined) {
-      const lookupMap = new Map();
-      propertyTypeList.forEach(ele => {
-        lookupMap.set(ele[0], ele[1]);
-      });
+      // const lookupMap = new Map();
+      // propertyTypeList.forEach(ele => {
+      //   lookupMap.set(ele[0], ele[1]);
+      // });
       filteredPropNames = propertyNames.filter(ele => notAllowedProps.includes(ele) !== true);
     }
   } catch (e) {

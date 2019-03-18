@@ -56,9 +56,11 @@ export const updateBathingspotOfUser: putResponse = async (request, response) =>
         let spot = spots[0];
         const filteredPropNames = await getEntityFields('Bathingspot');
         const providedValues = getMatchingValues(request.body, filteredPropNames.props);
+
         if (Object.keys(providedValues).length === 0) {
           responderMissingBodyValue(response, example);
         }
+
         try {
           spot = updateFields(spot, providedValues);
         } catch (err) {
@@ -67,6 +69,7 @@ export const updateBathingspotOfUser: putResponse = async (request, response) =>
         await getManager().save(spot);
         await getManager().save(user);
         const spotAgain = await getRepository(Bathingspot).findOne(request.params.spotId);
+
         if (spotAgain === undefined) {
           responder(response, HttpCodes.internalError, errorResponse(new Error('Bathingspot is gone')));
         } else {
