@@ -1,25 +1,30 @@
-import { Bathingspot } from './../../orm/entity/Bathingspot';
 import { getConnection } from 'typeorm';
-import { enitiyFileds, IFilteredEntityPropsResoponse } from '../types-interfaces';
-import { User } from '../../orm/entity/User';
+import { entityFields, IFilteredEntityPropsResoponse } from '../types-interfaces';
 
-export const getEntityFields: enitiyFileds = async (type) => {
+const getPropertyNames = async (enititySchema: string)=>{
+  return await getConnection().getMetadata(enititySchema).ownColumns.map(column => column.propertyName);
 
+}
 
+const getPropertTypeList = async (entitiySchema: string)=>{
+  return await getConnection().getMetadata(entitiySchema).ownColumns.map(column => [column.propertyName, column.type]);
+}
+
+export const getEntityFields: entityFields = async (type) => {
 
   let propertyNames;
   let propertyTypeList;
   let notAllowedProps: string[];
   let filteredPropNames: string[] = [];
   try {
+    propertyNames = await getPropertyNames(type); //await getConnection().getMetadata(Bathingspot).ownColumns.map(column => column.propertyName);
+    propertyTypeList = await getPropertTypeList(type)//getConnection().getMetadata(Bathingspot).ownColumns.map(column => [column.propertyName, column.type]);
     if (type === 'Bathingspot') {
-      propertyNames = await getConnection().getMetadata(Bathingspot).ownColumns.map(column => column.propertyName);
-      propertyTypeList = await getConnection().getMetadata(Bathingspot).ownColumns.map(column => [column.propertyName, column.type]);
-      notAllowedProps = ['id', 'user', 'region']
+      notAllowedProps = ['id', 'user', 'region'];
     }
     if (type === 'User') {
-      propertyNames = await getConnection().getMetadata(User).ownColumns.map(column => column.propertyName);
-      propertyTypeList = await getConnection().getMetadata(User).ownColumns.map(column => [column.propertyName, column.type]);
+      // propertyNames =  await getPropertyNames(type);// await getConnection().getMetadata(User).ownColumns.map(column => column.propertyName);
+      // propertyTypeList = await getPropertTypeList(type); //await getConnection().getMetadata(User).ownColumns.map(column => [column.propertyName, column.type]);
       notAllowedProps = ['id', 'protected', 'role', 'region']
     }
 

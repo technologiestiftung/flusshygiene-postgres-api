@@ -22,7 +22,7 @@ export interface IObject {
 /**
  *
  */
-export type enitiyFileds = (type: string) => Promise<IFilteredEntityPropsResoponse>;
+export type entityFields = (type: string) => Promise<IFilteredEntityPropsResoponse>;
 
 
 export type postResponse = (request: Request, response: Response) => void;
