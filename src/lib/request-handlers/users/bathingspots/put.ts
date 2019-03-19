@@ -56,18 +56,14 @@ export const updateBathingspotOfUser: putResponse = async (request, response) =>
       if (Object.keys(providedValues).length === 0) {
         responderMissingBodyValue(response, example);
       }
-      try {
-        spotFromUser = updateFields(spotFromUser, providedValues);
-      } catch (err) {
-        throw err;
-      }
+      spotFromUser = updateFields(spotFromUser, providedValues);
       await spotRepo.save(spotFromUser);
       const spotAgain = await getBathingspotById(spotFromUser.id);
-      if (spotAgain === undefined) {
-        responder(response, HttpCodes.internalError, errorResponse(new Error('Bathingspot is gone')));
-      } else {
-        responder(response, HttpCodes.successCreated, successResponse('Bathingspot updated', [spotAgain]));
+      if(spotAgain === undefined){
+        throw new Error('spot disappeared');
       }
+      // const res = spotAgain === undefined ? [] : [spotAgain];
+      responder(response, HttpCodes.successCreated, successResponse('Bathingspot updated', [spotAgain]));
     }
   } catch (e) {
     responder(response, HttpCodes.internalError, errorResponse(e));
