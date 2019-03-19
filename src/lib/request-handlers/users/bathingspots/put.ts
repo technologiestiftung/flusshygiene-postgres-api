@@ -1,13 +1,12 @@
-import { getBathingspotById } from './../../../repositories/custom-repo-helpers';
+import { BathingspotRepository } from './../../../repositories/BathingspotRepository';
+import { getBathingspotById, getSpotByUserAndId } from './../../../repositories/custom-repo-helpers';
 import { responderMissingBodyValue, responder, errorResponse, responderWrongId, successResponse } from './../../responders';
 import { putResponse, HttpCodes, IObject } from '../../../types-interfaces';
 import { getEntityFields } from '../../../utils/get-entity-fields';
-import { getRepository, getManager } from 'typeorm';
-import { User } from '../../../../orm/entity/User';
+import { getCustomRepository } from 'typeorm';
 import { Bathingspot } from '../../../../orm/entity/Bathingspot';
 import { getMatchingValues } from '../../../utils/get-matching-values-from-request';
 import { isObject } from 'util';
-import { getUserWithRelations } from '../../../repositories/custom-repo-helpers';
 
 const updateFields = (spot: Bathingspot, providedValues: IObject) => {
   // curently silently fails needs some smarter way to set values on entities
@@ -43,38 +42,31 @@ const updateFields = (spot: Bathingspot, providedValues: IObject) => {
 }
 
 export const updateBathingspotOfUser: putResponse = async (request, response) => {
+  const spotRepo = getCustomRepository(BathingspotRepository);
   try {
     const example = await getEntityFields('Bathingspot');
-    const user: User | undefined = await getUserWithRelations(request.params.userId, ['bathingspots']);
+    let spotFromUser = await getSpotByUserAndId(request.params.userId, request.params.spotId);
 
-    if (user === undefined) {
+    if (spotFromUser === undefined) {
       responderWrongId(response);
     } else {
-      let spot = await getBathingspotById(request.params.spotId);
-      // const spots: Bathingspot[] = user.bathingspots.filter((spot: Bathingspot) => spot.id === parseInt(request.params.spotId, 10));
-      if (spot === undefined) {
-        responderWrongId(response);
+      const filteredPropNames = await getEntityFields('Bathingspot');
+      const providedValues = getMatchingValues(request.body, filteredPropNames.props);
+
+      if (Object.keys(providedValues).length === 0) {
+        responderMissingBodyValue(response, example);
+      }
+      try {
+        spotFromUser = updateFields(spotFromUser, providedValues);
+      } catch (err) {
+        throw err;
+      }
+      await spotRepo.save(spotFromUser);
+      const spotAgain = await getBathingspotById(spotFromUser.id);
+      if (spotAgain === undefined) {
+        responder(response, HttpCodes.internalError, errorResponse(new Error('Bathingspot is gone')));
       } else {
-        const filteredPropNames = await getEntityFields('Bathingspot');
-        const providedValues = getMatchingValues(request.body, filteredPropNames.props);
-
-        if (Object.keys(providedValues).length === 0) {
-          responderMissingBodyValue(response, example);
-        }
-        try {
-          spot = updateFields(spot, providedValues);
-        } catch (err) {
-          throw err;
-        }
-        await getManager().save(spot);
-        await getManager().save(user);
-        const spotAgain = await getRepository(Bathingspot).findOne(request.params.spotId);
-
-        if (spotAgain === undefined) {
-          responder(response, HttpCodes.internalError, errorResponse(new Error('Bathingspot is gone')));
-        } else {
-          responder(response, HttpCodes.successCreated, successResponse('Bathingspot updated', [spotAgain]));
-        }
+        responder(response, HttpCodes.successCreated, successResponse('Bathingspot updated', [spotAgain]));
       }
     }
   } catch (e) {

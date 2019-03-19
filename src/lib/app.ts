@@ -1,16 +1,15 @@
 import { Bathingspot } from './../orm/entity/Bathingspot';
 import cors from 'cors';
 import errorHandler from 'errorhandler';
-import express, { Request, Response, NextFunction } from 'express';
+import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import routes from './routes';
-import {createConnection, getRepository, getConnection} from 'typeorm';
+import {createConnection, getRepository} from 'typeorm';
 import { User } from '../orm/entity/User';
-import { UserRole, Regions, HttpCodes } from './types-interfaces';
+import { UserRole, Regions } from './types-interfaces';
 import { Region } from '../orm/entity/Region';
 import { createProtectedUser } from '../orm/fixtures/create-protected-user';
-import { responder, errorResponse } from './request-handlers/responders';
 
 const app = express();
 // let connection: Connection;
