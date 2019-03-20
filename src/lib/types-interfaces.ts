@@ -47,12 +47,27 @@ export type SuggestionResponder = (
     data?: object,
     ) => IDefaultResponsePayload;
 
+export type ResponderSuccessCreated = (
+  response: Response,
+  message: string,
+  data?: [User],
+  ) => void;
+
+export type ResponderSuccess = (
+  response: Response,
+  message: string,
+  ) => void;
+
 export type ErrorResponder = (error: Error) => IDefaultResponsePayload;
 
 export type PayloadBuilder = (success: boolean, message?: string, data?: any) => IDefaultResponsePayload;
 
+export type ResponderMissingBodyValue = (
+  response: Response,
+  example: object,
+  ) => void;
 // custom-repo-helpers.ts
-
+export type ResponderMissingOrWrongId = (response: Response) => void;
 export type GetByIds = (userId: number, spotId: number) => Promise<Bathingspot | undefined>;
 export type GetById = (spotId: number) => Promise<Bathingspot | undefined>;
 export type GetByIdWithRelations = (userId: number, relations: string[]) => Promise<User | undefined>;
