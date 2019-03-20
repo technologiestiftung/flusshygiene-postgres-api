@@ -1,29 +1,29 @@
-import { Bathingspot } from './../orm/entity/Bathingspot';
 import { Request, Response} from 'express';
 import { User } from '../orm/entity/User';
+import { Bathingspot } from './../orm/entity/Bathingspot';
 
 export interface IFilteredEntityPropsResoponse {
   props: string[];
 }
 /**
  * a defatul response payload
- */export interface IDefaultResponsePayload {
+ */
+export interface IDefaultResponsePayload {
   success: boolean;
   message?: string;
   data?: User|User[]|Bathingspot[]|object|undefined;
-};
+}
 /**
  * Super generic object interface
  */
 export interface IObject {
-  [prop:string]: any;
+  [prop: string]: any;
 }
 
 /**
  *
  */
 export type entityFields = (type: string) => Promise<IFilteredEntityPropsResoponse>;
-
 
 export type postResponse = (request: Request, response: Response) => void;
 export type getResponse = (request: Request, response: Response) => void;
@@ -47,8 +47,8 @@ export enum HttpCodes {
   'badRequestNotAllowed' = 405,
   'badRequestConflict' = 409,
   'internalError' = 500,
-};
+}
 
 export enum Regions {
   berlinbrandenburg = 'berlinbrandenburg',
-};
+}
