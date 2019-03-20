@@ -1,4 +1,5 @@
 import { Request, Response} from 'express';
+import { Region } from '../orm/entity/Region';
 import { User } from '../orm/entity/User';
 import { Bathingspot } from './../orm/entity/Bathingspot';
 
@@ -34,12 +35,19 @@ export type deleteResponse = (request: Request, response: Response) => void;
 export type Responder = (
   response: Response,
   statusCode: number,
-  payload: IDefaultResponsePayload | User[] | Bathingspot[]) => void;
+  payload: IDefaultResponsePayload | User[] | Bathingspot[] | Region []) => void;
 
-export type SuccessResponder = (message?: string, data?: User | User[] | Bathingspot[]) => IDefaultResponsePayload;
+export type SuccessResponder = (
+  message?: string,
+  data?: User | User[] | Bathingspot[] | Region[],
+  ) => IDefaultResponsePayload;
+
+export type SuggestionResponder = (
+    message?: string,
+    data?: object,
+    ) => IDefaultResponsePayload;
 
 export type ErrorResponder = (error: Error) => IDefaultResponsePayload;
-export type SuggestionResponder = (message?: string, data?: object) => IDefaultResponsePayload;
 
 export type PayloadBuilder = (success: boolean, message?: string, data?: any) => IDefaultResponsePayload;
 
@@ -70,5 +78,8 @@ export enum HttpCodes {
 
 export enum Regions {
   berlinbrandenburg = 'berlinbrandenburg',
+  berlin = 'berlin',
+  schleswigholstein = 'schleswigholstein',
+  niedersachsen = 'niedersachsen',
 }
 

@@ -85,7 +85,7 @@ export const responderSuccess = (response: Response, message: string) => {
  * @param message
  * @param data
  */
-export const responderSuccessCreated = (response: Response, message: string, data?: User) => {
+export const responderSuccessCreated = (response: Response, message: string, data?: [User]) => {
   return responder(response, HttpCodes.successCreated, successResponse(message, data));
 };
 

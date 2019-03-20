@@ -1,8 +1,9 @@
 import { IsEmail, IsEnum } from 'class-validator';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { UserRole } from './../../lib/types-interfaces';
 import { Bathingspot } from './Bathingspot';
 import { Questionaire } from './Questionaire';
+import { Region } from './Region';
 @Entity()
 export class User {
 
@@ -34,6 +35,6 @@ export class User {
   })
   public bathingspots!: Bathingspot[];
 
-  // @ManyToMany
-  // Regions
+  @ManyToMany(_type => Region, region => region.users)
+  public regions!: Region[];
 }

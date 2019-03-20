@@ -1,7 +1,8 @@
 import { IsEnum } from 'class-validator';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Regions } from '../../lib/types-interfaces';
 import { Bathingspot } from './Bathingspot';
+import { User } from './User';
 @Entity()
 export class Region {
 
@@ -20,4 +21,9 @@ export class Region {
     cascade: true,
   })
   public bathingspots!: Bathingspot[];
+
+  @ManyToMany(_type => User, user => user.regions, {cascade: true})
+  @JoinTable()
+  public users!: User[];
+
 }

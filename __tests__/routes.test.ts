@@ -1,3 +1,4 @@
+import { putResponse } from './../src/lib/types-interfaces';
 // tslint:disable: ordered-imports
 jest.useFakeTimers();
 import { SUCCESS } from './../src/lib/messages/success';
@@ -75,13 +76,19 @@ beforeAll((done) => {
       user.role = UserRole.creator;
       user.email = 'faker@fake.com';
       const spot = new Bathingspot();
-      const region = new Region();
-      region.name = Regions.berlinbrandenburg;
-      spot.region = region;
+      const regions: Region[] = [];
+      for (const key in Regions) {
+        if (Regions.hasOwnProperty(key)) {
+          const r = new Region();
+          r.name = key;
+          regions.push(r);
+        }
+      }
+      spot.region = regions[0];
       spot.isPublic = true;
       spot.name = 'billabong';
       user.bathingspots = [spot];
-      con.manager.save(region).then(() => {
+      con.manager.save(regions).then(() => {
         con.manager.save(spot).then(() => {
           con.manager.save(user).then(() => {
             // connection = con;
@@ -170,14 +177,21 @@ describe('testing get users', () => {
   });
 });
 
-//  █████╗ ██████╗ ██████╗
-// ██╔══██╗██╔══██╗██╔══██╗
-// ███████║██║  ██║██║  ██║
-// ██╔══██║██║  ██║██║  ██║
-// ██║  ██║██████╔╝██████╔╝
-// ╚═╝  ╚═╝╚═════╝ ╚═════╝
+// ██████╗  ██████╗ ███████╗████████╗
+// ██╔══██╗██╔═══██╗██╔════╝╚══██╔══╝
+// ██████╔╝██║   ██║███████╗   ██║
+// ██╔═══╝ ██║   ██║╚════██║   ██║
+// ██║     ╚██████╔╝███████║   ██║
+// ╚═╝      ╚═════╝ ╚══════╝   ╚═╝
+// ██╗   ██╗███████╗███████╗██████╗
+// ██║   ██║██╔════╝██╔════╝██╔══██╗
+// ██║   ██║███████╗█████╗  ██████╔╝
+// ██║   ██║╚════██║██╔══╝  ██╔══██╗
+// ╚██████╔╝███████║███████╗██║  ██║
+//  ╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═╝
 
 describe('testing add users', () => {
+
   test('add user', async () => {
     // process.env.NODE_ENV = 'development';
     expect.assertions(2);
@@ -190,6 +204,23 @@ describe('testing add users', () => {
       .set('Accept', 'application/json');
     expect(res.status).toBe(201);
     expect(res.body.success).toBe(true);
+  });
+
+  test('add user creater (should have a region set)', async (done) => {
+    // process.env.NODE_ENV = 'development';
+    const res = await request(app).post('/api/v1/users').send({
+      email: 'baz@bong.com',
+      firstName: 'Me',
+      lastName: 'You',
+      region: Regions.berlin,
+      role: UserRole.creator,
+    })
+      .set('Accept', 'application/json');
+    expect(res.status).toBe(201);
+    expect(res.body.success).toBe(true);
+    expect(Array.isArray(res.body.data)).toBe(true);
+    expect(res.body.data[0].regions[0].name).toEqual(Regions.berlin);
+    done();
   });
   test('add user shoud fail due to missing values', async () => {
     expect.assertions(1);
@@ -243,12 +274,19 @@ describe('testing add users', () => {
   });
 });
 
-// ██╗   ██╗██████╗ ██████╗  █████╗ ████████╗███████╗
-// ██║   ██║██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝██╔════╝
-// ██║   ██║██████╔╝██║  ██║███████║   ██║   █████╗
-// ██║   ██║██╔═══╝ ██║  ██║██╔══██║   ██║   ██╔══╝
-// ╚██████╔╝██║     ██████╔╝██║  ██║   ██║   ███████╗
-//  ╚═════╝ ╚═╝     ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚══════╝
+// ██████╗ ██╗   ██╗████████╗
+// ██╔══██╗██║   ██║╚══██╔══╝
+// ██████╔╝██║   ██║   ██║
+// ██╔═══╝ ██║   ██║   ██║
+// ██║     ╚██████╔╝   ██║
+// ╚═╝      ╚═════╝    ╚═╝
+
+// ██╗   ██╗███████╗███████╗██████╗
+// ██║   ██║██╔════╝██╔════╝██╔══██╗
+// ██║   ██║███████╗█████╗  ██████╔╝
+// ██║   ██║╚════██║██╔══╝  ██╔══██╗
+// ╚██████╔╝███████║███████╗██║  ██║
+//  ╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═╝
 
 describe('testing update users', () => {
 
@@ -570,6 +608,12 @@ describe('testing spot deletion', () => {
 // ╚════██║██╔═══╝ ██║   ██║   ██║   ╚════██║
 // ███████║██║     ╚██████╔╝   ██║   ███████║
 // ╚══════╝╚═╝      ╚═════╝    ╚═╝   ╚══════╝
+//  ██████╗ ███████╗████████╗
+// ██╔════╝ ██╔════╝╚══██╔══╝
+// ██║  ███╗█████╗     ██║
+// ██║   ██║██╔══╝     ██║
+// ╚██████╔╝███████╗   ██║
+//  ╚═════╝ ╚══════╝   ╚═╝
 
 describe('testing get bathingspots', () => {
 
@@ -613,6 +657,12 @@ describe('testing get bathingspots', () => {
 // ██║  ██║██╔══╝  ██║     ██╔══╝     ██║   ██╔══╝
 // ██████╔╝███████╗███████╗███████╗   ██║   ███████╗
 // ╚═════╝ ╚══════╝╚══════╝╚══════╝   ╚═╝   ╚══════╝
+// ██╗   ██╗███████╗███████╗██████╗
+// ██║   ██║██╔════╝██╔════╝██╔══██╗
+// ██║   ██║███████╗█████╗  ██████╔╝
+// ██║   ██║╚════██║██╔══╝  ██╔══██╗
+// ╚██████╔╝███████║███████╗██║  ██║
+//  ╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═╝
 
 describe('testing delete users', () => {
   test('delete users', async (done) => {
