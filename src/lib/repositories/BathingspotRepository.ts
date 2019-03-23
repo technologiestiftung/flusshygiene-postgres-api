@@ -8,14 +8,29 @@ export class BathingspotRepository extends Repository<Bathingspot> {
   }
 
   public findByUserAndSpotId(userId: number, spotId: number) {
-    // const sqlQuery = this.createQueryBuilder('bathingspot')
+    const sqlQueryFail = this.createQueryBuilder('bathingspot')
     // .where(`"bathingspot"."userId" = ${userId}`)
-    // .where('"bathingspot"."userId" = :id', {id: userId})
-    // .andWhere('bathingspot.id = :id', {id: spotId}).getSql();
-    // console.log(sqlQuery);
-    const spot = this.createQueryBuilder('bathingspot')
+    .where('bathingspot.userId = :id', {id: userId})
+    .andWhere('bathingspot.id = :id', {id: spotId}).getSql();
+    console.log('failing query 1', sqlQueryFail);
+
+    const sqlQueryAlsoFail = this.createQueryBuilder('bathingspot')
+    // .where(`"bathingspot"."userId" = ${userId}`)
+    .where('"bathingspot"."userId" = :id', {id: userId})
+    .andWhere('bathingspot.id = :id', {id: spotId}).getSql();
+    console.log('failing query 2', sqlQueryAlsoFail);
+
+    const sqlQueryWork = this.createQueryBuilder('bathingspot')
     .where(`"bathingspot"."userId" = ${userId}`)
     // .where('"bathingspot"."userId" = :id', {id: userId})
+    .andWhere('bathingspot.id = :id', {id: spotId}).getSql();
+    console.log('working query', sqlQueryWork);
+
+    const spot = this.createQueryBuilder('bathingspot')
+    // .where(`"bathingspot"."userId" = ${userId}`)
+    // fails but should be right
+    // .where('"bathingspot"."userId" = :id', {id: userId})
+    .where('bathingspot.userId = :id', {id: userId})
     .andWhere('bathingspot.id = :id', {id: spotId}).getOne();
     // console.log('in CustomRepo.findByUserAndSpotId', spot);
     return spot;
