@@ -44,17 +44,25 @@ app.use(express.urlencoded({ extended: true }));
       await connection.manager.save(createProtectedUser());
 
       // generate some default data here
-      const user = new User();
-      user.firstName = 'James';
-      user.lastName = 'Bond';
-      user.role = UserRole.creator;
-      user.email = 'faker@fake.com';
+      const userCreator = new User();
+      userCreator.firstName = 'James';
+      userCreator.lastName = 'Bond';
+      userCreator.role = UserRole.creator;
+      userCreator.email = 'faker@fake.com';
+
+      const userReporter = new User();
+      userReporter.firstName = 'Karla';
+      userReporter.lastName = 'Kolumna';
+      userReporter.role = UserRole.reporter;
+      userReporter.email = 'karla@bluemchen.dev';
+
       const spot = new Bathingspot();
       const regions: Region[] = [];
       for (const key in Regions) {
         if (Regions.hasOwnProperty(key)) {
           const r = new Region();
           r.name = key;
+          r.displayName = key;
           regions.push(r);
         }
       }
@@ -63,11 +71,12 @@ app.use(express.urlencoded({ extended: true }));
       spot.region = regions[0];
       spot.isPublic = true;
       spot.name = 'billabong';
-      user.regions = [regions[0]];
-      user.bathingspots = [spot];
+      userCreator.regions = [regions[0], regions[1]];
+      userReporter.regions = [regions[0]];
+      userCreator.bathingspots = [spot];
       await connection.manager.save(regions);
       await connection.manager.save(spot);
-      await connection.manager.save(user);
+      await connection.manager.save([userCreator, userReporter]);
 
     }
     if (databaseEmpty === true && process.env.NODE_ENV === 'production') {
@@ -79,9 +88,14 @@ app.use(express.urlencoded({ extended: true }));
       });
       if (protectedUser === undefined) {
         // uh oh no protected user,
-        await connection.manager.save(createProtectedUser());
-      }
+        const newProtectedUser = createProtectedUser();
+        if (newProtectedUser !== undefined) {
 
+          await connection.manager.save(newProtectedUser);
+        } else {
+          throw new Error('could not create protected user');
+        }
+      }
     }
   } catch (error) {
     throw error;

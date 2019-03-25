@@ -1,3 +1,4 @@
+import { UserRepository } from './../src/lib/repositories/UserRepository';
 import { putResponse } from './../src/lib/types-interfaces';
 // tslint:disable: ordered-imports
 jest.useFakeTimers();
@@ -5,7 +6,7 @@ import { SUCCESS } from './../src/lib/messages/success';
 import express, { Application } from 'express';
 import 'reflect-metadata';
 import request from 'supertest';
-import { createConnection, getConnection, getRepository } from 'typeorm';
+import { createConnection, getConnection, getRepository, getCustomRepository } from 'typeorm';
 import { ERRORS } from '../src/lib/messages';
 import {
   getBathingspotById,
@@ -199,14 +200,14 @@ describe('testing add users', () => {
       email: 'lilu@fifth-element.com',
       firstName: 'Lilu',
       lastName: 'Mulitpass',
-      role: 'reporter',
+      role: UserRole.reporter,
     })
       .set('Accept', 'application/json');
     expect(res.status).toBe(201);
     expect(res.body.success).toBe(true);
   });
 
-  test('add user creater (should have a region set)', async (done) => {
+  test('add user creator (should have a region set)', async (done) => {
     // process.env.NODE_ENV = 'development';
     const res = await request(app).post('/api/v1/users').send({
       email: 'baz@bong.com',
@@ -404,9 +405,28 @@ describe('testing bathingspots post for a specific user', () => {
     done();
   });
 
+  test('should fail due to wrong user role', async (done) => {
+    const userRepo = getCustomRepository(UserRepository);
+    const usersWithRole = await userRepo.findAllByRole(UserRole.reporter);
+    const res = await request(app).post(`/api/v1/users/${usersWithRole[0].id}/bathingspots`).send({
+      apiEndpoints: {},
+      elevation: 1,
+      isPublic: true,
+      latitude: 13,
+      location: {},
+      longitude: 52,
+      name: 'Sweetwater',
+      state: {},
+    }).set('Accept', 'application/json');
+    expect(res.status).toBe(401);
+    expect(res.body.success).toBe(false);
+    expect(res.body.message).toEqual(ERRORS.badRequestUserNotAuthorized);
+    done();
+  });
+
   test('should add bathingspot to user', async (done) => {
     const userRepo = getRepository(User);
-    const users: User[] = await userRepo.find({ relations: ['bathingspots'] });
+    const users: User[] = await userRepo.find({ where: {role: UserRole.creator}, relations: ['bathingspots'] });
     const user: User = users[users.length - 1]; // last created user
     const id = user.id;
     const spots = user.bathingspots;

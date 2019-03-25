@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Bathingspot } from '../../orm/entity/Bathingspot';
+import { Bathingspot } from './../../orm/entity/Bathingspot';
 
 @EntityRepository(Bathingspot)
 export class BathingspotRepository extends Repository<Bathingspot> {
@@ -7,44 +7,35 @@ export class BathingspotRepository extends Repository<Bathingspot> {
     return this.findOne(id);
   }
 
+  public findByRegionId(regionId: number) {
+    const query = this.createQueryBuilder('bathingspot')
+    .select('bathingspot').where('bathingspot.region.id = :regionId', {regionId});
+    // console.log(query.getSql());
+    return query.getMany();
+  }
+  public findByUserAndRegion(userId: number, regionId: number) {
+    // const pRegion = this.manager.getCustomRepository(RegionRepository).findByName(region);
+    // pRegion.then(reg => {
+      const query = this.createQueryBuilder('bathingspot')
+      .innerJoin('bathingspot.user', 'user')
+      .where('user.id = :uid', {uid: userId})
+      .andWhere('bathingspot.region.id = :regionId', {regionId});
+      // console.log(query.getSql());
+
+      return query.getMany();
+
+    // }).catch(_err => {
+    //   return undefined;
+    // });
+  }
   public findByUserAndSpotId(userId: number, spotId: number) {
-    /*
 
-    const sqlQueryFail = this.createQueryBuilder('bathingspot')
-    // .where(`"bathingspot"."userId" = ${userId}`)
-    .where('bathingspot.userId = :id', {id: userId})
-    .andWhere('bathingspot.id = :id', {id: spotId}).getSql();
-    console.log('failing query 1', sqlQueryFail);
-
-    const sqlQueryAlsoFail = this.createQueryBuilder('bathingspot')
-    // .where(`"bathingspot"."userId" = ${userId}`)
-    .where('"bathingspot"."userId" = :id', {id: userId})
-    .andWhere('bathingspot.id = :id', {id: spotId}).getSql();
-    console.log('failing query 2', sqlQueryAlsoFail);
-
-    const sqlQueryWork = this.createQueryBuilder('bathingspot')
-    .where(`"bathingspot"."userId" = ${userId}`)
-    // .where('"bathingspot"."userId" = :id', {id: userId})
-    .andWhere('bathingspot.id = :id', {id: spotId}).getSql();
-    console.log('working query', sqlQueryWork);
-
-    const spot = this.createQueryBuilder('bathingspot')
-    // .where(`"bathingspot"."userId" = ${userId}`)
-    // fails but should be right
-    // .where('"bathingspot"."userId" = :id', {id: userId})
-    .where('bathingspot.userId = :id', {id: userId})
-    .andWhere('bathingspot.id = :id', {id: spotId}).getOne();
-    // console.log('in CustomRepo.findByUserAndSpotId', spot);
-    */
    const query = this.createQueryBuilder('bathingspot')
    .innerJoin('bathingspot.user', 'user')
      .where('user.id = :uid', { uid: userId })
-     .andWhere('bathingspot.id = :sid', { sid: spotId }).getSql();
-   console.log(query);
-   const spot = this.createQueryBuilder('bathingspot')
-   .innerJoin('bathingspot.user', 'user')
-     .where('user.id = :uid', { uid: userId })
-     .andWhere('bathingspot.id = :sid', { sid: spotId }).getOne();
+     .andWhere('bathingspot.id = :sid', { sid: spotId });
+  //  console.log(query);
+   const spot = query.getOne();
    return spot;
   }
 }

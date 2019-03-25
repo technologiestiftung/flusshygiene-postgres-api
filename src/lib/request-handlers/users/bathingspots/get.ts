@@ -1,6 +1,10 @@
+import { getCustomRepository } from 'typeorm';
+import { SUCCESS } from '../../../messages';
 import { getSpotByUserAndId, getUserWithRelations } from '../../../repositories/custom-repo-helpers';
-import { getResponse, HttpCodes } from '../../../types-interfaces';
+import { RegionRepository } from '../../../repositories/RegionRepository';
+import { getResponse, HttpCodes, Regions } from '../../../types-interfaces';
 import { errorResponse, responder, responderWrongId, successResponse } from '../../responders';
+import { BathingspotRepository } from './../../../repositories/BathingspotRepository';
 /**
  * Gets all the bathingspots of the user
  * @param request
@@ -9,13 +13,12 @@ import { errorResponse, responder, responderWrongId, successResponse } from '../
 
 export const getUserBathingspots: getResponse = async (request, response) => {
   try {
-
     const user = await getUserWithRelations(request.params.userId, ['bathingspots']);
 
     if (user === undefined) {
       responderWrongId(response);
     } else {
-      responder(response, HttpCodes.success, successResponse('all bathingspots', user.bathingspots));
+      responder(response, HttpCodes.success, successResponse(SUCCESS.success200, user.bathingspots));
     }
   } catch (e) {
     responder(response, HttpCodes.internalError, errorResponse(e));
@@ -40,3 +43,26 @@ export const getOneUserBathingspotById: getResponse = async (request, response) 
   }
 };
 
+export const getOneUsersBathingspotsByRegion: getResponse = async (request, response) => {
+  try {
+    console.log('get all bathingspots of user');
+    if (!(request.params.region in Regions)) {
+      responderWrongId(response);
+    } else {
+      const spotRepo = getCustomRepository(BathingspotRepository);
+      const regionRepo = getCustomRepository(RegionRepository);
+
+      const region = await regionRepo.findByName(request.params.region);
+      if (region !== undefined) {
+        const userId = request.params.userId;
+        const spots = await spotRepo.findByUserAndRegion(userId, region.id);
+        if (spots !== undefined) {
+          responder(response, HttpCodes.success, successResponse(SUCCESS.success200, spots));
+        }
+      }
+    }
+  } catch (e) {
+    responder(response, HttpCodes.internalError, errorResponse(e));
+
+  }
+};

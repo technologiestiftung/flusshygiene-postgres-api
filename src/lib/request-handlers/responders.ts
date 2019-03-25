@@ -5,7 +5,7 @@ import {
   PayloadBuilder,
   Responder,
   ResponderMissingBodyValue,
-  ResponderMissingOrWrongId,
+  ResponderMissingOrWrongIdOrAuth,
   ResponderSuccess,
   ResponderSuccessCreated,
   SuccessResponder,
@@ -32,7 +32,13 @@ export const userIDErrorResponse = () => buildPayload(
   false,
   ERRORS.badRequestMissingOrWrongID404,
   undefined);
-
+/**
+ * a error Response with a wrong user ID 404
+ */
+export const userNotAuthorizedErrorResponse = () => buildPayload(
+  false,
+  ERRORS.badRequestUserNotAuthorized,
+  undefined);
 /**
  * Builds an error response to send out
  *
@@ -125,7 +131,7 @@ export const responderSuccessCreated: ResponderSuccessCreated = (
  * responder for missing ids. This actually should never happen 400
  * @param response
  */
-export const responderMissingId: ResponderMissingOrWrongId = (
+export const responderMissingId: ResponderMissingOrWrongIdOrAuth = (
   response,
 ) => responder(
   response,
@@ -137,10 +143,16 @@ export const responderMissingId: ResponderMissingOrWrongId = (
  * responses for wrong ids 404
  * @param response
  */
-export const responderWrongId: ResponderMissingOrWrongId = (
+export const responderWrongId: ResponderMissingOrWrongIdOrAuth = (
   response,
 ) => responder(
   response,
   HttpCodes.badRequestNotFound,
   userIDErrorResponse(),
 );
+
+export const responderNotAuthorized: ResponderMissingOrWrongIdOrAuth = (response) => responder(
+  response,
+  HttpCodes.badRequestUnAuthorized,
+  userNotAuthorizedErrorResponse(),
+  );

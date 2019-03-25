@@ -35,6 +35,19 @@ export class User {
   })
   public bathingspots!: Bathingspot[];
 
-  @ManyToMany(_type => Region, region => region.users)
+  @ManyToMany(_type => Region, region => region.users, {
+    eager: true,
+  })
   public regions!: Region[];
+
+  // listenres
+  // @BeforeInsert()
+  // public addRegionsToAdmin() {
+  //   if (this.role === UserRole.admin) {
+  //     getConnection().getRepository(Region).find().then(regions => {
+  //       console.log(regions);
+  //       this.regions = regions;
+  //     }).catch(err => {throw err; });
+  //   }
+  // }
 }

@@ -14,10 +14,13 @@ const setNotAllowdProps = (type: string): string[] => {
   let res: string[] = [];
   switch (type) {
     case 'Bathingspot':
-    res = ['id', 'user', 'region'];
+    res = ['id', 'user'];
     break;
     case 'User':
     res = ['id', 'protected', 'role', 'region'];
+    break;
+    case 'Region':
+    res = ['id'];
     break;
   }
   return res;

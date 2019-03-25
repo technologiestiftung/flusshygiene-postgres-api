@@ -67,7 +67,8 @@ export type ResponderMissingBodyValue = (
   example: object,
   ) => void;
 // custom-repo-helpers.ts
-export type ResponderMissingOrWrongId = (response: Response) => void;
+// export type ResponderMissingOrWrongId = (response: Response) => void;
+export type ResponderMissingOrWrongIdOrAuth = (response: Response) => void;
 export type GetByIds = (userId: number, spotId: number) => Promise<Bathingspot | undefined>;
 export type GetById = (spotId: number) => Promise<Bathingspot | undefined>;
 export type GetByIdWithRelations = (userId: number, relations: string[]) => Promise<User | undefined>;
@@ -97,4 +98,3 @@ export enum Regions {
   schleswigholstein = 'schleswigholstein',
   niedersachsen = 'niedersachsen',
 }
-

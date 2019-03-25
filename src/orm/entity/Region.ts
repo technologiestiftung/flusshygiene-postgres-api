@@ -1,5 +1,5 @@
 import { IsEnum } from 'class-validator';
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeRemove, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Regions } from '../../lib/types-interfaces';
 import { Bathingspot } from './Bathingspot';
 import { User } from './User';
@@ -9,8 +9,8 @@ export class Region {
   @PrimaryGeneratedColumn()
   public id!: number;
 
-  // @Column({nullable: false})
-  // name!: string;
+  @Column({nullable: false})
+  public displayName!: string;
 
   // if he can create badegewässer/bathing spot
   @Column({ type: 'enum', nullable: false, enum: Regions })
@@ -18,7 +18,7 @@ export class Region {
   public name!: string;
 
   @OneToMany(_type => Bathingspot, bathingspot => bathingspot.user, {
-    cascade: true,
+    cascade: true, onDelete: 'SET NULL',
   })
   public bathingspots!: Bathingspot[];
 
@@ -26,4 +26,11 @@ export class Region {
   @JoinTable()
   public users!: User[];
 
+  @BeforeRemove()
+  public makeSpotsPrivate() {
+    this.bathingspots.forEach((spot) => {
+      spot.isPublic = false;
+      console.log(spot);
+    });
+  }
 }
