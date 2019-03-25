@@ -8,6 +8,8 @@ export class BathingspotRepository extends Repository<Bathingspot> {
   }
 
   public findByUserAndSpotId(userId: number, spotId: number) {
+    /*
+
     const sqlQueryFail = this.createQueryBuilder('bathingspot')
     // .where(`"bathingspot"."userId" = ${userId}`)
     .where('bathingspot.userId = :id', {id: userId})
@@ -33,6 +35,11 @@ export class BathingspotRepository extends Repository<Bathingspot> {
     .where('bathingspot.userId = :id', {id: userId})
     .andWhere('bathingspot.id = :id', {id: spotId}).getOne();
     // console.log('in CustomRepo.findByUserAndSpotId', spot);
-    return spot;
+    */
+   const spot = this.createQueryBuilder('bathingspot')
+   .innerJoin('bathingspot.user', 'user')
+     .where('user.id = :uid', { uid: userId })
+     .andWhere('bathingspot.id = :sid', { sid: spotId }).getOne();
+   return spot;
   }
 }
