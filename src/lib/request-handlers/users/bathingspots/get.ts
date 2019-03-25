@@ -1,7 +1,6 @@
-import { getUserWithRelations } from '../../../repositories/custom-repo-helpers';
+import { getSpotByUserAndId, getUserWithRelations } from '../../../repositories/custom-repo-helpers';
 import { getResponse, HttpCodes } from '../../../types-interfaces';
 import { errorResponse, responder, responderWrongId, successResponse } from '../../responders';
-import { Bathingspot } from './../../../../orm/entity/Bathingspot';
 /**
  * Gets all the bathingspots of the user
  * @param request
@@ -30,16 +29,11 @@ export const getUserBathingspots: getResponse = async (request, response) => {
  */
 export const getOneUserBathingspotById: getResponse = async (request, response) => {
   try {
-    const user = await getUserWithRelations(request.params.userId, ['bathingspots']);
-    if (user === undefined) {
+    const spotFromUser = await getSpotByUserAndId(request.params.userId, request.params.spotId);
+    if (spotFromUser === undefined) {
       responderWrongId(response);
     } else {
-      const spots: Bathingspot[] = user.bathingspots.filter(spot => spot.id === parseInt(request.params.spotId, 10));
-      if (spots.length > 0) {
-        responder(response, HttpCodes.success, [spots[0]]);
-      } else {
-        responderWrongId(response);
-      }
+      responder(response, HttpCodes.success, [spotFromUser]);
     }
   } catch (e) {
     responder(response, HttpCodes.internalError, errorResponse(e));

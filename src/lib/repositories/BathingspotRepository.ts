@@ -36,6 +36,11 @@ export class BathingspotRepository extends Repository<Bathingspot> {
     .andWhere('bathingspot.id = :id', {id: spotId}).getOne();
     // console.log('in CustomRepo.findByUserAndSpotId', spot);
     */
+   const query = this.createQueryBuilder('bathingspot')
+   .innerJoin('bathingspot.user', 'user')
+     .where('user.id = :uid', { uid: userId })
+     .andWhere('bathingspot.id = :sid', { sid: spotId }).getSql();
+   console.log(query);
    const spot = this.createQueryBuilder('bathingspot')
    .innerJoin('bathingspot.user', 'user')
      .where('user.id = :uid', { uid: userId })
