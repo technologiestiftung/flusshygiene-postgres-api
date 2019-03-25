@@ -82,12 +82,14 @@ beforeAll((done) => {
         if (Regions.hasOwnProperty(key)) {
           const r = new Region();
           r.name = key;
+          r.displayName = key;
           regions.push(r);
         }
       }
       spot.region = regions[0];
       spot.isPublic = true;
       spot.name = 'billabong';
+
       user.bathingspots = [spot];
       con.manager.save(regions).then(() => {
         con.manager.save(spot).then(() => {
@@ -438,6 +440,7 @@ describe('testing bathingspots post for a specific user', () => {
       location: {},
       longitude: 52,
       name: 'Sweetwater',
+      region: Regions.berlin,
       state: {},
     }).set('Accept', 'application/json');
     const againUser: User | undefined = await userRepo.findOne(id, { relations: ['bathingspots'] });
