@@ -66,7 +66,7 @@ export const addBathingspotToUser: postResponse = async (request, response) => {
           if (region !== undefined) {
             spot.region = region;
           }
-      }
+        }
         spot = updateFields(spot, providedValues);
         const isPublic: boolean = request.body.isPublic;
         const name: string = request.body.name;
@@ -74,12 +74,12 @@ export const addBathingspotToUser: postResponse = async (request, response) => {
         spot.isPublic = isPublic;
         if (isPublic === true &&
           (providedValues.hasOwnProperty('region') === false ||
-           list.includes(request.body.region) === false)) {
+            list.includes(request.body.region) === false)) {
           const regionsExample = list;
           responderMissingBodyValue(response, {
             'possible-regions': regionsExample,
             'problem': 'when isPublic is set to true you need to set a region',
-        });
+          });
         } else {
 
           user.bathingspots.push(spot);
@@ -91,9 +91,9 @@ export const addBathingspotToUser: postResponse = async (request, response) => {
           responder(response,
             HttpCodes.successCreated,
             successResponse('Bathingspot created', [userAgain.bathingspots[userAgain.bathingspots.length - 1]]));
-          }
         }
       }
+    }
   } catch (e) {
     responder(response, HttpCodes.internalError, errorResponse(e));
   }
