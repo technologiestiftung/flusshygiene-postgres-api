@@ -92,7 +92,7 @@ export enum HttpCodes {
   'internalError' = 500,
 }
 
-export enum Regions {
+export enum DefaultRegions {
   berlinbrandenburg = 'berlinbrandenburg',
   berlin = 'berlin',
   schleswigholstein = 'schleswigholstein',

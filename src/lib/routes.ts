@@ -21,7 +21,7 @@ import {
   getSingleBathingspot,
 } from './request-handlers/bathingspots';
 import { getBathingspotsByRegion } from './request-handlers/bathingspots/get';
-import { deleteRegion, getAllRegions } from './request-handlers/regions';
+import { deleteRegion, getAllRegions, postRegion, putRegion } from './request-handlers/regions';
 import { getOneUsersBathingspotsByRegion } from './request-handlers/users/bathingspots/get';
 
 const router = Router();
@@ -61,8 +61,8 @@ router.get('/bathingspots/:region([a-z]+)', getBathingspotsByRegion);
 
 router.get('/regions', getAllRegions);
 
-// router.post('/regions', postRegion);
-// router.put('/regions/:regionId([0-9]+)', putRegion);
+router.post('/regions', postRegion);
+router.put('/regions/:regionId([0-9]+)', putRegion);
 router.delete('/regions/:regionId([0-9]+)', deleteRegion);
 
 export default router;

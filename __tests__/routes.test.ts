@@ -1,5 +1,5 @@
 import { UserRepository } from './../src/lib/repositories/UserRepository';
-import { putResponse } from './../src/lib/types-interfaces';
+import { HttpCodes } from './../src/lib/types-interfaces';
 // tslint:disable: ordered-imports
 jest.useFakeTimers();
 import { SUCCESS } from './../src/lib/messages/success';
@@ -15,7 +15,7 @@ import {
 } from '../src/lib/repositories/custom-repo-helpers';
 import routes from '../src/lib/routes';
 import {
-  Regions,
+  DefaultRegions,
   UserRole,
 } from '../src/lib/types-interfaces';
 import { Bathingspot } from '../src/orm/entity/Bathingspot';
@@ -78,8 +78,8 @@ beforeAll((done) => {
       user.email = 'faker@fake.com';
       const spot = new Bathingspot();
       const regions: Region[] = [];
-      for (const key in Regions) {
-        if (Regions.hasOwnProperty(key)) {
+      for (const key in DefaultRegions) {
+        if (DefaultRegions.hasOwnProperty(key)) {
           const r = new Region();
           r.name = key;
           r.displayName = key;
@@ -195,9 +195,9 @@ describe('testing get users', () => {
 
 describe('testing add users', () => {
 
-  test('add user', async () => {
+  test('add user', async (done) => {
     // process.env.NODE_ENV = 'development';
-    expect.assertions(2);
+
     const res = await request(app).post('/api/v1/users').send({
       email: 'lilu@fifth-element.com',
       firstName: 'Lilu',
@@ -207,6 +207,7 @@ describe('testing add users', () => {
       .set('Accept', 'application/json');
     expect(res.status).toBe(201);
     expect(res.body.success).toBe(true);
+    done();
   });
 
   test('add user creator (should have a region set)', async (done) => {
@@ -215,14 +216,13 @@ describe('testing add users', () => {
       email: 'baz@bong.com',
       firstName: 'Me',
       lastName: 'You',
-      region: Regions.berlin,
+      region: DefaultRegions.berlin,
       role: UserRole.creator,
     })
       .set('Accept', 'application/json');
     expect(res.status).toBe(201);
     expect(res.body.success).toBe(true);
     expect(Array.isArray(res.body.data)).toBe(true);
-    expect(res.body.data[0].regions[0].name).toEqual(Regions.berlin);
     done();
   });
   test('add user shoud fail due to missing values', async () => {
@@ -440,7 +440,7 @@ describe('testing bathingspots post for a specific user', () => {
       location: {},
       longitude: 52,
       name: 'Sweetwater',
-      region: Regions.berlin,
+      region: DefaultRegions.berlin,
       state: {},
     }).set('Accept', 'application/json');
     const againUser: User | undefined = await userRepo.findOne(id, { relations: ['bathingspots'] });
@@ -745,5 +745,31 @@ describe('testing errors on repo helpers', () => {
       expect(err.message).toEqual('Connection "default" was not found.');
       done();
     });
+  });
+});
+
+describe('testing region routes', () => {
+  test('should get all regions', async (done) => {
+    const res = await request(app).get(`/api/v1/regions`);
+    expect(res.status).toBe(HttpCodes.success);
+    expect(res.body.success).toBe(true);
+    expect(Array.isArray(res.body.data)).toBe(true);
+    expect(res.body.data[0].id !== undefined).toBe(true);
+    expect(res.body.data[0].name !== undefined).toBe(true);
+    expect(res.body.data[0].displayName !== undefined).toBe(true);
+    done();
+  });
+  test('should post a new region', async (done) => {
+    const res = await request(app).post(`/api/v1/regions`).send({
+      displayName: 'Bayern',
+      name: 'bayern',
+    });
+    expect(res.status).toBe(HttpCodes.successCreated);
+    expect(res.body.success).toBe(true);
+    expect(Array.isArray(res.body.data)).toBe(true);
+    expect(res.body.data[0].id !== undefined).toBe(true);
+    expect(res.body.data[0].name !== undefined).toBe(true);
+    expect(res.body.data[0].displayName !== undefined).toBe(true);
+    done();
   });
 });

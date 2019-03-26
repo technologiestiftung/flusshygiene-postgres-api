@@ -9,7 +9,7 @@ import { User } from '../orm/entity/User';
 import { createProtectedUser } from '../orm/fixtures/create-protected-user';
 import { Bathingspot } from './../orm/entity/Bathingspot';
 import routes from './routes';
-import { Regions, UserRole } from './types-interfaces';
+import { DefaultRegions, UserRole } from './types-interfaces';
 
 const app = express();
 // let connection: Connection;
@@ -58,8 +58,8 @@ app.use(express.urlencoded({ extended: true }));
 
       const spot = new Bathingspot();
       const regions: Region[] = [];
-      for (const key in Regions) {
-        if (Regions.hasOwnProperty(key)) {
+      for (const key in DefaultRegions) {
+        if (DefaultRegions.hasOwnProperty(key)) {
           const r = new Region();
           r.name = key;
           r.displayName = key;

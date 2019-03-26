@@ -1,7 +1,7 @@
 import { getCustomRepository, getRepository } from 'typeorm';
 import { User } from '../../../orm/entity/User';
 import { RegionRepository } from '../../repositories/RegionRepository';
-import { HttpCodes, putResponse, Regions } from '../../types-interfaces';
+import { HttpCodes, putResponse } from '../../types-interfaces';
 import { errorResponse, responderMissingId, responderSuccessCreated, responderWrongId } from '../responders';
 
 // ██████╗ ██╗   ██╗████████╗
@@ -13,6 +13,10 @@ import { errorResponse, responderMissingId, responderSuccessCreated, responderWr
 
 export const updateUser: putResponse = async (request, response) => {
   try {
+    const regionsRepo = getCustomRepository(RegionRepository);
+    let list = await regionsRepo.getNamesList();
+    list = list.map(obj => obj.name);
+
     if (request.params.userId === undefined) {
       responderMissingId(response);
     }
@@ -23,7 +27,7 @@ export const updateUser: putResponse = async (request, response) => {
       const userRepository = getRepository(User);
       userRepository.merge(user, request.body);
       if (request.body.hasOwnProperty('region') === true) {
-        if ((request.body.region in Regions)) {
+        if ((list.includes(request.body.region))) {
           const reg = await getCustomRepository(RegionRepository).findByName(request.body.region);
           if (reg !== undefined) {
             user.regions.push(reg);

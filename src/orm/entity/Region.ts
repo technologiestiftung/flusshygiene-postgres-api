@@ -1,6 +1,4 @@
-import { IsEnum } from 'class-validator';
 import { BeforeRemove, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Regions } from '../../lib/types-interfaces';
 import { Bathingspot } from './Bathingspot';
 import { User } from './User';
 @Entity()
@@ -13,8 +11,7 @@ export class Region {
   public displayName!: string;
 
   // if he can create badegewässer/bathing spot
-  @Column({ type: 'enum', nullable: false, enum: Regions })
-  @IsEnum(Regions)
+  @Column({type: 'text', nullable: false})
   public name!: string;
 
   @OneToMany(_type => Bathingspot, bathingspot => bathingspot.user, {

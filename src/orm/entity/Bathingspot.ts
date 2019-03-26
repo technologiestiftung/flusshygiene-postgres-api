@@ -48,4 +48,3 @@ export class Bathingspot {
   @ManyToOne(_type => Region, region => region.bathingspots, {eager: true, onDelete: 'SET NULL'})
   public region!: Region;
 }
-

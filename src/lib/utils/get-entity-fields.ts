@@ -2,12 +2,12 @@ import { getConnection } from 'typeorm';
 import { entityFields } from '../types-interfaces';
 
 const getPropertyNames = async (enititySchema: string) => {
-  return await getConnection().getMetadata(enititySchema).ownColumns.map(column => column.propertyName);
+  return getConnection().getMetadata(enititySchema).ownColumns.map(column => column.propertyName);
 
 };
 
 const getPropertTypeList = async (entitiySchema: string) => {
-  return await getConnection().getMetadata(entitiySchema).ownColumns.map(column => [column.propertyName, column.type]);
+  return getConnection().getMetadata(entitiySchema).ownColumns.map(column => [column.propertyName, column.type]);
 };
 
 const setNotAllowdProps = (type: string): string[] => {
@@ -17,7 +17,7 @@ const setNotAllowdProps = (type: string): string[] => {
     res = ['id', 'user'];
     break;
     case 'User':
-    res = ['id', 'protected', 'role', 'region'];
+    res = ['id'];
     break;
     case 'Region':
     res = ['id'];

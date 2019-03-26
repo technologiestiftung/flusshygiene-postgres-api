@@ -1,16 +1,17 @@
 import { getCustomRepository, getRepository } from 'typeorm';
 import { Region } from '../../../orm/entity/Region';
+import { SUCCESS } from '../../messages';
 import { RegionRepository } from '../../repositories/RegionRepository';
 import { deleteResponse, getResponse, postResponse, putResponse } from '../../types-interfaces';
 import { getEntityFields } from '../../utils';
-import { errorResponse, responder, responderMissingBodyValue, responderWrongId } from '../responders';
+import { errorResponse, responder, responderMissingBodyValue, responderWrongId, successResponse } from '../responders';
 import { HttpCodes } from './../../types-interfaces';
 
 export const getAllRegions: getResponse = async (_request, response) => {
   try {
 
     const regions = await getRepository(Region).find();
-    responder(response, HttpCodes.success, regions);
+    responder(response, HttpCodes.success, successResponse(SUCCESS.success200, regions));
   } catch (e) {
     response.status(HttpCodes.internalError).json(errorResponse(e));
 
@@ -20,6 +21,7 @@ export const getAllRegions: getResponse = async (_request, response) => {
 export const postRegion: postResponse = async (request, response) => {
   try {
     const example = await getEntityFields('Region');
+    const regionRepo = getRepository(Region);
     if (request.body.hasOwnProperty('name') !== true) {
       responderMissingBodyValue(response, example);
     } else if (request.body.hasOwnProperty('displayName') !== true) {
@@ -29,8 +31,9 @@ export const postRegion: postResponse = async (request, response) => {
       const region = new Region();
       region.name = request.body.name;
       region.displayName = request.body.displayName;
-
-      responder(response, HttpCodes.successCreated, [region]);
+      const res = await regionRepo.save(region);
+      // console.log(res);
+      responder(response, HttpCodes.successCreated, successResponse(SUCCESS.success201, [res]));
     }
   } catch (e) {
     response.status(HttpCodes.internalError).json(errorResponse(e));

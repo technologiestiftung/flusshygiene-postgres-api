@@ -1,7 +1,7 @@
 import { getCustomRepository, getManager } from 'typeorm';
 import { getUserWithRelations } from '../../../repositories/custom-repo-helpers';
 import { RegionRepository } from '../../../repositories/RegionRepository';
-import { HttpCodes, IObject, postResponse, Regions, UserRole } from '../../../types-interfaces';
+import { HttpCodes, IObject, postResponse, UserRole } from '../../../types-interfaces';
 import { getEntityFields, getMatchingValues, isObject } from '../../../utils';
 import {
   errorResponse,
@@ -39,7 +39,8 @@ export const addBathingspotToUser: postResponse = async (request, response) => {
 
   try {
     const regionRepo = getCustomRepository(RegionRepository);
-
+    let list = await regionRepo.getNamesList();
+    list = list.map(obj => obj.name);
     const example = await getEntityFields('Bathingspot');
     if (request.body.hasOwnProperty('name') !== true || request.body.hasOwnProperty('isPublic') !== true) {
       responderMissingBodyValue(response, example);
@@ -71,8 +72,10 @@ export const addBathingspotToUser: postResponse = async (request, response) => {
         const name: string = request.body.name;
         spot.name = name;
         spot.isPublic = isPublic;
-        if (isPublic === true && providedValues.hasOwnProperty('region') === false) {
-          const regionsExample = Object.keys(Regions);
+        if (isPublic === true &&
+          (providedValues.hasOwnProperty('region') === false ||
+           list.includes(request.body.region) === false)) {
+          const regionsExample = list;
           responderMissingBodyValue(response, {
             'possible-regions': regionsExample,
             'problem': 'when isPublic is set to true you need to set a region',
