@@ -29,9 +29,6 @@ exclude_patterns:
   - "__tests__/**/*"
 
 plugins:
-  tslint:
-    enabled: true
-    config: tslint.json
   fixme:
     enabled: true
   editorconfig:
