@@ -73,6 +73,11 @@ export type ResponderMissingBodyValue = (
   response: Response,
   example: object,
   ) => void;
+
+// User put.ts
+
+export type RegionExsists = (regions: string[], region: string| undefined) => boolean;
+
 // custom-repo-helpers.ts
 // export type ResponderMissingOrWrongId = (response: Response) => void;
 export type ResponderMissingOrWrongIdOrAuth = (response: Response) => void;
