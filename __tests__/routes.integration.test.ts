@@ -1,9 +1,9 @@
-import { RegionRepository } from './../src/lib/repositories/RegionRepository';
-import { UserRepository } from './../src/lib/repositories/UserRepository';
-import { HttpCodes } from './../src/lib/types-interfaces';
+import { RegionRepository } from '../src/lib/repositories/RegionRepository';
+import { UserRepository } from '../src/lib/repositories/UserRepository';
+import { HttpCodes } from '../src/lib/types-interfaces';
 // tslint:disable: ordered-imports
 jest.useFakeTimers();
-import { SUCCESS } from './../src/lib/messages/success';
+import { SUCCESS } from '../src/lib/messages/success';
 import express, { Application } from 'express';
 import 'reflect-metadata';
 import request from 'supertest';
@@ -13,6 +13,7 @@ import {
   getBathingspotById,
   getSpotByUserAndId,
   getUserWithRelations,
+  getRegionsList,
 } from '../src/lib/repositories/custom-repo-helpers';
 import routes from '../src/lib/routes';
 import {
@@ -26,8 +27,8 @@ import { BathingspotRawModelData } from '../src/orm/entity/BathingspotRawModelDa
 import { Questionaire } from '../src/orm/entity/Questionaire';
 import { Region } from '../src/orm/entity/Region';
 import { createProtectedUser } from '../src/orm/fixtures/create-protected-user';
-import { SUGGESTIONS } from './../src/lib/messages/suggestions';
-import { User } from './../src/orm/entity/User';
+import { SUGGESTIONS } from '../src/lib/messages/suggestions';
+import { User } from '../src/orm/entity/User';
 
 let app: Application;
 
@@ -122,6 +123,18 @@ afterAll((done) => {
 // ██████╔╝╚██████╔╝██║ ╚████║███████╗
 // ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚══════╝
 
+describe('misc functions that need a DB', () => {
+  test('should return a list of default regions', async (done) => {
+    const list = await getRegionsList();
+    for (const key in DefaultRegions) {
+      if (DefaultRegions.hasOwnProperty(key)) {
+        const element = DefaultRegions[key];
+        expect(list.includes(element)).toBe(true);
+      }
+    }
+    done();
+  });
+});
 // ###############################################
 // ###
 // ###
