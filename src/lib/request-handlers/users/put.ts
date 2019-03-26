@@ -25,14 +25,16 @@ export const updateUser: putResponse = async (request, response) => {
     } else {
       const userRepository = getRepository(User);
       userRepository.merge(user, request.body);
-      if (request.body.hasOwnProperty('region') === true) {
-        if ((list.includes(request.body.region))) {
+
+      if (request.body.hasOwnProperty('region') === true && list.includes(request.body.region) === true) {
+        // if ((list.includes(request.body.region))) {
           const reg = await getCustomRepository(RegionRepository).findByName(request.body.region);
           if (reg !== undefined) {
             user.regions.push(reg);
           }
-        }
+        // }
       }
+
       const res = await userRepository.save(user);
       responder(response, HttpCodes.successCreated, successResponse(SUCCESS.success201, [res]));
     }
