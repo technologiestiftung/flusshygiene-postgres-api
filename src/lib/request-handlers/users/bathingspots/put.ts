@@ -8,10 +8,12 @@ import { getEntityFields } from '../../../utils/get-entity-fields';
 import { getMatchingValues } from '../../../utils/get-matching-values-from-request';
 import { BathingspotRepository } from './../../../repositories/BathingspotRepository';
 import { getBathingspotById, getSpotByUserAndId } from './../../../repositories/custom-repo-helpers';
-import { errorResponse, responder,
+import {
+  errorResponse, responder,
   responderMissingBodyValue,
   responderWrongId,
-  successResponse } from './../../responders';
+  successResponse,
+} from './../../responders';
 
 const updateFields = (spot: Bathingspot, providedValues: IObject) => {
   // curently silently fails needs some smarter way to set values on entities
@@ -54,14 +56,15 @@ export const updateBathingspotOfUser: putResponse = async (request, response) =>
     const example = await getEntityFields('Bathingspot');
 
     let spotFromUser = await getSpotByUserAndId(request.params.userId, request.params.spotId);
-    const relatedUsers = await userRepo.findUserBySpotId(request.params.spotId);
-    const filteredRelatedUsers = relatedUsers.filter(user => user.id === parseInt(request.params.userId, 10));
-    if (filteredRelatedUsers.length === 0) {
-      throw new Error('What where is the user?');
-    }
+
     if (spotFromUser === undefined) {
       responderWrongId(response);
     } else {
+      const relatedUsers = await userRepo.findUserBySpotId(request.params.spotId);
+      const filteredRelatedUsers = relatedUsers.filter(user => user.id === parseInt(request.params.userId, 10));
+      if (filteredRelatedUsers.length === 0) {
+        throw new Error('What where is the user?');
+      }
       const filteredPropNames = await getEntityFields('Bathingspot');
       const providedValues = getMatchingValues(request.body, filteredPropNames.props);
       if (Object.keys(providedValues).length === 0) {
@@ -69,14 +72,14 @@ export const updateBathingspotOfUser: putResponse = async (request, response) =>
       }
       if (providedValues.hasOwnProperty('region') === true) {
 
-          const region = await regionRepo.findByName(providedValues.region).catch((err) => {
-            if (process.env.NODE_ENV === 'development') {
-              process.stderr.write(`${JSON.stringify(err)}\n`);
-            }
-          });
-          if (region !== undefined) {
-            spotFromUser.region = region;
+        const region = await regionRepo.findByName(providedValues.region).catch((err) => {
+          if (process.env.NODE_ENV === 'development') {
+            process.stderr.write(`${JSON.stringify(err)}\n`);
           }
+        });
+        if (region !== undefined) {
+          spotFromUser.region = region;
+        }
       }
       spotFromUser = updateFields(spotFromUser, providedValues);
       await spotRepo.save(spotFromUser);

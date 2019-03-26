@@ -11,7 +11,7 @@ export class UserRepository extends Repository<User> {
     const query = this.createQueryBuilder('user')
     .innerJoin('user.bathingspots', 'bathingspot')
     .where('bathingspot.id = :sid', {sid: spotId});
-    console.log(query.getSql());
+    // console.log(query.getSql());
     const user = query.getMany();
 
     return user;

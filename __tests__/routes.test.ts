@@ -96,7 +96,7 @@ beforeAll((done) => {
           con.manager.save(user).then(() => {
             // connection = con;
             done();
-            console.log('done with beforeAll setup');
+
           }).catch(err => { throw err; });
         }).catch(err => { throw err; });
       }).catch(err => { throw err; });
@@ -108,7 +108,7 @@ afterAll((done) => {
   const con = getConnection();
   con.dropDatabase().then(() => {
     con.close().then(() => {
-      console.log('Done with cleanup after all');
+
       done();
     }).catch(err => { throw err; });
   }).catch(err => { throw err; });
@@ -471,12 +471,12 @@ describe('testing bathingspots post for a specific user', () => {
 
 describe('testing bathingspots update (put) for a specific user', () => {
 
-  test('should fail due to wrong idof a bathingspot', async (done) => {
+  test('should fail due to wrong id of a bathingspot', async (done) => {
     const userRepo = getRepository(User);
     const usersAndSpots = await userRepo.find({ relations: ['bathingspots'] });
     const usersWithSpots = usersAndSpots.filter(u => u.bathingspots.length > 0);
     const user = usersWithSpots[0];
-    const spot = user.bathingspots[0];
+
     const res = await request(app).put(`/api/v1/users/${user.id}/bathingspots/${10000}`).send({
       name: 'watering hole',
     }).set('Accept', 'application/json');
@@ -539,7 +539,6 @@ describe('testing bathingspots update (put) for a specific user', () => {
     //   .getMany();
     const usersWithSpots = usersAndSpots.filter(_user => _user.bathingspots.length > 0);
 
-    // console.log(usersWithSpots);
     const user = usersWithSpots[0];
     const spot = user.bathingspots[0];
     const res = await request(app).put(`/api/v1/users/${user.id}/bathingspots/${spot.id}`).send({
@@ -575,7 +574,7 @@ describe('testing spot deletion', () => {
     // const spot = publicSpots[0];
     const res = await request(app).delete(
       `/api/v1/users/${user.id}/bathingspots/${100000}`).send({}).set('Accept', 'application/json');
-    // console.log(res.body);
+
     expect(res.status).toBe(404);
     expect(res.body.success).toBe(false);
     expect(res.body.message).toEqual(ERRORS.badRequestMissingOrWrongID404);
@@ -604,11 +603,11 @@ describe('testing spot deletion', () => {
   test('should delete public bathingspot by using force', async (done) => {
     const userRepo = getRepository(User);
     const spotRepo = getRepository(Bathingspot);
-    const usersAndSpots = await userRepo.find({ relations: ['bathingspots'] });
+    const usersAndSpots = await userRepo.find({ relations: ['bathingspots'], where: {role: UserRole.creator} });
     const id = usersAndSpots[usersAndSpots.length - 1].id;
     // create one for deletion
     const resCreation = await request(app).post(`/api/v1/users/${id}/bathingspots`).send({
-      isPublic: true,
+      isPublic: false,
       name: 'Sweetwater',
     }).set('Accept', 'application/json');
     const spotsBefore = await spotRepo.find();
@@ -694,18 +693,18 @@ describe('testing delete users', () => {
     expect.assertions(2);
     // for(let i = usersres.body.length -1; i >=0;i--){
     const id = usersres.body.data[usersres.body.data.length - 1].id;
-    // console.log(id);
+
     const res = await request(app).delete(`/api/v1/users/${id}`);
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
-    // console.log(res.body);
+
     // }
     done();
   });
   test('delete user should fail due to missing id', async (done) => {
     expect.assertions(1);
     const res = await request(app).delete(`/api/v1/users`);
-    // console.log(res);
+
     expect(res.status).toBe(404);
     done();
   });
