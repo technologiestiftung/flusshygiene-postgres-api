@@ -422,7 +422,7 @@ describe('testing bathingspots get for a specific user', () => {
     expect(res.body.data.length).toBe(0);
     done();
   });
-  test('user should have a bathingspot with id', async (done) => {
+  test.skip('user should have a bathingspot with id', async (done) => {
     const userRepo = getCustomRepository(UserRepository);
     const usersWithRelations = await userRepo.find({relations: ['bathingspots']});
 
