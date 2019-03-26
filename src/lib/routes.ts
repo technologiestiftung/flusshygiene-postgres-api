@@ -1,4 +1,5 @@
 import Router from 'express-promise-router';
+import { getRegionById } from './request-handlers/regions/index';
 // import { defaultGetResponse, defaultPostResponse } from './request-handlers/default-requests';
 import {
   addUser,
@@ -60,6 +61,7 @@ router.get('/bathingspots/:id([0-9]+)', getSingleBathingspot);
 router.get('/bathingspots/:region([a-z]+)', getBathingspotsByRegion);
 
 router.get('/regions', getAllRegions);
+router.get('/regions/:regionId([0-9]+)', getRegionById);
 
 router.post('/regions', postRegion);
 router.put('/regions/:regionId([0-9]+)', putRegion);

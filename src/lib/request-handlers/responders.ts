@@ -127,17 +127,17 @@ export const responderSuccessCreated: ResponderSuccessCreated = (
     message,
     data));
 
-/**
- * responder for missing ids. This actually should never happen 400
- * @param response
- */
-export const responderMissingId: ResponderMissingOrWrongIdOrAuth = (
-  response,
-) => responder(
-  response,
-  HttpCodes.badRequest,
-  userIDErrorResponse(),
-);
+// /**
+//  * responder for missing ids. This actually should never happen 400
+//  * @param response
+//  */
+// export const responderMissingId: ResponderMissingOrWrongIdOrAuth = (
+//   response,
+// ) => responder(
+//   response,
+//   HttpCodes.badRequest,
+//   userIDErrorResponse(),
+// );
 
 /**
  * responses for wrong ids 404

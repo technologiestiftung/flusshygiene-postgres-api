@@ -1,8 +1,9 @@
 import { getCustomRepository, getRepository } from 'typeorm';
 import { Bathingspot } from '../../../orm/entity/Bathingspot';
+import { SUCCESS } from '../../messages';
 import { RegionRepository } from '../../repositories/RegionRepository';
 import { getResponse, HttpCodes } from '../../types-interfaces';
-import { errorResponse, responder, responderWrongId } from '../responders';
+import { errorResponse, responder, responderWrongId, successResponse } from '../responders';
 import { BathingspotRepository } from './../../repositories/BathingspotRepository';
 
 /**
@@ -24,9 +25,6 @@ export const getBathingspots: getResponse = async (_request, response) => {
 };
 export const getSingleBathingspot: getResponse = async (request, response) => {
   let spot: Bathingspot | undefined;
-  if (request.params.id === undefined) {
-    throw new Error('id is not defined');
-  }
   try {
     spot = await getRepository(Bathingspot).findOne(request.params.id);
     if (spot === undefined) {
@@ -44,8 +42,6 @@ export const getBathingspotsByRegion: getResponse = async (request, response) =>
     const regionsRepo = getCustomRepository(RegionRepository);
     let list = await regionsRepo.getNamesList();
     list = list.map(obj => obj.name);
-    console.log(list);
-    console.log(request.params.region);
     if (!(list.includes(request.params.region))) {
       responderWrongId(response);
     } else {
@@ -60,7 +56,7 @@ export const getBathingspotsByRegion: getResponse = async (request, response) =>
         } else {
           spots = spots.filter((spot: Bathingspot) => spot.isPublic === true );
         }
-        responder(response, HttpCodes.success, spots);
+        responder(response, HttpCodes.success, successResponse(SUCCESS.success200, spots));
       } else {
         responderWrongId(response);
       }

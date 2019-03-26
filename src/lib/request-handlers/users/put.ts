@@ -1,8 +1,9 @@
 import { getCustomRepository, getRepository } from 'typeorm';
 import { User } from '../../../orm/entity/User';
+import { SUCCESS } from '../../messages';
 import { RegionRepository } from '../../repositories/RegionRepository';
 import { HttpCodes, putResponse } from '../../types-interfaces';
-import { errorResponse, responderMissingId, responderSuccessCreated, responderWrongId } from '../responders';
+import { errorResponse, responder, responderWrongId, successResponse } from '../responders';
 
 // ██████╗ ██╗   ██╗████████╗
 // ██╔══██╗██║   ██║╚══██╔══╝
@@ -17,9 +18,6 @@ export const updateUser: putResponse = async (request, response) => {
     let list = await regionsRepo.getNamesList();
     list = list.map(obj => obj.name);
 
-    if (request.params.userId === undefined) {
-      responderMissingId(response);
-    }
     const user: User | undefined = await getRepository(User).findOne(request.params.userId);
     if (user === undefined) {
       responderWrongId(response);
@@ -35,10 +33,10 @@ export const updateUser: putResponse = async (request, response) => {
         }
       }
       const res = await userRepository.save(user);
-      responderSuccessCreated(response, 'updated user', [res]);
+      responder(response, HttpCodes.successCreated, successResponse(SUCCESS.success201, [res]));
+      // responderSuccessCreated(response, 'updated user', [res]);
     }
   } catch (e) {
     response.status(HttpCodes.internalError).json(errorResponse(e));
   }
 };
-

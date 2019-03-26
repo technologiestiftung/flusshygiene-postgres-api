@@ -1,3 +1,4 @@
+import { RegionRepository } from './../src/lib/repositories/RegionRepository';
 import { UserRepository } from './../src/lib/repositories/UserRepository';
 import { HttpCodes } from './../src/lib/types-interfaces';
 // tslint:disable: ordered-imports
@@ -295,7 +296,7 @@ describe('testing update users', () => {
 
   test('update user', async (done) => {
     // process.env.NODE_ENV = 'development';
-    expect.assertions(2);
+    // expect.assertions(2);
     const usersres = await request(app).get('/api/v1/users');
     const id = usersres.body.data[usersres.body.data.length - 1].id;
     const res = await request(app).put(`/api/v1/users/${id}`).send({
@@ -304,6 +305,65 @@ describe('testing update users', () => {
       .set('Accept', 'application/json');
     expect(res.status).toBe(201);
     expect(res.body.success).toBe(true);
+    expect(Array.isArray(res.body.data)).toBe(true);
+    done();
+  });
+
+  test.skip('update user', async (done) => {
+    const newUserRes = await request(app).post(`/api/v1/users/`).send({
+      email: 'boom@test.com',
+      firstName: 'boom',
+      lastName: 'test',
+      region: DefaultRegions.niedersachsen,
+      role: UserRole.creator,
+    })
+      .set('Accept', 'application/json');
+    console.log(newUserRes.body);
+    // const usersres = await request(app).get('/api/v1/users');
+    // const id = usersres.body.data[usersres.body.data.length - 1].id;
+    const spotRes = await request(app).post(`/api/v1/users/${newUserRes.body.data[0].id}/bathingspots`).send({
+      isPublic: false,
+      name: 'intermidiante spot',
+    }).set('Accept', 'application/json');
+
+    const res = await request(app).put(
+      `/api/v1/users/${newUserRes.body.data[0].id}`).send({
+              email: 'foo@test.com',
+              region: DefaultRegions.niedersachsen,
+            })
+              .set('Accept', 'application/json');
+
+    expect(res.status).toBe(201);
+    expect(res.body.success).toBe(true);
+    expect(Array.isArray(res.body.data)).toBe(true);
+    await request(app).delete(`/api/v1/users/${newUserRes.body.data[0].id}`);
+    done();
+  });
+
+  test('user fail due to undefiend user id', async (done) => {
+    const userRepo = getCustomRepository(UserRepository);
+    // const usersWithRelations = await userRepo.find({relations: ['bathingspots']});
+
+    // console.log(usersWithRelations);
+    const res = await request(app).put(
+      `/api/v1/users/${1000}`);
+    expect(res.status).toBe(404);
+    // console.log(res.body);
+    expect(res.body.success).toBe(false);
+    // expect(res.body.data.length).toBe(0);
+    done();
+  });
+  test('user fail due to wrong route', async (done) => {
+    const userRepo = getCustomRepository(UserRepository);
+    const usersWithRelations = await userRepo.find({relations: ['bathingspots']});
+
+    // console.log(usersWithRelations);
+    const res = await request(app).put(
+      `/api/v1/users/`);
+    expect(res.status).toBe(404);
+    // console.log(res.body);
+    // expect(res.body.success).toBe(false);
+    // expect(res.body.data.length).toBe(0);
     done();
   });
 });
@@ -341,6 +401,49 @@ describe('testing bathingspots get for a specific user', () => {
     const res = await request(app).get('/api/v1/users/2/bathingspots');
     expect(res.status).toBe(200);
     expect(res.body.data.length >= 1).toBe(true);
+    done();
+  });
+  test('user should have no bathingspot in region', async (done) => {
+    const res = await request(app).get(`/api/v1/users/2/bathingspots/${DefaultRegions.schleswigholstein}`);
+    expect(res.status).toBe(200);
+    expect(res.body.data.length).toBe(0);
+    done();
+  });
+  test('user should have a bathingspot with id', async (done) => {
+    const userRepo = getCustomRepository(UserRepository);
+    const usersWithRelations = await userRepo.find({relations: ['bathingspots']});
+
+    // console.log(usersWithRelations);
+    const res = await request(app).get(
+      `/api/v1/users/${usersWithRelations[0].id}/bathingspots/${usersWithRelations[0].bathingspots[0].id}`);
+    expect(res.status).toBe(200);
+    // console.log(res.body);
+    expect(res.body.data.length > 0).toBe(true);
+    done();
+  });
+  test('region should not exist', async (done) => {
+    const userRepo = getCustomRepository(UserRepository);
+    const usersWithRelations = await userRepo.find({relations: ['bathingspots']});
+
+    // console.log(usersWithRelations);
+    const res = await request(app).get(
+      `/api/v1/users/${usersWithRelations[0].id}/bathingspots/foo`);
+    expect(res.status).toBe(404);
+    // console.log(res.body);
+    expect(res.body.success).toBe(false);
+    done();
+  });
+  test('user should have no bathingspot in region', async (done) => {
+    const userRepo = getCustomRepository(UserRepository);
+    const usersWithRelations = await userRepo.find({relations: ['bathingspots']});
+
+    // console.log(usersWithRelations);
+    const res = await request(app).get(
+      `/api/v1/users/${usersWithRelations[0].id}/bathingspots/${DefaultRegions.schleswigholstein}`);
+    expect(res.status).toBe(200);
+    // console.log(res.body);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data.length).toBe(0);
     done();
   });
   test('should fail due to wrong user id', async (done) => {
@@ -671,6 +774,19 @@ describe('testing get bathingspots', () => {
     expect(res.body.success).toBe(false);
     done();
   });
+  test('should fail due to wrong spot region id', async (done) => {
+    const res = await request(app).get(`/api/v1/bathingspots/foo`);
+    expect(res.status).toBe(HttpCodes.badRequestNotFound);
+    expect(res.body.success).toBe(false);
+    done();
+  });
+  test('should return empty spot array', async (done) => {
+    const res = await request(app).get(`/api/v1/bathingspots/${DefaultRegions.schleswigholstein}`);
+    expect(res.status).toBe(HttpCodes.success);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data.length).toBe(0);
+    done();
+  });
 });
 
 // ██████╗ ███████╗██╗     ███████╗████████╗███████╗
@@ -698,7 +814,6 @@ describe('testing delete users', () => {
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
 
-    // }
     done();
   });
   test('delete user should fail due to missing id', async (done) => {
@@ -712,6 +827,38 @@ describe('testing delete users', () => {
     expect.assertions(1);
     const res = await request(app).delete(`/api/v1/users/${10000000}`);
     expect(res.status).toBe(404);
+    done();
+  });
+
+  test('should delete user even if he has spots', async (done) => {
+    // process.env.NODE_ENV = 'development';
+    const userRepo = getCustomRepository(UserRepository);
+    const usersWithRelations = await userRepo.find({
+      relations: ['bathingspots'],
+      where: {protected: false},
+    });
+
+    // console.log(usersWithRelations);
+    const res = await request(app).delete(
+      `/api/v1/users/${usersWithRelations[0].id}`);
+
+    // console.log(res.body);
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    // expect(res.body.data.length).toBe(0);
+    done();
+  });
+  test('should fail. Can\'t delete protected user', async (done) => {
+    const userRepo = getCustomRepository(UserRepository);
+    const usersWithRelations = await userRepo.find({relations: ['bathingspots'], where: {protected: true}});
+
+    // console.log(usersWithRelations);
+    const res = await request(app).delete(
+      `/api/v1/users/${usersWithRelations[0].id}`);
+    expect(res.status).toBe(403);
+    // console.log(res.body);
+    expect(res.body.success).toBe(false);
+    // expect(res.body.data.length).toBe(0);
     done();
   });
 });
@@ -748,6 +895,13 @@ describe('testing errors on repo helpers', () => {
   });
 });
 
+// ██████╗ ███████╗ ██████╗ ██╗ ██████╗ ███╗   ██╗
+// ██╔══██╗██╔════╝██╔════╝ ██║██╔═══██╗████╗  ██║
+// ██████╔╝█████╗  ██║  ███╗██║██║   ██║██╔██╗ ██║
+// ██╔══██╗██╔══╝  ██║   ██║██║██║   ██║██║╚██╗██║
+// ██║  ██║███████╗╚██████╔╝██║╚██████╔╝██║ ╚████║
+// ╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═╝ ╚═════╝ ╚═╝  ╚═══╝
+
 describe('testing region routes', () => {
   test('should get all regions', async (done) => {
     const res = await request(app).get(`/api/v1/regions`);
@@ -770,6 +924,61 @@ describe('testing region routes', () => {
     expect(res.body.data[0].id !== undefined).toBe(true);
     expect(res.body.data[0].name !== undefined).toBe(true);
     expect(res.body.data[0].displayName !== undefined).toBe(true);
+    done();
+  });
+  test('should update a region', async (done) => {
+    const regionRepo = getCustomRepository(RegionRepository);
+    const region = await regionRepo.findByName(DefaultRegions.niedersachsen);
+    const res = await request(app).put(
+      `/api/v1/regions/${region.id}`,
+      ).send({
+        displayName: 'Niedersachsen',
+      }).set('Accept', 'application/json');
+    const doubeCheckRegion = await request(app).get(`/api/v1/regions/${region.id}`);
+    expect(res.status).toBe(HttpCodes.successCreated);
+    // console.log(res.body);
+    expect(Array.isArray(res.body.data)).toBe(true);
+    expect(res.body.data[0].displayName).toEqual('Niedersachsen');
+    // console.log(doubeCheckRegion.body);
+    expect(doubeCheckRegion.body.data[0].displayName).toEqual('Niedersachsen');
+    done();
+});
+  test('should fail to update due to wrong id', async (done) => {
+    const res = await request(app).put(
+      `/api/v1/regions/${1000}`,
+      ).send({
+        displayName: 'Niedersachsen',
+      }).set('Accept', 'application/json');
+    expect(res.status).toBe(HttpCodes.badRequestNotFound);
+      // console.log(res.body);
+    expect(res.body.success).toBe(false);
+      // console.log(doubeCheckRegion.body);
+    done();
+  });
+  test('should fail to delete due to wrong id', async (done) => {
+    const res = await request(app).put(
+      `/api/v1/regions/${1000}`,
+      );
+    expect(res.status).toBe(HttpCodes.badRequestNotFound);
+      // console.log(res.body);
+    expect(res.body.success).toBe(false);
+      // console.log(doubeCheckRegion.body);
+    done();
+  });
+  test('should delete a region', async (done) => {
+    const resCreate = await request(app).post(`/api/v1/regions`).send({
+      displayName: 'Fantasia',
+      name: 'fantasia',
+    });
+
+    const res = await request(app).delete(`/api/v1/regions/${resCreate.body.data[0].id}`);
+    // console.log(res.body);
+    expect(res.status).toBe(HttpCodes.success);
+    expect(res.body.success).toBe(true);
+    expect(Array.isArray(res.body.data)).toBe(true);
+    // expect(res.body.data[0].id !== undefined).toBe(true);
+    // expect(res.body.data[0].name !== undefined).toBe(true);
+    // expect(res.body.data[0].displayName !== undefined).toBe(true);
     done();
   });
 });

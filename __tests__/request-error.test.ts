@@ -52,7 +52,7 @@ describe('testing missing db connection', () => {
 
   it('should return 500 route post user id bathingspot', async (done) => {
     const res = await request(app)
-    .post('/api/v1/users/1/bathingspots').send({name: 'foo', isPublic: true}).set('Accept', 'application/json'); 
+    .post('/api/v1/users/1/bathingspots').send({name: 'foo', isPublic: true}).set('Accept', 'application/json');
     expect(res.status).toBe(500);
     done();
   });
@@ -128,11 +128,49 @@ describe('testing missing db connection', () => {
     done();
   });
 
-  it('should return 500 post bathingspot by id', async (done) => {
+  it('should return 404 post bathingspot by id', async (done) => {
     // getBathingspot);
     const res = await request(app)
     .post('/api/v1/bathingspots').send({name: 'foo', isPublic: true}).set('Accept', 'application/json');
     expect(res.status).toBe(404);
+    done();
+  });
+
+  it('should return 500 get regions', async (done) => {
+    // getBathingspot);
+    const res = await request(app)
+    .get('/api/v1/regions');
+    expect(res.status).toBe(500);
+    done();
+  });
+  it('should return 500 get regions by id', async (done) => {
+    // getBathingspot);
+    const res = await request(app)
+    .get('/api/v1/regions/1');
+    expect(res.status).toBe(500);
+    done();
+  });
+  it('should return 500 put regions by id', async (done) => {
+    // getBathingspot);
+    const res = await request(app)
+    .put('/api/v1/regions/1').send({displayName: 'pony and rainbows'});
+    expect(res.status).toBe(500);
+    done();
+  });
+  it('should return 500 post regions', async (done) => {
+    // getBathingspot);
+    const res = await request(app)
+    .post('/api/v1/regions').send({displayName: 'pony and rainbows', name: 'rainbow'});
+    // console.log(res);
+    expect(res.status).toBe(500);
+    done();
+  });
+  it('should return 500 delete region by id', async (done) => {
+    // getBathingspot);
+    const res = await request(app)
+    .delete('/api/v1/regions/1');
+    // console.log(res);
+    expect(res.status).toBe(500);
     done();
   });
 });

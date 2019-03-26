@@ -36,7 +36,7 @@ export const getOneUserBathingspotById: getResponse = async (request, response) 
     if (spotFromUser === undefined) {
       responderWrongId(response);
     } else {
-      responder(response, HttpCodes.success, [spotFromUser]);
+      responder(response, HttpCodes.success, successResponse(SUCCESS.success200, [spotFromUser]));
     }
   } catch (e) {
     responder(response, HttpCodes.internalError, errorResponse(e));
@@ -48,24 +48,22 @@ export const getOneUsersBathingspotsByRegion: getResponse = async (request, resp
     const regionsRepo = getCustomRepository(RegionRepository);
     let list = await regionsRepo.getNamesList();
     list = list.map(obj => obj.name);
-
     if (!(list.includes(request.params.region))) {
       responderWrongId(response);
     } else {
       const spotRepo = getCustomRepository(BathingspotRepository);
       const regionRepo = getCustomRepository(RegionRepository);
-
       const region = await regionRepo.findByName(request.params.region);
-      if (region !== undefined) {
-        const userId = request.params.userId;
-        const spots = await spotRepo.findByUserAndRegion(userId, region.id);
-        if (spots !== undefined) {
+      const userId = request.params.userId;
+      const spots = await spotRepo.findByUserAndRegion(userId, region!.id);
+      if (spots !== undefined) {
           responder(response, HttpCodes.success, successResponse(SUCCESS.success200, spots));
+        } else {
+          responder(response, HttpCodes.success, successResponse(SUCCESS.success200, []));
+
         }
-      }
     }
   } catch (e) {
     responder(response, HttpCodes.internalError, errorResponse(e));
-
   }
 };

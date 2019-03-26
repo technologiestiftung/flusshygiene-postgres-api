@@ -7,16 +7,18 @@ export class UserRepository extends Repository<User> {
     return this.findOne(userId, { relations });
   }
 
-  public findUserBySpotId(spotId: number) {
-    const query = this.createQueryBuilder('user')
-    .innerJoin('user.bathingspots', 'bathingspot')
-    .where('bathingspot.id = :sid', {sid: spotId});
-    // console.log(query.getSql());
-    const user = query.getMany();
+  // public findUserBySpotId(spotId: number) {
+  //   // const query = this.createQueryBuilder('user')
+  //   // .innerJoin('user.bathingspots', 'bathingspot')
+  //   // .where('bathingspot.id = :sid', {sid: spotId});
+  //   // // console.log(query.getSql());
+  //   return this.createQueryBuilder('user')
+  //   .innerJoin('user.bathingspots', 'bathingspot')
+  //   .where('bathingspot.id = :sid', {sid: spotId}).getMany();
 
-    return user;
+  //   // return user;
 
-  }
+  // }
 
   public findAllByRole(role: string) {
     return this.find({where: {role}});
