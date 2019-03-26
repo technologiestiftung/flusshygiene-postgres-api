@@ -732,7 +732,6 @@ describe('testing spot deletion', () => {
     const res = await request(app).delete(
       `/api/v1/users/${id}/bathingspots/${pubSpots[0].id}`,
     ).send({ force: true });
-    console.log('res', res.body);
     expect(res.status).toBe(200);
     expect(res.body.message).toEqual(SUCCESS.successDeleteSpot200);
     done();

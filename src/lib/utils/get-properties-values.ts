@@ -1,20 +1,20 @@
-/**
- * assumes that you want true or false as result
- * if the prop does not exists or is false it returns false
- * if it is true it returns true
- * @param obj the object to check
- * @param key thekey to look for
- * @returns boolean
- */
+import { GetPropsValueGeneric } from '../types-interfaces';
 
-// type GetPropsValue = <T>(obj: any, key: string) => T;
-export const getBooleanPropsValue: (obj: any, key: string) => boolean = (obj, key) => {
-  let res = false;
-  if (obj.hasOwnProperty(key) === true) {
-    res = obj[key];
-  }
-  return res;
-};
+// /**
+//  * assumes that you want true or false as result
+//  * if the prop does not exists or is false it returns false
+//  * if it is true it returns true
+//  * @param obj the object to check
+//  * @param key thekey to look for
+//  * @returns boolean
+//  */
+// export const getBooleanPropsValue: (obj: any, key: string) => boolean = (obj, key) => {
+//   let res = false;
+//   if (obj.hasOwnProperty(key) === true) {
+//     res = obj[key];
+//   }
+//   return res;
+// };
 
 /**
  * Get values in a generic vay usage
@@ -24,10 +24,8 @@ export const getBooleanPropsValue: (obj: any, key: string) => boolean = (obj, ke
  * @param obj theobjrct to inspect
  * @param key the key to lookfor
  */
-export const getPropsValueGeneric: <T> (obj: any, key: string) => T = (obj, key) => {
-  // let res = '';
+export const getPropsValueGeneric: GetPropsValueGeneric = (obj, key) => {
   if (obj.hasOwnProperty(key) === true) {
-    // res = obj[key];
     return obj[key];
   }
 };

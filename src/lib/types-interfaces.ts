@@ -85,6 +85,18 @@ export type GetByIds = (userId: number, spotId: number) => Promise<Bathingspot |
 export type GetById = (spotId: number) => Promise<Bathingspot | undefined>;
 export type GetByIdWithRelations = (userId: number, relations: string[]) => Promise<User | undefined>;
 
+// utils/get-properties-values.ts
+
+/**
+ * Get values in a generic vay usage
+ *
+ * `const hasForce = getPropsValueGeneric<boolean>(request.body, 'force');`
+ *
+ * @param obj theobjrct to inspect
+ * @param key the key to lookfor
+ */
+export type GetPropsValueGeneric = <T>(obj: any, key: string) => T;
+
 export enum UserRole {
   admin = 'admin',
   creator = 'creator',
