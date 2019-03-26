@@ -1,6 +1,6 @@
 import { getCustomRepository } from 'typeorm';
 import { SUCCESS } from '../../../messages';
-import { getSpotByUserAndId, getUserWithRelations } from '../../../repositories/custom-repo-helpers';
+import { getRegionsList, getSpotByUserAndId, getUserWithRelations } from '../../../repositories/custom-repo-helpers';
 import { RegionRepository } from '../../../repositories/RegionRepository';
 import { getResponse, HttpCodes } from '../../../types-interfaces';
 import { errorResponse, responder, responderWrongId, successResponse } from '../../responders';
@@ -45,9 +45,11 @@ export const getOneUserBathingspotById: getResponse = async (request, response) 
 
 export const getOneUsersBathingspotsByRegion: getResponse = async (request, response) => {
   try {
-    const regionsRepo = getCustomRepository(RegionRepository);
-    let list = await regionsRepo.getNamesList();
-    list = list.map(obj => obj.name);
+    // const regionsRepo = getCustomRepository(RegionRepository);
+    // let list = await regionsRepo.getNamesList();
+    // list = list.map(obj => obj.name);
+    const list = await getRegionsList();
+
     if (!(list.includes(request.params.region))) {
       responderWrongId(response);
     } else {

@@ -1,6 +1,8 @@
 import { getCustomRepository } from 'typeorm';
 import { GetById, GetByIds, GetByIdWithRelations } from '../types-interfaces';
+import { IRegionListEntry } from './../types-interfaces';
 import { BathingspotRepository } from './BathingspotRepository';
+import { RegionRepository } from './RegionRepository';
 import { UserRepository } from './UserRepository';
 
 export const getUserWithRelations: GetByIdWithRelations = async (userId, relations) => {
@@ -28,6 +30,18 @@ export const getSpotByUserAndId: GetByIds = async (userId, spotId) => {
   try {
     const spot = await spotRepo.findByUserAndSpotId(userId, spotId);
     return spot;
+  } catch (e) {
+    throw e;
+  }
+};
+
+export const getRegionsList: () => Promise<string[]> = async () => {
+  try {
+
+    const regionsRepo = getCustomRepository(RegionRepository);
+    const list: IRegionListEntry[] = await regionsRepo.getNamesList();
+    const res: string[]  = list.map(obj => obj.name);
+    return res;
   } catch (e) {
     throw e;
   }

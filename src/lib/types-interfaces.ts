@@ -22,6 +22,13 @@ export interface IObject {
 }
 
 /**
+ * listz entry interface for Regions getRegionsList
+ * e.g. { name: 'berlin'}
+ */
+export interface IRegionListEntry {
+  name: string;
+}
+/**
  *
  */
 export type entityFields = (type: string) => Promise<IFilteredEntityPropsResoponse>;

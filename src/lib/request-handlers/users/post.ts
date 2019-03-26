@@ -2,6 +2,7 @@ import { validate } from 'class-validator';
 import { getCustomRepository, getRepository } from 'typeorm';
 import { Region } from '../../../orm/entity/Region';
 import { User } from '../../../orm/entity/User';
+import { getRegionsList } from '../../repositories/custom-repo-helpers';
 import { RegionRepository } from '../../repositories/RegionRepository';
 import { UserRepository } from '../../repositories/UserRepository';
 import { HttpCodes, postResponse, UserRole } from '../../types-interfaces';
@@ -24,9 +25,10 @@ const createUser = (obj: any) => {
 export const addUser: postResponse = async (request, response) => {
   // const user: User = new User();
   try {
-    const regionsRepo = getCustomRepository(RegionRepository);
-    let list = await regionsRepo.getNamesList();
-    list = list.map(obj => obj.name);
+    // const regionsRepo = getCustomRepository(RegionRepository);
+    // let list = await regionsRepo.getNamesList();
+    // list = list.map(obj => obj.name);
+    const list = await getRegionsList();
 
     const example = await getEntityFields('User');
     if (request.body.role === undefined) {

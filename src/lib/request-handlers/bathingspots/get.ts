@@ -1,6 +1,7 @@
 import { getCustomRepository, getRepository } from 'typeorm';
 import { Bathingspot } from '../../../orm/entity/Bathingspot';
 import { SUCCESS } from '../../messages';
+import { getRegionsList } from '../../repositories/custom-repo-helpers';
 import { RegionRepository } from '../../repositories/RegionRepository';
 import { getResponse, HttpCodes } from '../../types-interfaces';
 import { errorResponse, responder, responderWrongId, successResponse } from '../responders';
@@ -39,9 +40,11 @@ export const getSingleBathingspot: getResponse = async (request, response) => {
 
 export const getBathingspotsByRegion: getResponse = async (request, response) => {
   try {
-    const regionsRepo = getCustomRepository(RegionRepository);
-    let list = await regionsRepo.getNamesList();
-    list = list.map(obj => obj.name);
+    // const regionsRepo = getCustomRepository(RegionRepository);
+    // let list = await regionsRepo.getNamesList();
+    // list = list.map(obj => obj.name);
+    const list = await getRegionsList();
+
     if (!(list.includes(request.params.region))) {
       responderWrongId(response);
     } else {
