@@ -81,16 +81,11 @@ export const addBathingspotToUser: postResponse = async (request, response) => {
             'problem': 'when isPublic is set to true you need to set a region',
           });
         } else {
-
           user.bathingspots.push(spot);
-          await getManager().save(user);
-          const userAgain = await getUserWithRelations(request.params.userId, ['bathingspots']);
-          if (userAgain === undefined) {
-            throw Error('user id did change user does not exist anymore should never happen');
-          }
+          const res = await getManager().save(user);
           responder(response,
             HttpCodes.successCreated,
-            successResponse('Bathingspot created', [userAgain.bathingspots[userAgain.bathingspots.length - 1]]));
+            successResponse('Bathingspot created', [res]));
         }
       }
     }

@@ -3,7 +3,6 @@ import { getCustomRepository, getRepository } from 'typeorm';
 import { Region } from '../../../orm/entity/Region';
 import { User } from '../../../orm/entity/User';
 import { getRegionsList } from '../../repositories/custom-repo-helpers';
-import { RegionRepository } from '../../repositories/RegionRepository';
 import { UserRepository } from '../../repositories/UserRepository';
 import { HttpCodes, IObject, postResponse, UserRole } from '../../types-interfaces';
 import { getEntityFields } from '../../utils/get-entity-fields';
@@ -17,12 +16,10 @@ import { errorResponse, responder, responderMissingBodyValue, responderSuccessCr
 // ╚═╝  ╚═╝╚═════╝ ╚═════╝
 
 const createUser = async (obj: any) => {
-
   const userRepo = getCustomRepository(UserRepository);
   const user: User = new User();
   userRepo.merge(user, obj);
   try {
-
     const errors = await validate(user);
     if (errors.length > 0) {
       throw new Error(`User validation failed ${JSON.stringify(errors)}`);
@@ -50,15 +47,12 @@ export const addUser: postResponse = async (request, response) => {
     const list = await getRegionsList();
     const example = await getEntityFields('User');
     const hasRequiredFields = checkRequiredFileds(request.body);
-
     if (hasRequiredFields === true) {
-
       if (request.body.role === UserRole.creator &&
         (request.body.hasOwnProperty('region') === true &&
           list.includes(request.body.region) === true)
       ) {
         const region = await getRepository(Region).findOne({ where: { name: request.body.region } });
-
         const user = await createUser(request.body);
         if (region instanceof Region) {
           user.regions = [region];

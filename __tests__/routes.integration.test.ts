@@ -718,24 +718,23 @@ describe('testing spot deletion', () => {
   });
   test('should delete public bathingspot by using force', async (done) => {
     const userRepo = getRepository(User);
-    const spotRepo = getRepository(Bathingspot);
     const usersAndSpots = await userRepo.find({ relations: ['bathingspots'], where: {role: UserRole.creator} });
     const id = usersAndSpots[usersAndSpots.length - 1].id;
     // create one for deletion
-    const resCreation = await request(app).post(`/api/v1/users/${id}/bathingspots`).send({
-      isPublic: false,
+    await request(app).post(`/api/v1/users/${id}/bathingspots`).send({
+      isPublic: true,
       name: 'Sweetwater',
+      region: 'berlin',
     }).set('Accept', 'application/json');
-    const spotsBefore = await spotRepo.find();
-    const spotNumBefore = spotsBefore.length;
+    // console.log('creation', resCreation.body);
+    const spots = await request(app).get(`/api/v1/users/${id}/bathingspots`);
+    const pubSpots = spots.body.data.filter(spot => spot.isPublic === true);
     const res = await request(app).delete(
-      `/api/v1/users/${id}/bathingspots/${resCreation.body.data[0].id}`,
+      `/api/v1/users/${id}/bathingspots/${pubSpots[0].id}`,
     ).send({ force: true });
-    const spotsAfter = await spotRepo.find();
-    const spotNumAfter = spotsAfter.length;
+    console.log('res', res.body);
     expect(res.status).toBe(200);
     expect(res.body.message).toEqual(SUCCESS.successDeleteSpot200);
-    expect(spotNumAfter).toBe(spotNumBefore - 1);
     done();
   });
 });
