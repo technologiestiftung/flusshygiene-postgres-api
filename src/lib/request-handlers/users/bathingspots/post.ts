@@ -14,44 +14,44 @@ import {
   successResponse,
 } from '../../responders';
 import { Bathingspot } from './../../../../orm/entity/Bathingspot';
+import { BathingspotRepository } from './../../../repositories/BathingspotRepository';
 import { getRegionsList } from './../../../repositories/custom-repo-helpers';
+const criteria = [
+  { type: 'object', key: 'apiEndpoints' },
+  { type: 'object', key: 'state' },
+  { type: 'object', key: 'location' },
+  { type: 'number', key: 'latitude' },
+  { type: 'number', key: 'longitude' },
+  { type: 'number', key: 'elevation' },
+  { type: 'string', key: 'name' },
+  { type: 'boolean', key: 'isPublic' },
+];
 
 const createSpotWithValues = async (providedValues: IObject): Promise<Bathingspot> => {
-  try {
+  const spotRepo = getCustomRepository(BathingspotRepository);
   const spot = new Bathingspot();
-  // curently silently fails needs some smarter way to set values on entities
-  if (isObject(providedValues.apiEndpoints)) {
-    spot.apiEndpoints = providedValues.apiEndpoints; // 'json' ]
-  }// 'json' ]
-  if (isObject(providedValues.state)) {
-    spot.state = providedValues.state; // 'json' ]
-  }// 'json' ]
-  if (isObject(providedValues.location)) {
-    spot.location = providedValues.location; // 'json' ]
-  }// 'json' ]
-  if (typeof providedValues.latitude === 'number') {
-    spot.latitude = providedValues.latitude; // 'float8' ]
-  }// 'float8' ]
-  if (typeof providedValues.longitude === 'number') {
-    spot.longitude = providedValues.longitude; // 'float8' ]
-  }// 'float8' ]
-  if (typeof providedValues.elevation === 'number') {
-    spot.elevation = providedValues.elevation; // 'float8' ]
-  }// 'float8' ]
-  if (typeof providedValues.name === 'string') {
-    spot.name = providedValues.name;
-  }
-  if (typeof providedValues.isPublic === 'boolean') {
-    spot.isPublic = providedValues.isPublic;
-  }
+
+  criteria.forEach(criterion => {
+    const value = providedValues[criterion.key];
+    const obj = { [criterion.key]: value };
+    switch (criterion.type) {
+      case 'object':
+        if (isObject(value)) {
+          spotRepo.merge(spot, obj);
+        }
+        break;
+      default:
+        if (typeof value === criterion.type) {
+          spotRepo.merge(spot, obj);
+        }
+        break;
+    }
+  });
   const region = await getAndVerifyRegion(providedValues);
   if (region instanceof Region) {
-      spot.region = region;
+    spot.region = region;
   }
   return spot;
-} catch (error) {
-    throw error;
-}
 };
 
 const getAndVerifyRegion = async (obj: any) => {
@@ -84,7 +84,7 @@ export const addBathingspotToUser: postResponse = async (request, response) => {
         if (spot.isPublic === true &&
           (providedValues.hasOwnProperty('region') === false ||
             list.includes(request.body.region) === false)
-          ) {
+        ) {
           const regionsExample = list;
           responderMissingBodyValue(response, {
             'possible-regions': regionsExample,
