@@ -5,6 +5,7 @@ import { getUserWithRelations } from '../../../repositories/custom-repo-helpers'
 import { RegionRepository } from '../../../repositories/RegionRepository';
 import { HttpCodes, IObject, postResponse, UserRole } from '../../../types-interfaces';
 import { getEntityFields, getMatchingValues, isObject } from '../../../utils';
+import { getPropsValueGeneric } from '../../../utils/get-properties-values';
 import {
   errorResponse,
   responder,
@@ -69,14 +70,22 @@ const getAndVerifyRegion = async (obj: any) => {
     throw error;
   }
 };
+const verifyPublic: (obj: any) => boolean = (obj) => {
+  let res = false;
+  const hasName = getPropsValueGeneric<string>(obj, 'name');
+  const isPublic = getPropsValueGeneric<boolean>(obj, 'isPublic');
+  if (hasName !== undefined && isPublic === true) {
+    res = true;
+  }
+  return res;
+};
 
 export const addBathingspotToUser: postResponse = async (request, response) => {
   try {
     const list = await getRegionsList();
     const filteredPropNames = await getEntityFields('Bathingspot');
     const user = await getUserWithRelations(request.params.userId, ['bathingspots']);
-    if (request.body.hasOwnProperty('name') === true && request.body.hasOwnProperty('isPublic') === true) {
-
+    if (verifyPublic(request.body)) {
       if (user instanceof User && user.role !== UserRole.reporter) {
         const providedValues = getMatchingValues(request.body, filteredPropNames.props);
 
@@ -85,9 +94,8 @@ export const addBathingspotToUser: postResponse = async (request, response) => {
           (providedValues.hasOwnProperty('region') === false ||
             list.includes(request.body.region) === false)
         ) {
-          const regionsExample = list;
           responderMissingBodyValue(response, {
-            'possible-regions': regionsExample,
+            'possible-regions': list,
             'problem': 'when isPublic is set to true you need to set a region',
           });
         } else {
