@@ -6,9 +6,9 @@ if (process.env.NODE_DOCKER_ENV === '1') {
 } else if (process.env.NODE_DOCKER_ENV === '0') {
   process.stdout.write('we are running on your machine\n');
   nodeDevInDocker = false;
- } else {
-   process.stdout.write('"process.env.NODE_DOCKER_ENV" is not defined What is your env?\n');
- }
+} else {
+  process.stdout.write('"process.env.NODE_DOCKER_ENV" is not defined What is your env?\n');
+}
 
 module.exports = {
   cli: {
