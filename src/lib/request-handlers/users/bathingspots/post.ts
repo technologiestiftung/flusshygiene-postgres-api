@@ -1,4 +1,6 @@
 import { getCustomRepository, getManager } from 'typeorm';
+import { Region } from '../../../../orm/entity/Region';
+import { User } from '../../../../orm/entity/User';
 import { getUserWithRelations } from '../../../repositories/custom-repo-helpers';
 import { RegionRepository } from '../../../repositories/RegionRepository';
 import { HttpCodes, IObject, postResponse, UserRole } from '../../../types-interfaces';
@@ -12,8 +14,11 @@ import {
   successResponse,
 } from '../../responders';
 import { Bathingspot } from './../../../../orm/entity/Bathingspot';
+import { getRegionsList } from './../../../repositories/custom-repo-helpers';
 
-const updateFields = (spot: Bathingspot, providedValues: IObject): Bathingspot => {
+const createSpotWithValues = async (providedValues: IObject): Promise<Bathingspot> => {
+  try {
+  const spot = new Bathingspot();
   // curently silently fails needs some smarter way to set values on entities
   if (isObject(providedValues.apiEndpoints)) {
     spot.apiEndpoints = providedValues.apiEndpoints; // 'json' ]
@@ -33,48 +38,53 @@ const updateFields = (spot: Bathingspot, providedValues: IObject): Bathingspot =
   if (typeof providedValues.elevation === 'number') {
     spot.elevation = providedValues.elevation; // 'float8' ]
   }// 'float8' ]
+  if (typeof providedValues.name === 'string') {
+    spot.name = providedValues.name;
+  }
+  if (typeof providedValues.isPublic === 'boolean') {
+    spot.isPublic = providedValues.isPublic;
+  }
+  const region = await getAndVerifyRegion(providedValues);
+  if (region instanceof Region) {
+      spot.region = region;
+  }
   return spot;
+} catch (error) {
+    throw error;
+}
 };
-export const addBathingspotToUser: postResponse = async (request, response) => {
 
+const getAndVerifyRegion = async (obj: any) => {
+  const regionRepo = getCustomRepository(RegionRepository);
   try {
-    const regionRepo = getCustomRepository(RegionRepository);
-    let list = await regionRepo.getNamesList();
-    list = list.map(obj => obj.name);
-    const example = await getEntityFields('Bathingspot');
-    if (request.body.hasOwnProperty('name') !== true || request.body.hasOwnProperty('isPublic') !== true) {
-      responderMissingBodyValue(response, example);
+    let region: Region | undefined;
+    if (obj.hasOwnProperty('region') === true) {
+      region = await regionRepo.findByName(obj.region);
+      if (region instanceof Region) {
+        return region;
+      }
     }
+    return region;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const addBathingspotToUser: postResponse = async (request, response) => {
+  try {
+    const list = await getRegionsList();
+    const filteredPropNames = await getEntityFields('Bathingspot');
     const user = await getUserWithRelations(request.params.userId, ['bathingspots']);
-    if (user === undefined) {
-      responderWrongId(response);
-    } else {
-      if (user.role === UserRole.reporter) {
-        responderNotAuthorized(response);
-      } else {
+    if (request.body.hasOwnProperty('name') === true && request.body.hasOwnProperty('isPublic') === true) {
 
-        let spot = new Bathingspot();
-        const filteredPropNames = await getEntityFields('Bathingspot');
+      if (user instanceof User && user.role !== UserRole.reporter) {
         const providedValues = getMatchingValues(request.body, filteredPropNames.props);
-        if (providedValues.hasOwnProperty('region') === true) {
 
-          const region = await regionRepo.findByName(providedValues.region).catch((err) => {
-            if (process.env.NODE_ENV === 'development') {
-              process.stderr.write(`${JSON.stringify(err)}\n`);
-            }
-          });
-          if (region !== undefined) {
-            spot.region = region;
-          }
-        }
-        spot = updateFields(spot, providedValues);
-        const isPublic: boolean = request.body.isPublic;
-        const name: string = request.body.name;
-        spot.name = name;
-        spot.isPublic = isPublic;
-        if (isPublic === true &&
+        const spot = await createSpotWithValues(providedValues);
+        if (spot.isPublic === true &&
           (providedValues.hasOwnProperty('region') === false ||
-            list.includes(request.body.region) === false)) {
+            list.includes(request.body.region) === false)
+          ) {
           const regionsExample = list;
           responderMissingBodyValue(response, {
             'possible-regions': regionsExample,
@@ -87,7 +97,13 @@ export const addBathingspotToUser: postResponse = async (request, response) => {
             HttpCodes.successCreated,
             successResponse('Bathingspot created', [res]));
         }
+      } else if (user instanceof User && user.role === UserRole.reporter) {
+        responderNotAuthorized(response);
+      } else {
+        responderWrongId(response);
       }
+    } else {
+      responderMissingBodyValue(response, filteredPropNames);
     }
   } catch (e) {
     responder(response, HttpCodes.internalError, errorResponse(e));

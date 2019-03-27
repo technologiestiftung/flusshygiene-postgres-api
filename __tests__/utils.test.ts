@@ -15,7 +15,7 @@ describe('utiltites tests', () => {
 });
 
 describe('generic property getter', () => {
-  test('should get the right types', () => {
+  test('should get the right types or undefined​​', () => {
     const o = {
       arr: [1, 2, 3],
       bool: true,
@@ -34,5 +34,9 @@ describe('generic property getter', () => {
     expect(getPropsValueGeneric<boolean>(o, 'bool')).toBe(true);
     expect(getPropsValueGeneric<number>(o, 'num')).toBe(12);
     expect(getPropsValueGeneric<object>(o, 'obj')).toEqual(o.obj);
+    expect(getPropsValueGeneric(o, 'bool')).toBe(true);
+    expect(getPropsValueGeneric<boolean>(o, 'foo')).toBe(undefined);
+    expect(getPropsValueGeneric(o, 'foo')).toBe(undefined);
+    expect(getPropsValueGeneric<string>(o, 'bool')).toBe(true);
   });
 });

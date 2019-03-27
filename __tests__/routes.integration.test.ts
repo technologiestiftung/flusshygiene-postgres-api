@@ -481,14 +481,22 @@ describe('testing bathingspots get for a specific user', () => {
 // ██╔═══╝ ██║   ██║╚════██║   ██║
 // ██║     ╚██████╔╝███████║   ██║
 // ╚═╝      ╚═════╝ ╚══════╝   ╚═╝
+// ███████╗██████╗  ██████╗ ████████╗
+// ██╔════╝██╔══██╗██╔═══██╗╚══██╔══╝
+// ███████╗██████╔╝██║   ██║   ██║
+// ╚════██║██╔═══╝ ██║   ██║   ██║
+// ███████║██║     ╚██████╔╝   ██║
+// ╚══════╝╚═╝      ╚═════╝    ╚═╝
 
 describe('testing bathingspots post for a specific user', () => {
 
   test('should fail due to missing isPublic values', async (done) => {
     const userRepo = getRepository(User);
-    const users: User[] = await userRepo.find({ relations: ['bathingspots'] });
-    const user: User = users[users.length - 1]; // last created user
+    const users: User[] = await userRepo.find({ relations: ['bathingspots'], where: {role: UserRole.creator}});
+    // console.log(users);
+    const user: User = users[0]; // last created user
     const id = user.id;
+
     const res = await request(app).post(`/api/v1/users/${id}/bathingspots`).send({
       apiEndpoints: {},
       elevation: 1,
