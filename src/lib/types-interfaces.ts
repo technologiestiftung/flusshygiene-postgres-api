@@ -2,7 +2,6 @@ import { Request, Response} from 'express';
 import { Region } from '../orm/entity/Region';
 import { User } from '../orm/entity/User';
 import { Bathingspot } from './../orm/entity/Bathingspot';
-
 export interface IFilteredEntityPropsResoponse {
   props: string[];
 }

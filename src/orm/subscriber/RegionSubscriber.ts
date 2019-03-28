@@ -16,6 +16,9 @@ export class PostSubscriber implements EntitySubscriberInterface<Region> {
     public beforeInsert(event: InsertEvent<Region>) {
         console.log(`BEFORE REGION INSERTED: `, event.entity);
     }
+    public afterInsert(event: InsertEvent<Region>) {
+      console.log(`AFTER REGION INSERTED: `, event.entity);
+    }
 
     public beforeRemove(event: RemoveEvent<Region>) {
 

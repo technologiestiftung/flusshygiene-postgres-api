@@ -10,7 +10,8 @@
     "clean": "rimraf ./dist && mkdirp ./dist",
     "dev:docker": "nodemon --config nodemon.docker.json",
     "build": "tsc -p .",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "majestic": "majestic"
   },
   "repository": {
     "type": "git",
@@ -36,6 +37,7 @@
     "cz-conventional-changelog": "^2.1.0",
     "dotenv": "^7.0.0",
     "jest": "^24.5.0",
+    "majestic": "^1.2.23",
     "mkdirp": "^0.5.1",
     "nodemon": "^1.18.10",
     "rimraf": "^2.6.3",
@@ -46,12 +48,15 @@
     "typescript": "^3.3.4000"
   },
   "dependencies": {
+    "@mapbox/geojsonhint": "^3.0.0",
     "@tsb/flusshygiene-utils": "^0.5.2",
+    "@types/geojson": "^7946.0.7",
     "class-validator": "^0.9.1",
     "cors": "^2.8.5",
     "errorhandler": "^1.5.0",
     "express": "^4.16.4",
     "express-promise-router": "^3.0.3",
+    "geojson": "^0.5.0",
     "helmet": "^3.16.0",
     "morgan": "^1.9.1",
     "pg": "^7.9.0",

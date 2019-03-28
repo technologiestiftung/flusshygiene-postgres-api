@@ -5,7 +5,7 @@ import { getUserWithRelations } from '../../../repositories/custom-repo-helpers'
 import { RegionRepository } from '../../../repositories/RegionRepository';
 import { HttpCodes, IObject, postResponse, UserRole } from '../../../types-interfaces';
 import { getEntityFields, getMatchingValues, isObject } from '../../../utils';
-import { getPropsValueGeneric } from '../../../utils/get-properties-values';
+import { getPropsValueGeneric } from '../../../utils/get-properties-values-generic';
 import {
   errorResponse,
   responder,
