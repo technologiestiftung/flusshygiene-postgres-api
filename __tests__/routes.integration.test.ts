@@ -1,3 +1,4 @@
+import path from 'path';
 import { RegionRepository } from '../src/lib/repositories/RegionRepository';
 import { UserRepository } from '../src/lib/repositories/UserRepository';
 import { HttpCodes } from '../src/lib/types-interfaces';
@@ -29,8 +30,11 @@ import { Region } from '../src/orm/entity/Region';
 import { createProtectedUser } from '../src/orm/fixtures/create-protected-user';
 import { SUGGESTIONS } from '../src/lib/messages/suggestions';
 import { User } from '../src/orm/entity/User';
+import fs from 'fs';
+import util from 'util';
 
 let app: Application;
+const readFileAsync = util.promisify(fs.readFile);
 
 // ███████╗███████╗████████╗██╗   ██╗██████╗
 // ██╔════╝██╔════╝╚══██╔══╝██║   ██║██╔══██╗
@@ -491,6 +495,7 @@ describe('testing bathingspots get for a specific user', () => {
 describe('testing bathingspots post for a specific user', () => {
 
   test('should fail due to missing isPublic values', async (done) => {
+
     const userRepo = getRepository(User);
     const users: User[] = await userRepo.find({ relations: ['bathingspots'], where: {role: UserRole.creator}});
     // console.log(users);
@@ -631,18 +636,23 @@ describe('testing bathingspots update (put) for a specific user', () => {
   });
 
   test('should set all the fields of a bathingspot', async (done) => {
+    const jsonStringPolygon = await readFileAsync(path.resolve(__dirname, './data/polygon.json'), 'utf8');
+    const jsonStringPoint = await readFileAsync(path.resolve(__dirname, './data/point.json'), 'utf8');
+    const polygon = JSON.parse(jsonStringPolygon);
+    const point = JSON.parse(jsonStringPoint);
     const userRepo = getRepository(User);
-    const spotRepo = getRepository(Bathingspot);
+    // const spotRepo = getRepository(Bathingspot);
     const usersAndSpots = await userRepo.find({ relations: ['bathingspots'] });
     const usersWithSpots = usersAndSpots.filter(u => u.bathingspots.length > 0);
     const user = usersWithSpots[0];
     const spot = user.bathingspots[0];
     const res = await request(app).put(`/api/v1/users/${user.id}/bathingspots/${spot.id}`).send({
       apiEndpoints: {},
+      area: polygon,
       elevation: 1,
       isPublic: true,
       latitude: 13,
-      location: {},
+      location: point,
       longitude: 52,
       name: 'Sweetwater',
       state: {},

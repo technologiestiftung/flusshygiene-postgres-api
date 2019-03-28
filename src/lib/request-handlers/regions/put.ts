@@ -1,34 +1,9 @@
 import { getRepository } from 'typeorm';
 import { Region } from '../../../orm/entity/Region';
 import { SUCCESS } from '../../messages';
-import { HttpCodes, IObject, putResponse } from '../../types-interfaces';
-import { isObject } from '../../utils';
+import { HttpCodes,  putResponse } from '../../types-interfaces';
 import { errorResponse, responder, responderWrongId, successResponse } from '../responders';
-
-const criteria = [
-  {type: 'string', key: 'name'},
-  {type: 'string', key: 'displayName'},
-  {type: 'object', key: 'area'},
-];
-const createMergeObj: (obj: any) => IObject = (obj) => {
-  const res: IObject = {};
-
-  criteria.forEach((criterion) => {
-    const value = obj[criterion.key];
-    switch (criterion.type) {
-      case 'object':
-      if (isObject(value)) {
-        res.area = value.geometry;
-      }
-      break;
-      default:
-      if (typeof value === criterion.type) {
-        res[criterion.key] = value;
-      }
-    }
-  });
-  return res;
-};
+import { createMergeObj } from './regions-helper';
 
 export const putRegion: putResponse = async (request, response) => {
   try {

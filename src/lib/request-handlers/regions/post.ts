@@ -6,8 +6,9 @@ import { Region } from '../../../orm/entity/Region';
 import { SUCCESS } from '../../messages';
 import { HttpCodes, postResponse } from '../../types-interfaces';
 import { getEntityFields } from '../../utils';
-import { getGEOJsonGeometry } from '../../utils/geojson/get-geojson-geometry';
+// import { getGEOJsonGeometry } from '../../utils/geojson/get-geojson-geometry';
 import { errorResponse, responder, responderMissingBodyValue, successResponse } from '../responders';
+import { createMergeObj } from './regions-helper';
 
 export const postRegion: postResponse = async (request, response) => {
   try {
@@ -28,12 +29,14 @@ export const postRegion: postResponse = async (request, response) => {
       //       region.area = request.body.area.geometry;
       //     }
       //   }
-      const geom = getGEOJsonGeometry(request.body, 'area');
-      if (geom !== undefined) {
-        region.area = geom;
-      }
-      region.name = request.body.name;
-      region.displayName = request.body.displayName;
+      // const geom = getGEOJsonGeometry(request.body, 'area');
+      // if (geom !== undefined) {
+      //   region.area = geom;
+      // }
+      // region.name = request.body.name;
+      // region.displayName = request.body.displayName;
+      const obj = createMergeObj(request.body);
+      regionRepo.merge(region, obj);
       const res = await regionRepo.save(region);
       responder(response, HttpCodes.successCreated, successResponse(SUCCESS.success201, [res]));
     }
