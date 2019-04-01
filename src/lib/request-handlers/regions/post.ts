@@ -6,9 +6,9 @@ import { Region } from '../../../orm/entity/Region';
 import { SUCCESS } from '../../messages';
 import { HttpCodes, postResponse } from '../../types-interfaces';
 import { getEntityFields } from '../../utils';
+import { createMergeObj } from '../../utils/regions-helper';
 // import { getGEOJsonGeometry } from '../../utils/geojson/get-geojson-geometry';
 import { errorResponse, responder, responderMissingBodyValue, successResponse } from '../responders';
-import { createMergeObj } from './regions-helper';
 
 export const postRegion: postResponse = async (request, response) => {
   try {

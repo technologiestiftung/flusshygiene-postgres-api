@@ -1,5 +1,5 @@
-import { IObject } from '../../types-interfaces';
-import { isObject } from '../../utils';
+import { isObject } from '.';
+import { IObject } from '../types-interfaces';
 
 const criteria = [
   {type: 'string', key: 'name'},
