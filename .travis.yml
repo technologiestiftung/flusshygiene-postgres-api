@@ -1,5 +1,14 @@
+# https://docs.travis-ci.com/user/database-setup/#postgresql
+sudo: true
 services:
   - postgresql
+addons:
+  postgresql: "11"
+  apt:
+    packages:
+    - postgresql-11
+    - postgresql-client-11
+    - postgresql-11-postgis-2.5
 
 language: node_js
 node_js:
@@ -9,6 +18,7 @@ node_js:
   # - psql -c 'create database postgres;' -U postgres
 before_script:
   # running code climate
+  - psql -U postgres -c "create extension postgis"
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
