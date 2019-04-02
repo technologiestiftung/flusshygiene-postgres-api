@@ -10,7 +10,7 @@ import { BathingspotRawModelData } from '../../src/orm/entity/BathingspotRawMode
 import { Questionaire } from '../../src/orm/entity/Questionaire';
 import { Region } from '../../src/orm/entity/Region';
 import { User } from '../../src/orm/entity/User';
-import { createProtectedUser, createReporterUser } from '../../src/orm/fixtures/create-protected-user';
+import {createUser } from '../../src/orm/fixtures/create-test-user';
 
 export async function closeTestingConnections(connections: Connection[]) {
   return Promise.all(connections.map(
@@ -38,8 +38,7 @@ export async function createTestingConnections() {
     type: 'postgres',
     username: 'postgres',
   });
-  await connection.manager.save(createProtectedUser());
-  await connection.manager.save(createReporterUser());
+  const us = await connection.manager.save(createUser());
   const user = new User();
   user.firstName = 'James';
   user.lastName = 'Bond';

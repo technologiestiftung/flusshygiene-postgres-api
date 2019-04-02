@@ -110,8 +110,6 @@ describe('testing delete users', () => {
     relations: ['bathingspots'],
     where: {protected: false},
   });
-
-  // console.log(usersWithRelations);
   const res = await request(app).delete(
     `/api/v1/users/${usersWithRelations[0].id}`);
 

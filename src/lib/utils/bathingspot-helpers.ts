@@ -10,6 +10,7 @@ import { isObject } from './is-object';
 
 import { Region } from '../../orm/entity/Region';
 
+import { resolve } from 'url';
 import { RegionRepository } from '../repositories/RegionRepository';
 
 const criteria = [
@@ -31,6 +32,7 @@ const geomCriteria = [
 ];
 
 const allowedFeatureTypes = ['Point', 'Polygon'];
+
 const checkGeom: (obj: any) => boolean = (obj) => {
   const res: boolean[] = [];
   geomCriteria.forEach(criterion => {
@@ -48,8 +50,20 @@ const checkGeom: (obj: any) => boolean = (obj) => {
   return res.includes(false) || res.length > 2 ? false : true;
 };
 
-export const createSpotWithValues = async (providedValues: IObject): Promise<Bathingspot> => {
+const setupGeom: (obj: {value: any, criterion: any}) => any = (obj) => {
+  let res: object|undefined;
 
+  if (isObject(obj.value) === true) {
+    if (obj.value.hasOwnProperty('geometry') === true) {
+      if (checkGeom(obj.value.geometry) === true) {
+          const geom = { [obj.criterion.key]: obj.value.geometry };
+          res = geom;
+        }
+      }
+    }
+  return res;
+};
+export const createSpotWithValues = async (providedValues: IObject): Promise<Bathingspot> => {
   const spotRepo = getCustomRepository(BathingspotRepository);
   const spot = new Bathingspot();
   criteria.forEach(criterion => {
@@ -62,14 +76,18 @@ export const createSpotWithValues = async (providedValues: IObject): Promise<Bat
       }
       break;
       case 'geometry':
-      if (isObject(value) === true) {
-        if (value.hasOwnProperty('geometry') === true) {
-          if (checkGeom(value.geometry) === true) {
-              const geom = { [criterion.key]: value.geometry };
-              spotRepo.merge(spot, geom);
-            }
-          }
-        }
+      const geom = setupGeom({value, criterion});
+      if (geom !== undefined) {
+        spotRepo.merge(spot, geom);
+      }
+      // if (isObject(value) === true) {
+      //   if (value.hasOwnProperty('geometry') === true) {
+      //     if (checkGeom(value.geometry) === true) {
+      //         const geom = { [criterion.key]: value.geometry };
+      //         spotRepo.merge(spot, geom);
+      //       }
+      //     }
+      //   }
       break;
       default:
         if (typeof value === criterion.type) {

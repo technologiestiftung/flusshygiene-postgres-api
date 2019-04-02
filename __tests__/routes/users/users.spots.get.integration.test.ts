@@ -72,11 +72,14 @@ describe('testing users/[:userId]/bathingspots/[:spotId]', () => {
   // ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚══════╝
 
   test('should return at least an empty array of bathingspots', async (done) => {
-    const res = await request(app).get('/api/v1/users/2/bathingspots');
+    const userRepo = getCustomRepository(UserRepository);
+    const users = await userRepo.find();
+    const res = await request(app).get(`/api/v1/users/${users[0].id}/bathingspots`);
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body.data)).toBe(true);
     done();
   });
+
   test('user should have a bathingspot', async (done) => {
     const userWithSpotsCount = await connections[0].manager
     .createQueryBuilder(User, 'user').loadRelationCountAndMap('user.bathingspotCount', 'user.bathingspots').getMany();
