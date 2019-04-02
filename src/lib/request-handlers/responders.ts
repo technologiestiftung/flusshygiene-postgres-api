@@ -1,7 +1,4 @@
-import { Response } from 'express';
-import { type } from 'os';
-import { Region } from '../../orm/entity/Region';
-import { User } from '../../orm/entity/User';
+
 import { ERRORS, SUCCESS, SUGGESTIONS } from '../messages';
 import {
   ErrorResponder,
@@ -15,7 +12,6 @@ import {
   SuccessResponder,
   SuggestionResponder,
 } from '../types-interfaces';
-import { Bathingspot } from './../../orm/entity/Bathingspot';
 import { ResponderWrongIdOrSuccess } from './../types-interfaces';
 
 /**
@@ -53,7 +49,7 @@ export const userNotAuthorizedErrorResponse = () => buildPayload(
 export const errorResponse: ErrorResponder = (error) => {
   if (process.env.NODE_ENV === 'development') {
     throw error;
-  } else if (process.env.NODE_ENV === 'test') {
+  } else if (process.env.NODE_ENV === 'test' && process.env.TRAVIS === undefined) {
     console.error(error.name);
     console.error(error.message);
     console.error(error.stack);
