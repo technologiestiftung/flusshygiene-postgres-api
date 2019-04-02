@@ -1,5 +1,5 @@
 # https://docs.travis-ci.com/user/database-setup/#postgresql
-dist: trusty
+dist: xenial
 sudo: true
 services:
   - postgresql
@@ -9,8 +9,8 @@ addons:
     packages:
     - postgresql-11
     - postgresql-client-11
-    - postgresql-11-postgis-2.5
-    - postgresql-11-postgis-2.5-scripts
+    - postgresql-11-postgis
+
 
 language: node_js
 node_js:
