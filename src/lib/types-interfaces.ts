@@ -45,7 +45,7 @@ export type Responder = (
 
 export type SuccessResponder = (
   message?: string,
-  data?: User | User[] | Bathingspot[] | Region[],
+  data?: any[],
   ) => IDefaultResponsePayload;
 
 export type SuggestionResponder = (
@@ -72,6 +72,8 @@ export type ResponderMissingBodyValue = (
   response: Response,
   example: object,
   ) => void;
+
+export type ResponderWrongIdOrSuccess = (element: Region | Bathingspot | User | undefined, response: Response) => void;
 
 // User put.ts
 

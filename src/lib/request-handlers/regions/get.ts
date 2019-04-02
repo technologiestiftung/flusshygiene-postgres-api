@@ -2,7 +2,7 @@ import { getCustomRepository, getRepository } from 'typeorm';
 import { Region } from '../../../orm/entity/Region';
 import { SUCCESS } from '../../messages';
 import { getResponse, HttpCodes } from '../../types-interfaces';
-import { errorResponse, responder, responderWrongId, successResponse } from '../responders';
+import { errorResponse, responder, responderWrongIdOrSuccess, successResponse } from '../responders';
 
 import { RegionRepository } from '../../repositories/RegionRepository';
 
@@ -21,11 +21,12 @@ export const getRegionById: getResponse = async (request, response) => {
   try {
     const regionRepo = getCustomRepository(RegionRepository);
     const region = await regionRepo.findOne(request.params.regionId);
-    if (region === undefined) {
-      responderWrongId(response);
-    } else {
-      responder(response, HttpCodes.success, successResponse(SUCCESS.success200, [region]));
-    }
+    responderWrongIdOrSuccess(region, response);
+    // if (region === undefined) {
+    //   responderWrongId(response);
+    // } else {
+    //   responder(response, HttpCodes.success, successResponse(SUCCESS.success200, [region]));
+    // }
   } catch (e) {
     response.status(HttpCodes.internalError).json(errorResponse(e));
 

@@ -1,4 +1,8 @@
-import { ERRORS, SUGGESTIONS } from '../messages';
+import { Response } from 'express';
+import { type } from 'os';
+import { Region } from '../../orm/entity/Region';
+import { User } from '../../orm/entity/User';
+import { ERRORS, SUCCESS, SUGGESTIONS } from '../messages';
 import {
   ErrorResponder,
   HttpCodes,
@@ -11,6 +15,8 @@ import {
   SuccessResponder,
   SuggestionResponder,
 } from '../types-interfaces';
+import { Bathingspot } from './../../orm/entity/Bathingspot';
+import { ResponderWrongIdOrSuccess } from './../types-interfaces';
 
 /**
  * build a payload. This is to reduce repetition
@@ -161,3 +167,16 @@ export const responderNotAuthorized: ResponderMissingOrWrongIdOrAuth = (response
   HttpCodes.badRequestUnAuthorized,
   userNotAuthorizedErrorResponse(),
   );
+
+export const responderWrongIdOrSuccess: ResponderWrongIdOrSuccess = (element, response) => {
+  if (element === undefined) {
+    responderWrongId(response);
+  } else {
+    const res = [element];
+    responder(
+      response,
+      HttpCodes.success,
+      successResponse(SUCCESS.success200, res),
+      );
+  }
+};
