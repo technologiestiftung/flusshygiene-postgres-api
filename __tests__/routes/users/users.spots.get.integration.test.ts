@@ -1,3 +1,4 @@
+import { User } from './../../../src/orm/entity/User';
 jest.useFakeTimers();
 import express, { Application } from 'express';
 import 'reflect-metadata';
@@ -19,7 +20,7 @@ import {
 // ███████║███████╗   ██║   ╚██████╔╝██║
 // ╚══════╝╚══════╝   ╚═╝    ╚═════╝ ╚═╝
 
-describe('testing bathingspots get for a specific user', () => {
+describe('testing users/[:userId]/bathingspots/[:spotId]', () => {
   let app: Application;
   let connections: Connection[];
 
@@ -56,87 +57,94 @@ describe('testing bathingspots get for a specific user', () => {
   app.use(express.urlencoded({ extended: true }));
   app.use('/api/v1/', routes);
 
-// ███████╗███████╗████████╗██╗   ██╗██████╗
-// ██╔════╝██╔════╝╚══██╔══╝██║   ██║██╔══██╗
-// ███████╗█████╗     ██║   ██║   ██║██████╔╝
-// ╚════██║██╔══╝     ██║   ██║   ██║██╔═══╝
-// ███████║███████╗   ██║   ╚██████╔╝██║
-// ╚══════╝╚══════╝   ╚═╝    ╚═════╝ ╚═╝
+  // ███████╗███████╗████████╗██╗   ██╗██████╗
+  // ██╔════╝██╔════╝╚══██╔══╝██║   ██║██╔══██╗
+  // ███████╗█████╗     ██║   ██║   ██║██████╔╝
+  // ╚════██║██╔══╝     ██║   ██║   ██║██╔═══╝
+  // ███████║███████╗   ██║   ╚██████╔╝██║
+  // ╚══════╝╚══════╝   ╚═╝    ╚═════╝ ╚═╝
 
-// ██████╗  ██████╗ ███╗   ██╗███████╗
-// ██╔══██╗██╔═══██╗████╗  ██║██╔════╝
-// ██║  ██║██║   ██║██╔██╗ ██║█████╗
-// ██║  ██║██║   ██║██║╚██╗██║██╔══╝
-// ██████╔╝╚██████╔╝██║ ╚████║███████╗
-// ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚══════╝
+  // ██████╗  ██████╗ ███╗   ██╗███████╗
+  // ██╔══██╗██╔═══██╗████╗  ██║██╔════╝
+  // ██║  ██║██║   ██║██╔██╗ ██║█████╗
+  // ██║  ██║██║   ██║██║╚██╗██║██╔══╝
+  // ██████╔╝╚██████╔╝██║ ╚████║███████╗
+  // ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚══════╝
 
   test('should return at least an empty array of bathingspots', async (done) => {
-  const res = await request(app).get('/api/v1/users/2/bathingspots');
-  expect(res.status).toBe(200);
-  expect(Array.isArray(res.body.data)).toBe(true);
-  done();
-});
+    const res = await request(app).get('/api/v1/users/2/bathingspots');
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body.data)).toBe(true);
+    done();
+  });
   test('user should have a bathingspot', async (done) => {
-  const res = await request(app).get('/api/v1/users/2/bathingspots');
-  expect(res.status).toBe(200);
-  expect(res.body.data.length >= 1).toBe(true);
-  done();
-});
+    const userWithSpotsCount = await connections[0].manager
+    .createQueryBuilder(User, 'user').loadRelationCountAndMap('user.bathingspotCount', 'user.bathingspots').getMany();
+    interface IUserwithSpotCount extends User {
+      bathingspotCount: number;
+    }
+    const usersWithSpots = userWithSpotsCount.filter((u: IUserwithSpotCount) => u.bathingspotCount > 0);
+
+    const res = await request(app).get(`/api/v1/users/${usersWithSpots[0].id}/bathingspots`);
+    expect(res.status).toBe(200);
+    expect(res.body.data.length >= 1).toBe(true);
+    done();
+  });
   test('user should have no bathingspot in region', async (done) => {
-  const res = await request(app).get(`/api/v1/users/2/bathingspots/${DefaultRegions.schleswigholstein}`);
-  expect(res.status).toBe(200);
-  expect(res.body.data.length).toBe(0);
-  done();
-});
+    const res = await request(app).get(`/api/v1/users/2/bathingspots/${DefaultRegions.schleswigholstein}`);
+    expect(res.status).toBe(200);
+    expect(res.body.data.length).toBe(0);
+    done();
+  });
   test.skip('user should have a bathingspot with id', async (done) => {
-  const userRepo = getCustomRepository(UserRepository);
-  const usersWithRelations = await userRepo.find({relations: ['bathingspots']});
+    const userRepo = getCustomRepository(UserRepository);
+    const usersWithRelations = await userRepo.find({ relations: ['bathingspots'] });
 
-  // console.log(usersWithRelations);
-  const res = await request(app).get(
-    `/api/v1/users/${usersWithRelations[0].id}/bathingspots/${usersWithRelations[0].bathingspots[0].id}`);
-  expect(res.status).toBe(200);
-  // console.log(res.body);
-  expect(res.body.data.length > 0).toBe(true);
-  done();
-});
+    // console.log(usersWithRelations);
+    const res = await request(app).get(
+      `/api/v1/users/${usersWithRelations[0].id}/bathingspots/${usersWithRelations[0].bathingspots[0].id}`);
+    expect(res.status).toBe(200);
+    // console.log(res.body);
+    expect(res.body.data.length > 0).toBe(true);
+    done();
+  });
   test('region should not exist', async (done) => {
-  const userRepo = getCustomRepository(UserRepository);
-  const usersWithRelations = await userRepo.find({relations: ['bathingspots']});
+    const userRepo = getCustomRepository(UserRepository);
+    const usersWithRelations = await userRepo.find({ relations: ['bathingspots'] });
 
-  // console.log(usersWithRelations);
-  const res = await request(app).get(
-    `/api/v1/users/${usersWithRelations[0].id}/bathingspots/foo`);
-  expect(res.status).toBe(404);
-  // console.log(res.body);
-  expect(res.body.success).toBe(false);
-  done();
-});
+    // console.log(usersWithRelations);
+    const res = await request(app).get(
+      `/api/v1/users/${usersWithRelations[0].id}/bathingspots/foo`);
+    expect(res.status).toBe(404);
+    // console.log(res.body);
+    expect(res.body.success).toBe(false);
+    done();
+  });
   test('user should have no bathingspot in region', async (done) => {
-  const userRepo = getCustomRepository(UserRepository);
-  const usersWithRelations = await userRepo.find({relations: ['bathingspots']});
+    const userRepo = getCustomRepository(UserRepository);
+    const usersWithRelations = await userRepo.find({ relations: ['bathingspots'] });
 
-  // console.log(usersWithRelations);
-  const res = await request(app).get(
-    `/api/v1/users/${usersWithRelations[0].id}/bathingspots/${DefaultRegions.schleswigholstein}`);
-  expect(res.status).toBe(200);
-  // console.log(res.body);
-  expect(res.body.success).toBe(true);
-  expect(res.body.data.length).toBe(0);
-  done();
-});
+    // console.log(usersWithRelations);
+    const res = await request(app).get(
+      `/api/v1/users/${usersWithRelations[0].id}/bathingspots/${DefaultRegions.schleswigholstein}`);
+    expect(res.status).toBe(200);
+    // console.log(res.body);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data.length).toBe(0);
+    done();
+  });
   test('should fail due to wrong user id', async (done) => {
-  const res = await request(app).get(`/api/v1/users/${10000}/bathingspots`);
-  expect(res.status).toBe(404);
-  expect(res.body.data).toBeUndefined();
-  expect(res.body.success).toBe(false);
-  done();
-});
+    const res = await request(app).get(`/api/v1/users/${10000}/bathingspots`);
+    expect(res.status).toBe(404);
+    expect(res.body.data).toBeUndefined();
+    expect(res.body.success).toBe(false);
+    done();
+  });
   test('should fail due to wrong bathingspot id', async (done) => {
-  const res = await request(app).get(`/api/v1/users/${2}/bathingspots/${10000}`);
-  expect(res.status).toBe(404);
-  expect(res.body.data).toBeUndefined();
-  expect(res.body.success).toBe(false);
-  done();
-});
+    const res = await request(app).get(`/api/v1/users/${2}/bathingspots/${10000}`);
+    expect(res.status).toBe(404);
+    expect(res.body.data).toBeUndefined();
+    expect(res.body.success).toBe(false);
+    done();
+  });
 });

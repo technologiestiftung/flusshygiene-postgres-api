@@ -20,7 +20,7 @@ import {
 // ███████║███████╗   ██║   ╚██████╔╝██║
 // ╚══════╝╚══════╝   ╚═╝    ╚═════╝ ╚═╝
 
-describe('misc functions that need a DB', () => {
+describe('testing users/[:userId]/bathingspots/[:spotId] delete', () => {
   let app: Application;
   let connections: Connection[];
 
@@ -74,8 +74,10 @@ describe('misc functions that need a DB', () => {
   test('should fail due wrong spot id', async (done) => {
   const userRepo = getRepository(User);
 
-  const usersWithSpots = await userRepo.find({ relations: ['bathingspots'] });
+  const usersWithSpotsRelation = await userRepo.find({ relations: ['bathingspots'] });
+  const usersWithSpots = usersWithSpotsRelation.filter(u => u.bathingspots.length > 0);
   const user = usersWithSpots[0];
+  console.log(usersWithSpots);
   // const publicSpots = user.bathingspots.filter(spot => spot.isPublic === true);
   // const spot = publicSpots[0];
   const res = await request(app).delete(
@@ -91,7 +93,8 @@ describe('misc functions that need a DB', () => {
 
   test('should fail due to missing force', async (done) => {
   const userRepo = getRepository(User);
-  const usersWithSpots = await userRepo.find({ relations: ['bathingspots'] });
+  const usersWithSpotsRelation = await userRepo.find({ relations: ['bathingspots'], where: {protected: false} });
+  const usersWithSpots = usersWithSpotsRelation.filter(u => u.bathingspots.length > 0);
   const user = usersWithSpots[0];
   const publicSpots = user.bathingspots.filter(_spot => _spot.isPublic === true);
   const spot = publicSpots[0];

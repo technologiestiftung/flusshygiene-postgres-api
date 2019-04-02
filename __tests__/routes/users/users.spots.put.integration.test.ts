@@ -108,7 +108,7 @@ describe('testing users/bathingspot PUT', () => {
   done();
 });
 
-  test.only('should set all the fields of a bathingspot', async (done) => {
+  test('should set all the fields of a bathingspot', async (done) => {
   const jsonStringPolygon = await readFileAsync(path.resolve(__dirname, '../../data/polygon.json'), 'utf8');
   const jsonStringPoint = await readFileAsync(path.resolve(__dirname, '../../data/point.json'), 'utf8');
   const polygon = JSON.parse(jsonStringPolygon);
@@ -131,7 +131,7 @@ describe('testing users/bathingspot PUT', () => {
     state: {},
   }).set('Accept', 'application/json');
 
-  console.log(res.body);
+  // console.log(res.body);
 
   expect(res.status).toBe(201);
   expect(res.body.success).toBe(true);

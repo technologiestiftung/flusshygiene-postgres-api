@@ -68,8 +68,6 @@ export const updateBathingspotOfUser: putResponse = async (request, response) =>
             throw new Error('region is undefined');
           }
         }
-        console.log('in users/spot/put', request.params);
-        console.log('in users/spot/put', request.body);
         const tmpSpot = await createSpotWithValues(providedValues);
         spotRepo.merge(spotFromUser, tmpSpot);
         const res = await spotRepo.save(spotFromUser);

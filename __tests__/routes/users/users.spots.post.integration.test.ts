@@ -138,14 +138,16 @@ describe('testing bathingspots post for a specific user', () => {
   const userRepo = getRepository(User);
   const users: User[] = await userRepo.find({ where: {role: UserRole.creator}, relations: ['bathingspots'] });
   const user: User = users[users.length - 1]; // last created user
+  // console.log(users);
   const id = user.id;
   const spots = user.bathingspots;
+
   const res = await request(app).post(`/api/v1/users/${id}/bathingspots`).send({
     apiEndpoints: {},
     elevation: 1,
     isPublic: true,
     latitude: 13,
-    location: {},
+    location: {}, // <-- will produce an error
     longitude: 52,
     name: 'Sweetwater',
     region: DefaultRegions.berlin,

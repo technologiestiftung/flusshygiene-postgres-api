@@ -1,10 +1,12 @@
+import { UserRole } from './../../../src/lib/types-interfaces';
 jest.useFakeTimers();
 import express, { Application } from 'express';
 import 'reflect-metadata';
 import request from 'supertest';
-import { Connection, getCustomRepository } from 'typeorm';
+import { Connection, getCustomRepository, getRepository } from 'typeorm';
 import { UserRepository } from '../../../src/lib/repositories/UserRepository';
 import routes from '../../../src/lib/routes';
+import { User } from '../../../src/orm/entity/User';
 import {
   closeTestingConnections,
   createTestingConnections,
@@ -69,28 +71,33 @@ describe('testing delete users', () => {
 // ██████╔╝╚██████╔╝██║ ╚████║███████╗
 // ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚══════╝
 
-  test('delete users', async (done) => {
+  test('should delete a users', async (done) => {
   // process.env.NODE_ENV = 'development';
-  const usersres = await request(app).get('/api/v1/users');
-  expect.assertions(2);
-  // for(let i = usersres.body.length -1; i >=0;i--){
-  const id = usersres.body.data[usersres.body.data.length - 1].id;
+  // const usersres = await request(app).get('/api/v1/users');
+  const userRepo = getRepository(User);
+  await userRepo.insert({
+    email: 'foo@bah.com',
+    firstName: 'Jimmy',
+    lastName: 'Stash',
+    protected: false,
+    role: UserRole.creator,
+ });
+  const user = await userRepo.findOne({where: {firstName: 'Jimmy'}});
+  // console.log(users);
+  const id = user.id;
 
   const res = await request(app).delete(`/api/v1/users/${id}`);
   expect(res.status).toBe(200);
   expect(res.body.success).toBe(true);
-
   done();
 });
   test('delete user should fail due to missing id', async (done) => {
-  expect.assertions(1);
   const res = await request(app).delete(`/api/v1/users`);
 
   expect(res.status).toBe(404);
   done();
 });
   test('delete user should fail due to wrong id', async (done) => {
-  expect.assertions(1);
   const res = await request(app).delete(`/api/v1/users/${10000000}`);
   expect(res.status).toBe(404);
   done();

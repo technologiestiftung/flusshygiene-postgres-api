@@ -1,11 +1,8 @@
-import { getCustomRepository, getManager } from 'typeorm';
-import { Region } from '../../../../orm/entity/Region';
+import {  getManager } from 'typeorm';
 import { User } from '../../../../orm/entity/User';
 import { getUserWithRelations } from '../../../repositories/custom-repo-helpers';
-import { RegionRepository } from '../../../repositories/RegionRepository';
-import { HttpCodes, IObject, postResponse, UserRole } from '../../../types-interfaces';
-import { getEntityFields, getMatchingValues, isObject } from '../../../utils';
-// import { getPropsValueGeneric } from '../../../utils/get-properties-values-generic';
+import { HttpCodes, postResponse, UserRole } from '../../../types-interfaces';
+import { getEntityFields, getMatchingValues } from '../../../utils';
 import {
   errorResponse,
   responder,
@@ -33,14 +30,12 @@ export const addBathingspotToUser: postResponse = async (request, response) => {
     const filteredPropNames = await getEntityFields('Bathingspot');
     const user = await getUserWithRelations(request.params.userId, ['bathingspots']);
 
-    // if (verifyPublic(request.body)) {
     if (user instanceof User && user.role !== UserRole.reporter) {
-      const providedValues = getMatchingValues(request.body, filteredPropNames.props);
-
-      const spot = await createSpotWithValues(providedValues);
-      if (spot.isPublic === true &&
+        const providedValues = getMatchingValues(request.body, filteredPropNames.props);
+        const spot = await createSpotWithValues(providedValues);
+        if ((spot.isPublic === true &&
         (providedValues.hasOwnProperty('region') === false ||
-          list.includes(request.body.region) === false)
+          list.includes(request.body.region) === false) || request.body.hasOwnProperty('isPublic') === false)
       ) {
         responderMissingBodyValue(response, {
           'possible-regions': list,
@@ -48,10 +43,15 @@ export const addBathingspotToUser: postResponse = async (request, response) => {
         });
       } else {
         user.bathingspots.push(spot);
-        const res = await getManager().save(user);
+        try {
+          await getManager().save(user);
+        } catch (err) {
+          console.log('this is the error');
+          console.log(err);
+        }
         responder(response,
           HttpCodes.successCreated,
-          successResponse('Bathingspot created', [res]));
+          successResponse('Bathingspot created', []));
       }
     } else if (user instanceof User && user.role === UserRole.reporter) {
       responderNotAuthorized(response);
