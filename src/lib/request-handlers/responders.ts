@@ -47,9 +47,10 @@ export const userNotAuthorizedErrorResponse = () => buildPayload(
 export const errorResponse: ErrorResponder = (error) => {
   if (process.env.NODE_ENV === 'development') {
     throw error;
-  } else if (process.env.NODE_ENV === 'test') {
-    console.log(error);
   }
+  // else if (process.env.NODE_ENV === 'test') {
+  //   console.error(error);
+  // }
   const msg = process.env.NODE_ENV === 'development' ? error.message : 'internal server error';
   return buildPayload(false, msg, undefined);
 };

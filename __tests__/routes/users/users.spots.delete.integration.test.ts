@@ -77,9 +77,6 @@ describe('testing users/[:userId]/bathingspots/[:spotId] delete', () => {
   const usersWithSpotsRelation = await userRepo.find({ relations: ['bathingspots'] });
   const usersWithSpots = usersWithSpotsRelation.filter(u => u.bathingspots.length > 0);
   const user = usersWithSpots[0];
-  console.log(usersWithSpots);
-  // const publicSpots = user.bathingspots.filter(spot => spot.isPublic === true);
-  // const spot = publicSpots[0];
   const res = await request(app).delete(
     `/api/v1/users/${user.id}/bathingspots/${100000}`).send({}).set('Accept', 'application/json');
 
