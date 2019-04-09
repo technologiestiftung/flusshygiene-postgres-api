@@ -123,3 +123,13 @@ export enum DefaultRegions {
   schleswigholstein = 'schleswigholstein',
   niedersachsen = 'niedersachsen',
 }
+
+/**
+ * Needs translation
+ */
+export enum PredictionValue {
+  gut = 'gut',
+  ausgezeichnet = 'ausgezeichnet',
+  mangelhaft = 'mangelhaft',
+  ausreichend = 'ausreichend',
+}

@@ -3,11 +3,14 @@ import errorHandler from 'errorhandler';
 import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import { createConnection, getRepository } from 'typeorm';
+import { createConnection, getCustomRepository, getRepository } from 'typeorm';
 import { Region } from '../orm/entity/Region';
 import { User } from '../orm/entity/User';
 import { createUser } from '../orm/fixtures/create-test-user';
+import { createPredictions, createSpots } from '../orm/fixtures/import-existing-data';
 import { Bathingspot } from './../orm/entity/Bathingspot';
+import { createMeasurements } from './../orm/fixtures/import-existing-data';
+import { BathingspotRepository } from './repositories/BathingspotRepository';
 import routes from './routes';
 import { DefaultRegions, UserRole } from './types-interfaces';
 
@@ -30,7 +33,7 @@ app.use(express.urlencoded({ extended: true }));
     // process.stdout.write(db.name);
     let databaseEmpty: boolean = true;
     const users = await getRepository(User).find();
-    process.stdout.write(`${users.length}\n`);
+    // process.stdout.write(`${users.length}\n`);
     if (users.length !== 0) {
       databaseEmpty = false;
     }
@@ -55,7 +58,7 @@ app.use(express.urlencoded({ extended: true }));
       userReporter.lastName = 'Kolumna';
       userReporter.role = UserRole.reporter;
       userReporter.email = 'karla@bluemchen.dev';
-
+      const spots = await createSpots();
       const spot = new Bathingspot();
       const regions: Region[] = [];
       for (const key in DefaultRegions) {
@@ -68,16 +71,60 @@ app.use(express.urlencoded({ extended: true }));
       }
       // const region = new Region();
       // region.name = Regions.berlinbrandenburg;
+      spots.forEach(s => {
+        s.region = regions[1];
+      });
       spot.region = regions[0];
       spot.isPublic = true;
       spot.name = 'billabong';
       userCreator.regions = [regions[0], regions[1]];
       userReporter.regions = [regions[0]];
-      userCreator.bathingspots = [spot];
+      userCreator.bathingspots = [spot, ...spots];
+
       await connection.manager.save(regions);
       await connection.manager.save(spot);
+      await connection.manager.save(spots);
       await connection.manager.save([userCreator, userReporter]);
+      // now update all the spots with createMeasurements
+      const measurements = await createMeasurements();
+      const spotRepo = getCustomRepository(BathingspotRepository);
+      for (const m of measurements) {
 
+        await connection.manager.save(m);
+
+        const bspot = await spotRepo.findOne(
+          { where: { detailId: m.detailId } });
+        // console.log(bspot);
+        if (bspot !== undefined) {
+          if (bspot.measurements === undefined) {
+            bspot.measurements = [m];
+
+          } else {
+            bspot.measurements.push(m);
+          }
+          await connection.manager.save(bspot);
+        }
+      }
+
+      // now import the predictions
+      const predictions = await createPredictions();
+      for (const p of predictions) {
+        await connection.manager.save(p);
+
+        const bspot = await spotRepo.findOne({
+          where: {
+            oldId: p.oldId,
+          },
+        });
+        if (bspot !== undefined) {
+          if (bspot.predictions === undefined) {
+            bspot.predictions = [p];
+          } else {
+            bspot.predictions.push(p);
+          }
+          await connection.manager.save(bspot);
+        }
+      }
     }
     if (databaseEmpty === true && process.env.NODE_ENV === 'production') {
       // uh oh we are in production
