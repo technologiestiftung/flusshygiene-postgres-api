@@ -3,16 +3,17 @@ import errorHandler from 'errorhandler';
 import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import ora from 'ora';
 import { createConnection, getCustomRepository, getRepository } from 'typeorm';
 import { Region } from '../orm/entity/Region';
 import { User } from '../orm/entity/User';
 import { createUser } from '../orm/fixtures/create-test-user';
 import { createPredictions, createSpots } from '../orm/fixtures/import-existing-data';
-import { Bathingspot } from './../orm/entity/Bathingspot';
 import { createMeasurements } from './../orm/fixtures/import-existing-data';
 import { BathingspotRepository } from './repositories/BathingspotRepository';
 import routes from './routes';
-import { DefaultRegions, UserRole } from './types-interfaces';
+import { DefaultRegions, IAddEntitiesToSpotOptions, UserRole } from './types-interfaces';
+import { addEntitiesToSpot } from './utils/bathingspot-helpers';
 
 const app = express();
 // let connection: Connection;
@@ -40,27 +41,46 @@ app.use(express.urlencoded({ extended: true }));
 
     // process.stdout.write(`Users ${JSON.stringify(users)}\n`);
     if (databaseEmpty === true && process.env.NODE_ENV === 'development') {
+      const spinner = ora('populating database');
       // the first user we create is a special user
       // it is protected and cannot be deletet through the API easily
       // it is for stashing data of deleted users
       // because what should we do when we have to delete a user but maintain the bathingspots?
+      spinner.start();
+      spinner.text = 'Creating default admin user';
       await connection.manager.save(createUser());
+      spinner.succeed();
 
       // generate some default data here
+      spinner.start();
+      spinner.text = 'Creating default creator user';
+
       const userCreator = new User();
       userCreator.firstName = 'James';
       userCreator.lastName = 'Bond';
       userCreator.role = UserRole.creator;
       userCreator.email = 'faker@fake.com';
+      spinner.succeed();
+      spinner.start();
+      spinner.text = 'Creating default reporter user';
 
       const userReporter = new User();
       userReporter.firstName = 'Karla';
       userReporter.lastName = 'Kolumna';
       userReporter.role = UserRole.reporter;
       userReporter.email = 'karla@bluemchen.dev';
+      spinner.succeed();
+
+      spinner.start();
+      spinner.text = 'Importing existing Bathingspots';
       const spots = await createSpots();
-      const spot = new Bathingspot();
+      // const spot = new Bathingspot();
       const regions: Region[] = [];
+      spinner.succeed();
+
+      spinner.start();
+      spinner.text = 'Creating default regions';
+
       for (const key in DefaultRegions) {
         if (DefaultRegions.hasOwnProperty(key)) {
           const r = new Region();
@@ -71,43 +91,87 @@ app.use(express.urlencoded({ extended: true }));
       }
       // const region = new Region();
       // region.name = Regions.berlinbrandenburg;
+      spinner.succeed();
+
+      spinner.start();
+      spinner.text = 'assigning spots to region';
+
       spots.forEach(s => {
         s.region = regions[1];
       });
-      spot.region = regions[0];
-      spot.isPublic = true;
-      spot.name = 'billabong';
+      // spot.region = regions[0];
+      // spot.isPublic = true;
+      // spot.name = 'billabong';
+      spinner.succeed();
+
+      spinner.start();
+      spinner.text = 'Adding spots to default creator user';
       userCreator.regions = [regions[0], regions[1]];
       userReporter.regions = [regions[0]];
-      userCreator.bathingspots = [spot, ...spots];
+      userCreator.bathingspots = [...spots];
+      spinner.succeed();
+
+      spinner.start();
+      spinner.text = 'Saving regions';
 
       await connection.manager.save(regions);
-      await connection.manager.save(spot);
+      // await connection.manager.save(spot);
+      spinner.succeed();
+
+      spinner.start();
+      spinner.text = 'Saving spots';
+
       await connection.manager.save(spots);
+      spinner.succeed();
+
+      spinner.start();
+      spinner.text = 'Saving users';
+
       await connection.manager.save([userCreator, userReporter]);
       // now update all the spots with createMeasurements
+      spinner.succeed();
+
+      spinner.start();
+      spinner.text = 'Importing BathingspotMeasurement';
+
       const measurements = await createMeasurements();
       const spotRepo = getCustomRepository(BathingspotRepository);
-      for (const m of measurements) {
+      const opts: IAddEntitiesToSpotOptions = {
+        connection,
+        entities: measurements,
+      };
+      spinner.succeed();
 
-        await connection.manager.save(m);
+      spinner.start();
+      spinner.text = 'Adding BathingspotMeasurement to Bathingspots';
+      await addEntitiesToSpot(opts);
 
-        const bspot = await spotRepo.findOne(
-          { where: { detailId: m.detailId } });
-        // console.log(bspot);
-        if (bspot !== undefined) {
-          if (bspot.measurements === undefined) {
-            bspot.measurements = [m];
+      // for (const m of measurements) {
+      //   await connection.manager.save(m);
 
-          } else {
-            bspot.measurements.push(m);
-          }
-          await connection.manager.save(bspot);
-        }
-      }
+      //   const bspot = await spotRepo.findOne(
+      //     { where: { detailId: m.detailId } });
+      //   // console.log(bspot);
+      //   if (bspot !== undefined) {
+      //     if (bspot.measurements === undefined) {
+      //       bspot.measurements = [m];
+
+      //     } else {
+      //       bspot.measurements.push(m);
+      //     }
+      //     await connection.manager.save(bspot);
+      //   }
+      // }
 
       // now import the predictions
+      spinner.succeed();
+
+      spinner.start();
+      spinner.text = 'Importing BathingspotPredictions';
       const predictions = await createPredictions();
+      spinner.succeed();
+      spinner.start();
+      spinner.text = 'Adding BathingspotPredictions to Bathingspots';
       for (const p of predictions) {
         await connection.manager.save(p);
 
@@ -125,6 +189,9 @@ app.use(express.urlencoded({ extended: true }));
           await connection.manager.save(bspot);
         }
       }
+      spinner.succeed();
+      spinner.stop();
+      spinner.succeed('Done');
     }
     if (databaseEmpty === true && process.env.NODE_ENV === 'production') {
       // uh oh we are in production
@@ -147,7 +214,7 @@ app.use(express.urlencoded({ extended: true }));
   } catch (error) {
     throw error;
   }
-  console.log('Done with setup');
+  // console.log('Done with setup');
 })();
 
 app.get('/', (request, response) => {
