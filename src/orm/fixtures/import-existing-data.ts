@@ -26,70 +26,71 @@ proj4.defs([
 ]);
 
 const nameMappingPredictions: IObject = {
-  badestellen_id: { type: 'number', mapsTo: 'oldId' },
-  date: { type: 'date', mapsTo: 'date' },
-  prediction: { type: 'string', mapsTo: 'prediction' },
+  badestellen_id: { type: 'number', parseTo: null, mapsTo: 'oldId' },
+  date: { type: 'date', parseTo: null, mapsTo: 'date' },
+  prediction: { type: 'string', parseTo: null, mapsTo: 'prediction' },
 };
 
 const nameMappingMeasurements: IObject = {
-  algen: { type: 'boolean', mapsTo: 'algen' }, /* might also be a number */
-  algen_txt: { type: 'string', mapsTo: 'algenTxt' },
-  badestellen_id: { type: 'number', mapsTo: 'detailId' },
-  bsl: { type: 'string', mapsTo: 'bsl' },
-  cb: { type: 'number', mapsTo: 'cb' },
-  cb_txt: { type: 'string', mapsTo: 'cbTxt' },
-  date: { type: 'date', mapsTo: 'date' },
-  eco: { type: 'number', mapsTo: 'eco' },
-  eco_txt: { type: 'string', mapsTo: 'ecoTxt' },
-  ente: { type: 'number', mapsTo: 'ente' },
-  ente_txt: { type: 'string', mapsTo: 'enteTxt' },
-  id: { type: 'number', mapsTo: 'oldId' },
-  sicht: { type: 'number', mapsTo: 'sicht' },
-  sicht_txt: { type: 'string', mapsTo: 'sichtTxt' },
-  state: { type: 'string', mapsTo: 'state' },
-  temp: { type: 'number', mapsTo: 'temp' },
-  temp_txt: { type: 'string', mapsTo: 'tempTxt' },
-  wasserqualitaet: { type: 'boolean', mapsTo: 'wasserqualitaet' },
-  wasserqualitaet_txt: { type: 'boolean', mapsTo: 'wasserqualitaetTxt' },
+  algen: { type: 'boolean', parseTo: null, mapsTo: 'algen' }, /* might also be a number */
+  algen_txt: { type: 'string', parseTo: null, mapsTo: 'algenTxt' },
+  badestellen_id: { type: 'number', parseTo: null, mapsTo: 'detailId' },
+  bsl: { type: 'string', parseTo: null, mapsTo: 'bsl' },
+  cb: { type: 'number', parseTo: null, mapsTo: 'cb' },
+  cb_txt: { type: 'string', parseTo: null, mapsTo: 'cbTxt' },
+  date: { type: 'date', parseTo: null, mapsTo: 'date' },
+  eco: { type: 'number', parseTo: null, mapsTo: 'eco' },
+  eco_txt: { type: 'string', parseTo: null, mapsTo: 'ecoTxt' },
+  ente: { type: 'number', parseTo: null, mapsTo: 'ente' },
+  ente_txt: { type: 'string', parseTo: null, mapsTo: 'enteTxt' },
+  id: { type: 'number', parseTo: null, mapsTo: 'oldId' },
+  sicht: { type: 'number', parseTo: null, mapsTo: 'sicht' },
+  sicht_txt: { type: 'string', parseTo: null, mapsTo: 'sichtTxt' },
+  state: { type: 'string', parseTo: null, mapsTo: 'state' },
+  temp: { type: 'number', parseTo: null, mapsTo: 'temp' },
+  temp_txt: { type: 'string', parseTo: null, mapsTo: 'tempTxt' },
+  wasserqualitaet: { type: 'boolean', parseTo: null, mapsTo: 'wasserqualitaet' },
+  wasserqualitaet_txt: { type: 'boolean', parseTo: null, mapsTo: 'wasserqualitaetTxt' },
 };
 
 const nameMappingSpots: IObject = {
-  barrierefrei: { type: 'boolean', mapsTo: 'disabilityAccess' },
-  barrierefrei_wc: { type: 'boolean', mapsTo: 'disabilityAccessBathrooms' },
-  barrierefrei_zugang: { type: 'boolean', mapsTo: 'hasDisabilityAccesableEntrence' },
-  bezirk: { type: 'string', mapsTo: 'district' },
-  cyano_moeglich: { type: 'boolean', mapsTo: 'cyanoPossible' },
-  detail_id: { type: 'number', mapsTo: 'detailId' },
-  gesundheitsamt_mail: { type: 'string', mapsTo: 'healthDepartmentMail' },
-  gesundheitsamt_name: { type: 'string', mapsTo: 'healthDepartment' },
-  gesundheitsamt_plz: { type: 'string', mapsTo: 'healthDepartmentPostalCode' },
-  gesundheitsamt_stadt: { type: 'string', mapsTo: 'healthDepartmentCity' },
-  gesundheitsamt_strasse: { type: 'string', mapsTo: 'healthDepartmentStreet' },
-  gesundheitsamt_telefon: { type: 'string', mapsTo: 'healthDepartmentPhone' },
-  gesundheitsamt_zusatz: { type: 'string', mapsTo: 'healthDepartmentAddition' },
-  gewaesser: { type: 'string', mapsTo: 'water' },
-  hundeverbot: { type: 'boolean', mapsTo: 'dogban' },
-  id: { type: 'number', mapsTo: 'oldId' },
-  image: { type: 'string', mapsTo: 'image' },
-  imbiss: { type: 'boolean', mapsTo: 'snack' },
-  latitude: { type: 'number', mapsTo: 'latitude' },
-  letzte_eu_einstufung: { type: 'string', mapsTo: 'lastClassification' },
-  longitude: { type: 'number', mapsTo: 'longitude' },
-  messstelle: { type: 'string', mapsTo: 'measuringPoint' },
-  name: { type: 'string', mapsTo: 'name' },
-  name_lang: { type: 'string', mapsTo: 'nameLong' },
-  name_lang2: { type: 'string', mapsTo: 'nameLong2' },
-  parken: { type: 'boolean', mapsTo: 'parkingSpots' },
-  plz: { type: 'string', mapsTo: 'postalCode' },
-  prediction: { type: 'boolean', mapsTo: 'hasPrediction' },
-  restaurant: { type: 'boolean', mapsTo: 'restaurant' },
-  rettungsschwimmer: { type: 'boolean', mapsTo: 'lifeguard' },
-  stadt: { type: 'string', mapsTo: 'city' },
-  strasse: { type: 'string', mapsTo: 'street' },
-  wasserrettung_durch_hilfsorganisationen_dlrg_oder_asb: { type: 'boolean', mapsTo: 'waterRescueThroughDLRGorASB' },
-  wc: { type: 'boolean', mapsTo: 'bathrooms' },
-  wc_mobil: { type: 'boolean', mapsTo: 'bathroomsMobile' },
-  webseite: { type: 'string', mapsTo: 'website' },
+  barrierefrei: { type: 'boolean', parseTo: null, mapsTo: 'disabilityAccess' },
+  barrierefrei_wc: { type: 'boolean', parseTo: null, mapsTo: 'disabilityAccessBathrooms' },
+  barrierefrei_zugang: { type: 'boolean', parseTo: null, mapsTo: 'hasDisabilityAccesableEntrence' },
+  bezirk: { type: 'string', parseTo: null, mapsTo: 'district' },
+  cyano_moeglich: { type: 'boolean', parseTo: null, mapsTo: 'cyanoPossible' },
+  detail_id: { type: 'number', parseTo: null, mapsTo: 'detailId' },
+  gesundheitsamt_mail: { type: 'string', parseTo: null, mapsTo: 'healthDepartmentMail' },
+  gesundheitsamt_name: { type: 'string', parseTo: null, mapsTo: 'healthDepartment' },
+  gesundheitsamt_plz: { type: 'string', parseTo: null, mapsTo: 'healthDepartmentPostalCode' },
+  gesundheitsamt_stadt: { type: 'string', parseTo: null, mapsTo: 'healthDepartmentCity' },
+  gesundheitsamt_strasse: { type: 'string', parseTo: null, mapsTo: 'healthDepartmentStreet' },
+  gesundheitsamt_telefon: { type: 'string', parseTo: null, mapsTo: 'healthDepartmentPhone' },
+  gesundheitsamt_zusatz: { type: 'string', parseTo: null, mapsTo: 'healthDepartmentAddition' },
+  gewaesser: { type: 'string', parseTo: null, mapsTo: 'water' },
+  hundeverbot: { type: 'boolean', parseTo: null, mapsTo: 'dogban' },
+  id: { type: 'number', parseTo: null, mapsTo: 'oldId' },
+  image: { type: 'string', parseTo: null, mapsTo: 'image' },
+  imbiss: { type: 'boolean', parseTo: null, mapsTo: 'snack' },
+  lat: { type: 'string', parseTo: 'float', mapsTo: 'latitude' },
+  letzte_eu_einstufung: { type: 'string', parseTo: null, mapsTo: 'lastClassification' },
+  lng: { type: 'string', parseTo: 'float', mapsTo: 'longitude' },
+  messstelle: { type: 'string', parseTo: null, mapsTo: 'measuringPoint' },
+  name: { type: 'string', parseTo: null, mapsTo: 'name' },
+  name_lang: { type: 'string', parseTo: null, mapsTo: 'nameLong' },
+  name_lang2: { type: 'string', parseTo: null, mapsTo: 'nameLong2' },
+  parken: { type: 'boolean', parseTo: null, mapsTo: 'parkingSpots' },
+  plz: { type: 'string', parseTo: null, mapsTo: 'postalCode' },
+  prediction: { type: 'boolean', parseTo: null, mapsTo: 'hasPrediction' },
+  restaurant: { type: 'boolean', parseTo: null, mapsTo: 'restaurant' },
+  rettungsschwimmer: { type: 'boolean', parseTo: null, mapsTo: 'lifeguard' },
+  stadt: { type: 'string', parseTo: null, mapsTo: 'city' },
+  strasse: { type: 'string', parseTo: null, mapsTo: 'street' },
+// tslint:disable-next-line: max-line-length
+  wasserrettung_durch_hilfsorganisationen_dlrg_oder_asb: { type: 'boolean', parseTo: null, mapsTo: 'waterRescueThroughDLRGorASB' },
+  wc: { type: 'boolean', parseTo: null, mapsTo: 'bathrooms' },
+  wc_mobil: { type: 'boolean', parseTo: null, mapsTo: 'bathroomsMobile' },
+  webseite: { type: 'string', parseTo: null, mapsTo: 'website' },
 };
 
 interface ILatestfileOptions {
@@ -127,6 +128,7 @@ const mapObjects: (mappingObj: IObject, obj: IObject) => IObject = (mappingObj, 
   const resItem: IObject = {};
   keys.forEach((key: string) => {
     if (obj.hasOwnProperty(key)) {
+
       if (obj[key] !== null && obj[key] !== undefined) {
 
         if (mappingObj.hasOwnProperty(key)) {
@@ -138,17 +140,33 @@ const mapObjects: (mappingObj: IObject, obj: IObject) => IObject = (mappingObj, 
           }
           switch (mappingObj[key].type) {
             case 'string':
-              resItem[mappingObj[key].mapsTo] = obj[key];
+            // this is for edge cases where we need to parse a value
+              if (mappingObj[key].parseTo !== null) {
+                switch (mappingObj[key].parseTo) {
+                  case 'float':
+                resItem[mappingObj[key].mapsTo] = parseFloat(obj[key]);
+                break;
+                }
+              } else {
+                resItem[mappingObj[key].mapsTo] = obj[key];
+
+              }
               break;
             case 'boolean':
               if (typeof obj[key] === 'boolean') {
                 resItem[mappingObj[key].mapsTo] = obj[key];
-              } else if (typeof obj[key] === 'number') {
+              } else if (typeof obj[key] === 'number' || typeof obj[key] === 'string') {
                 switch (obj[key]) {
                   case 1:
                     resItem[mappingObj[key].mapsTo] = true;
                     break;
+                  case '1':
+                    resItem[mappingObj[key].mapsTo] = true;
+                    break;
                   case 0:
+                    resItem[mappingObj[key].mapsTo] = false;
+                    break;
+                  case '0':
                     resItem[mappingObj[key].mapsTo] = false;
                     break;
                 }
@@ -280,13 +298,13 @@ export const createSpots: () => Promise<Bathingspot[]> = async () => {
       //     if (nameMappingSpots.hasOwnProperty(key)) {
       //       switch (nameMappingSpots[key].type) {
       //         case 'string':
-      //           spot[nameMappingSpots[key].mapsTo] = datum[key];
+      //           spot[nameMappingSpots[key].parseTo:null,mapsTo] = datum[key];
       //           break;
       //         case 'boolean':
-      //           spot[nameMappingSpots[key].mapsTo] = datum[key];
+      //           spot[nameMappingSpots[key].parseTo:null,mapsTo] = datum[key];
       //           break;
       //         case 'number':
-      //           spot[nameMappingSpots[key].mapsTo] = datum[key];
+      //           spot[nameMappingSpots[key].parseTo:null,mapsTo] = datum[key];
       //           break;
       //       }
       //     }

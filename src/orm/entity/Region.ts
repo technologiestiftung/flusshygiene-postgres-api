@@ -19,7 +19,7 @@ export class Region {
 
   @Column({ nullable: false })
   public displayName!: string;
- @VersionColumn()
+  @VersionColumn()
   public version!: number;
   // if he can create badegewässer/bathing spot
   @Column({ type: 'text', nullable: false })

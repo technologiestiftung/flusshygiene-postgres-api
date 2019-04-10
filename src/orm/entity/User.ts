@@ -1,5 +1,6 @@
 import { IsEmail, IsEnum } from 'class-validator';
-import { Column,
+import {
+  Column,
   CreateDateColumn,
   Entity,
   ManyToMany,
@@ -7,7 +8,7 @@ import { Column,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   VersionColumn,
- } from 'typeorm';
+} from 'typeorm';
 import { UserRole } from './../../lib/types-interfaces';
 import { Bathingspot } from './Bathingspot';
 import { Questionaire } from './Questionaire';
