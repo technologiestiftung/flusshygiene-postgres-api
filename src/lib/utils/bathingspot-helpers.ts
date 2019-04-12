@@ -50,6 +50,7 @@ export const criteria = [
   { type: 'boolean', key: 'bathrooms' },
   { type: 'boolean', key: 'bathroomsMobile' },
   { type: 'boolean', key: 'hasPrediction' },
+  { type: 'boolean', key: 'isPublic' },
   { type: 'boolean', key: 'dogban' },
   { type: 'string', key: 'website' },
   { type: 'string', key: 'lastClassification' },
