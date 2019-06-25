@@ -48,7 +48,7 @@
     "jest": "^24.8.0",
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^1.5.1",
-    "majestic": "^1.4.1",
+    "majestic": "^1.6.0",
     "mkdirp": "^0.5.1",
     "nodemon": "^1.19.0",
     "request": "^2.88.0",
