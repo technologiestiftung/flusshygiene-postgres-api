@@ -78,4 +78,5 @@ module.exports = async () => {
     // }
     // token does not work? abort!
   }
+  console.log('done with setup');
 };
