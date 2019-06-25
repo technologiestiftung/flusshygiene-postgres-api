@@ -4,6 +4,8 @@ dist/
 .vscode
 flussgygiene-utils/
 .env
+.env.test
+.test.token.json
 # Logs
 logs
 *.log
