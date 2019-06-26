@@ -1,3 +1,4 @@
+import { postPrediction } from './request-handlers/users/bathingspots/prediction/post';
 import jwtAuthz from 'express-jwt-authz';
 import Router from 'express-promise-router';
 import { checkJwt } from './auth';
@@ -25,6 +26,7 @@ import {
 } from './request-handlers/users/bathingspots/';
 import { getOneUsersBathingspotsByRegion } from './request-handlers/users/bathingspots/get';
 import { getResponse } from './types-interfaces';
+import { getPredictions } from './request-handlers/users/bathingspots/prediction/get';
 
 const checkScopes = jwtAuthz(['admin', 'read:bathingspots']);
 
@@ -52,11 +54,15 @@ router.get('/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)',  checkJwt, che
 // add new spot to user
 
 router.post('/users/:userId([0-9]+)/bathingspots',  checkJwt, checkScopes, addBathingspotToUser);
-// add new user
 
 router.put('/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)',  checkJwt, checkScopes, updateBathingspotOfUser);
 
 router.delete('/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)',  checkJwt, checkScopes, deleteBathingspotOfUser);
+
+// POST and GET predictions to spot
+
+router.post('/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)/predictions', checkJwt, checkScopes, postPrediction);
+router.get('/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)/predictions', checkJwt, checkScopes, getPredictions);
 // add new user
 
 router.post('/users', checkJwt, checkScopes, addUser);

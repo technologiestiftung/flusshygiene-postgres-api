@@ -1,3 +1,4 @@
+import { Bathingspot } from './../../../../orm/entity/Bathingspot';
 import { getCustomRepository } from 'typeorm';
 import { SUCCESS } from '../../../messages';
 import { getRegionsList, getSpotByUserAndId, getUserWithRelations } from '../../../repositories/custom-repo-helpers';
@@ -19,7 +20,11 @@ export const getUserBathingspots: getResponse = async (request, response) => {
     if (user === undefined) {
       responderWrongId(response);
     } else {
-      responder(response, HttpCodes.success, successResponse(SUCCESS.success200, user.bathingspots));
+      if(user instanceof Bathingspot){
+        throw new Error('Internal Server Error');
+      }
+      responder(response, HttpCodes.success, successResponse(
+        SUCCESS.success200, user.bathingspots));
     }
   } catch (e) {
     responder(response, HttpCodes.internalError, errorResponse(e));

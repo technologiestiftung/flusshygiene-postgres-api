@@ -10,7 +10,7 @@ import { Bathingspot } from './Bathingspot';
 @Entity()
 export class BathingspotModel {
 
-    @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn()
   public id!: number;
   @Column()
   @CreateDateColumn()

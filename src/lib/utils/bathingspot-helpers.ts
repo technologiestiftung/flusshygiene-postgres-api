@@ -115,7 +115,6 @@ export const addEntitiesToSpot: AddEntitiesToSpot = async (options) => {
   try {
     const spotRepo = getCustomRepository(BathingspotRepository);
     for (const entity of options.entities) {
-      await options.connection.manager.save(entity);
       const fOpts = { where: {} };
 
       switch (true) {
@@ -143,6 +142,7 @@ export const addEntitiesToSpot: AddEntitiesToSpot = async (options) => {
           } else {
             bspot.predictions.push(entity);
           }
+
         } else if (entity instanceof BathingspotMeasurement) {
           if (bspot.measurements === undefined) {
             bspot.measurements = [entity];
@@ -150,6 +150,11 @@ export const addEntitiesToSpot: AddEntitiesToSpot = async (options) => {
             bspot.measurements.push(entity);
           }
         }
+        // const spot =  await spotRepo.findById(bspot.id);
+        // if(spot !== undefined){
+        //   entity.bathingspot = spot;
+        // }
+        await options.connection.manager.save(entity);
         await options.connection.manager.save(bspot);
       }
     }

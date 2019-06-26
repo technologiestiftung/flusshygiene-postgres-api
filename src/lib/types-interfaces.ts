@@ -87,7 +87,7 @@ export type RegionExsists = (regions: string[], region: string| undefined) => bo
 export type ResponderMissingOrWrongIdOrAuth = (response: Response) => void;
 export type GetByIds = (userId: number, spotId: number) => Promise<Bathingspot | undefined>;
 export type GetById = (spotId: number) => Promise<Bathingspot | undefined>;
-export type GetByIdWithRelations = (userId: number, relations: string[]) => Promise<User | undefined>;
+export type GetByIdWithRelations = (id: number, relations: string[]) => Promise<User| Bathingspot | undefined>;
 
 // utils/get-properties-values.ts
 

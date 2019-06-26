@@ -6,6 +6,9 @@ export class BathingspotRepository extends Repository<Bathingspot> {
   public findById(id: number) {
     return this.findOne(id);
   }
+  public findByIdWithRelations(spotId: number, relations: string[]) {
+    return this.findOne(spotId, { relations });
+  }
 
   public findByRegionId(regionId: number) {
     const query = this.createQueryBuilder('bathingspot')
@@ -35,6 +38,14 @@ export class BathingspotRepository extends Repository<Bathingspot> {
       .where('user.id = :uid', { uid: userId })
       .andWhere('bathingspot.id = :sid', { sid: spotId });
     //  console.log(query);
+    const spot = query.getOne();
+    return spot;
+  }
+
+  public getSpotWithPredictions(spotId: number){
+    const query = this.createQueryBuilder('bathingspot')
+    .leftJoinAndSelect("bathingspot.predictions", "prediction")
+    .where("bathingspot.id = :id", { id: spotId });
     const spot = query.getOne();
     return spot;
   }

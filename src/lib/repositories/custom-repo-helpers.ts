@@ -26,6 +26,15 @@ export const getBathingspotById: GetById = async (spotId: number) => {
   }
 };
 
+export const getBathingspotByIdWithRelations: GetByIdWithRelations = async (spotId, relations) => {
+  const spotRepo = getCustomRepository(BathingspotRepository);
+  try {
+    const spot = await spotRepo.findByIdWithRelations(spotId, relations);
+    return spot;
+  } catch (e) {
+    throw e;
+  }
+};
 export const getSpotByUserAndId: GetByIds = async (userId, spotId) => {
   const spotRepo = getCustomRepository(BathingspotRepository);
   try {
