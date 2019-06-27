@@ -5,7 +5,7 @@ import { getRegionsList } from '../../repositories/custom-repo-helpers';
 import { RegionRepository } from '../../repositories/RegionRepository';
 import { getResponse, HttpCodes } from '../../types-interfaces';
 import { errorResponse, responder, responderWrongId, successResponse } from '../responders';
-import { BathingspotRepository } from './../../repositories/BathingspotRepository';
+import { BathingspotRepository } from '../../repositories/BathingspotRepository';
 
 /**
  * Todo: Which properties should be returned

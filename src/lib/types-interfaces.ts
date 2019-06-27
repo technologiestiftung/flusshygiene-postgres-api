@@ -37,6 +37,7 @@ export type entityFields = (type: string) => Promise<IFilteredEntityPropsResopon
 
 export type postResponse = (request: Request, response: Response) => void;
 export type getResponse = (request: Request, response: Response) => void;
+// export type getCollectionResponse = (request: Request, response: Response) => void;
 export type putResponse = (request: Request, response: Response) => void;
 export type deleteResponse = (request: Request, response: Response) => void;
 

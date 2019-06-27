@@ -1,13 +1,14 @@
-import { BathingspotPrediction } from './../../../../../orm/entity/BathingspotPrediction';
+
 // import { getSpotByUserAndId } from '../../../../repositories/custom-repo-helpers';
 import { successResponse, responder, errorResponse, responderWrongId } from './../../../responders';
 import { postResponse, HttpCodes } from './../../../../types-interfaces';
 import { getRepository } from 'typeorm';
 import { getSpot, getSpotWithRelation } from '../../../../repositories/repo-utils';
 import { Bathingspot } from '../../../../../orm/entity/Bathingspot';
+import { BathingspotMeasurement } from '../../../../../orm/entity/BathingspotMeasurement';
 
 
-export const postPrediction: postResponse = async (request, response) => {
+export const postMeasurements: postResponse = async (request, response) => {
   try {
     const userId = request.params.userId;
     const spotId = request.params.spotId;
@@ -17,25 +18,25 @@ export const postPrediction: postResponse = async (request, response) => {
       responderWrongId(response);
         } else {
       // https://github.com/typeorm/typeorm/blob/master/docs/relational-query-builder.md#working-with-relations
-      const predictionRepo = getRepository(BathingspotPrediction);
+      const mesRepo = getRepository(BathingspotMeasurement);
 
-      const prediction = predictionRepo.create();
-      const mergedPrediction = predictionRepo.merge(prediction, request.body);
-      const spotWithRelation = await getSpotWithRelation(spot.id, 'predictions');
+      const mes = mesRepo.create();
+      const mergedMes = mesRepo.merge(mes, request.body);
+      const spotWithRelation = await getSpotWithRelation(spot.id, 'measurements');
       if (spotWithRelation === undefined) {
-        throw new Error('Could not load Bathingspot with relation "prediction" even though it exists');
+        throw new Error('Could not load Bathingspot with relation "Measurements" even though it exists');
       } else {
-        if (spotWithRelation.predictions === undefined) {
-          spotWithRelation.predictions = [mergedPrediction];
+        if (spotWithRelation.measurements === undefined) {
+          spotWithRelation.measurements = [mergedMes];
         } else {
-          spotWithRelation.predictions.push(mergedPrediction);
+          spotWithRelation.measurements.push(mergedMes);
         }
-        await predictionRepo.save(mergedPrediction);
+        await mesRepo.save(mergedMes);
         await getRepository(Bathingspot).save(spotWithRelation);
       }
       responder(response,
         HttpCodes.successCreated,
-        successResponse('Prediction Posted', [mergedPrediction]));
+        successResponse('Measurements Posted', [mergedMes]));
     }
   } catch (error) {
     responder(response, HttpCodes.internalError, errorResponse(error));

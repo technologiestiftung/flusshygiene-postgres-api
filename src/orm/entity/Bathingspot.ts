@@ -8,11 +8,11 @@ import { BathingspotPrediction } from './BathingspotPrediction';
 // import { BathingspotRawModelData } from './BathingspotRawModelData';
 import { Region } from './Region';
 import { User } from './User';
-import { PurificationPlant } from './prediction-mesurements/pplants/PurificationPlant';
-import { Discharge } from './prediction-mesurements/Discharge';
-import { Rain } from './prediction-mesurements/Rain';
-import { GlobalIrradiance } from './prediction-mesurements/GlobalIrradiance';
-import { GenericInput } from './prediction-mesurements/generic-input/GenericInput';
+import { PurificationPlant } from './prediction-measurements/pplants/PurificationPlant';
+import { Discharge } from './prediction-measurements/Discharge';
+import { Rain } from './prediction-measurements/Rain';
+import { GlobalIrradiance } from './prediction-measurements/GlobalIrradiance';
+import { GenericInput } from './prediction-measurements/generic-input/GenericInput';
 export const criteriaBathingspot = [
   { type: 'object', key: 'apiEndpoints' },
   { type: 'object', key: 'state' },
@@ -227,7 +227,9 @@ export class Bathingspot {
   public predictions!: BathingspotPrediction[];
 
 
-  @OneToMany(_type => BathingspotModel, (model) => model.bathingspot)
+  @OneToMany(_type => BathingspotModel, (model) => model.bathingspot,{
+    eager: true,
+  })
   public models!: BathingspotModel[];
 
   @OneToMany(_type => BathingspotMeasurement, (measurement) => measurement.bathingspot, {

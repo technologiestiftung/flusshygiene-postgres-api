@@ -1,7 +1,7 @@
 import { getCustomRepository } from 'typeorm';
 import { Region } from '../../orm/entity/Region';
 import { GetById, GetByIds, GetByIdWithRelations } from '../types-interfaces';
-import { IRegionListEntry } from './../types-interfaces';
+import { IRegionListEntry } from '../types-interfaces';
 import { BathingspotRepository } from './BathingspotRepository';
 import { RegionRepository } from './RegionRepository';
 import { UserRepository } from './UserRepository';

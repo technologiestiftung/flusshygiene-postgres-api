@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Bathingspot } from './../../orm/entity/Bathingspot';
+import { Bathingspot } from '../../orm/entity/Bathingspot';
 
 @EntityRepository(Bathingspot)
 export class BathingspotRepository extends Repository<Bathingspot> {
@@ -39,7 +39,7 @@ export class BathingspotRepository extends Repository<Bathingspot> {
 
   public getSpotWithPredictions(spotId: number){
     const query = this.createQueryBuilder('bathingspot')
-    .leftJoinAndSelect("bathingspot.predictions", "prediction")
+    .leftJoinAndSelect("bathingspot.predictions", "predictions")
     .where("bathingspot.id = :id", { id: spotId });
     const spot = query.getOne();
     return spot;

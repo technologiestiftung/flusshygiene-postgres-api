@@ -7,8 +7,8 @@ import { HttpCodes, putResponse } from '../../../types-interfaces';
 import {createSpotWithValues} from '../../../utils/bathingspot-helpers';
 import { getEntityFields } from '../../../utils/get-entity-fields';
 import { getMatchingValues } from '../../../utils/get-matching-values-from-request';
-import { BathingspotRepository } from './../../../repositories/BathingspotRepository';
-import { getSpotByUserAndId } from './../../../repositories/custom-repo-helpers';
+import { BathingspotRepository } from '../../../repositories/BathingspotRepository';
+import { getSpotByUserAndId } from '../../../repositories/custom-repo-helpers';
 import {
   errorResponse, responder,
   responderMissingBodyValue,

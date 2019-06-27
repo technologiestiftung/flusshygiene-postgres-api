@@ -1,3 +1,4 @@
+
 import { Bathingspot } from './../../../../orm/entity/Bathingspot';
 import { getCustomRepository } from 'typeorm';
 import { SUCCESS } from '../../../messages';
@@ -5,7 +6,7 @@ import { getRegionsList, getSpotByUserAndId, getUserWithRelations } from '../../
 import { RegionRepository } from '../../../repositories/RegionRepository';
 import { getResponse, HttpCodes } from '../../../types-interfaces';
 import { errorResponse, responder, responderWrongId, successResponse } from '../../responders';
-import { BathingspotRepository } from './../../../repositories/BathingspotRepository';
+import { BathingspotRepository } from '../../../repositories/BathingspotRepository';
 import { responderWrongIdOrSuccess } from './../../responders';
 /**
  * Gets all the bathingspots of the user
