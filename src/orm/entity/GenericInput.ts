@@ -3,8 +3,8 @@ import {
   OneToMany,
   ManyToOne,
 } from 'typeorm';
-import { Bathingspot } from '../../Bathingspot';
-import { MeasurementType } from '../abstract/MeasurementType';
+import { Bathingspot } from './Bathingspot';
+import { MeasurementType } from './MeasurementType';
 import { GInputMeasurement } from './GInputMeasurement';
 
 

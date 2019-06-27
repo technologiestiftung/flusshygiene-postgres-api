@@ -3,11 +3,11 @@ import { Bathingspot, criteriaBathingspot, geomCriteria } from '../../orm/entity
 import { Region } from '../../orm/entity/Region';
 import { BathingspotRepository } from '../repositories/BathingspotRepository';
 import { RegionRepository } from '../repositories/RegionRepository';
-import { IObject } from '../types-interfaces';
+import { IObject } from '../common/types-interfaces';
 import { BathingspotMeasurement } from './../../orm/entity/BathingspotMeasurement';
 
 import { BathingspotPrediction } from './../../orm/entity/BathingspotPrediction';
-import { AddEntitiesToSpot } from './../types-interfaces';
+import { AddEntitiesToSpot } from '../common/types-interfaces';
 import { isObject } from './is-object';
 
 const allowedFeatureTypes = ['Point', 'Polygon'];

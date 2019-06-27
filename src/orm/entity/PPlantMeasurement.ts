@@ -1,6 +1,7 @@
 import { PurificationPlant } from './PurificationPlant';
 import { Entity, Column, ManyToOne } from 'typeorm';
-import { Measurement } from '../abstract/Measurement';
+import { Measurement } from './Measurement';
+
 @Entity()
 export class PPlantMeasurement extends Measurement {
   @Column({nullable: true})

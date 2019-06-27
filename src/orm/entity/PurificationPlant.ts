@@ -4,8 +4,8 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { PPlantMeasurement } from './PPlantMeasurement';
-import { Bathingspot } from '../../Bathingspot';
-import { MeasurementType } from '../abstract/MeasurementType';
+import { Bathingspot } from './Bathingspot';
+import { MeasurementType } from './MeasurementType';
 
 
 @Entity()

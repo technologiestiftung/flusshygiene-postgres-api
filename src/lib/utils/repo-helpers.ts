@@ -1,4 +1,4 @@
-import { Bathingspot } from './../../orm/entity/Bathingspot';
+import { Bathingspot } from '../../orm/entity/Bathingspot';
 import { getRepository } from 'typeorm';
 
 /**

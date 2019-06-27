@@ -1,10 +1,10 @@
 import { Request, Response} from 'express';
 import { Connection } from 'typeorm';
-import { BathingspotMeasurement } from '../orm/entity/BathingspotMeasurement';
-import { BathingspotPrediction } from '../orm/entity/BathingspotPrediction';
-import { Region } from '../orm/entity/Region';
-import { User } from '../orm/entity/User';
-import { Bathingspot } from './../orm/entity/Bathingspot';
+import { BathingspotMeasurement } from '../../orm/entity/BathingspotMeasurement';
+import { BathingspotPrediction } from '../../orm/entity/BathingspotPrediction';
+import { Region } from '../../orm/entity/Region';
+import { User } from '../../orm/entity/User';
+import { Bathingspot } from '../../orm/entity/Bathingspot';
 export interface IFilteredEntityPropsResoponse {
   props: string[];
 }

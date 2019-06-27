@@ -1,6 +1,6 @@
 import { Entity, Column, ManyToOne } from 'typeorm';
-import { Measurement } from './abstract/Measurement';
-import { Bathingspot } from '../Bathingspot';
+import { Measurement } from './Measurement';
+import { Bathingspot } from './Bathingspot';
 
 @Entity()
 export class Discharge extends Measurement {

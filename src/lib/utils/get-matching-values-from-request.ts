@@ -1,4 +1,4 @@
-import { IObject } from '../types-interfaces';
+import { IObject } from '../common/types-interfaces';
 
 export const getMatchingValues = (body: any, propNames: string[]): IObject => {
   const matchingValues = Object.keys(body)

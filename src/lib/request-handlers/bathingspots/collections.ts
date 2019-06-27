@@ -1,13 +1,13 @@
-import { Rain } from './../../../../../orm/entity/prediction-measurements/Rain';
-import { GenericInput } from './../../../../../orm/entity/prediction-measurements/generic-input/GenericInput';
-import { BathingspotModel } from './../../../../../orm/entity/BathingspotModel';
-import { BathingspotMeasurement } from './../../../../../orm/entity/BathingspotMeasurement';
-import { BathingspotPrediction } from './../../../../../orm/entity/BathingspotPrediction';
-import { getResponse, HttpCodes, postResponse, IObject } from '../../../../types-interfaces';
-import { responder, responderWrongId, successResponse, errorResponse } from '../../../responders';
-import { getSpot, getSpotWithRelation } from '../../../../repositories/repo-utils';
+import { Rain } from '../../../orm/entity/Rain';
+import { GenericInput } from '../../../orm/entity/GenericInput';
+import { BathingspotModel } from '../../../orm/entity/BathingspotModel';
+import { BathingspotMeasurement } from '../../../orm/entity/BathingspotMeasurement';
+import { BathingspotPrediction } from '../../../orm/entity/BathingspotPrediction';
+import { getResponse, HttpCodes, postResponse, IObject } from '../../common/types-interfaces';
+import { responder, responderWrongId, successResponse, errorResponse } from '../responders';
+import { getSpot, getSpotWithRelation } from '../../utils/repo-helpers';
 import { getRepository } from 'typeorm';
-import { PurificationPlant, GlobalIrradiance, Discharge, Bathingspot } from '../../../../../orm/entity';
+import { PurificationPlant, GlobalIrradiance, Discharge, Bathingspot } from '../../../orm/entity';
 
 const collectionNames = [
   'predictions',

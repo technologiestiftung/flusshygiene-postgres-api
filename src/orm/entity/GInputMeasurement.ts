@@ -1,5 +1,5 @@
 import { Entity, Column, ManyToOne } from 'typeorm';
-import { Measurement } from '../abstract/Measurement';
+import { Measurement } from './Measurement';
 import { GenericInput } from './GenericInput';
 @Entity()
 export class GInputMeasurement extends Measurement {

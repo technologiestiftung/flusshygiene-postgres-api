@@ -1,5 +1,5 @@
 import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm';
-import { PredictionValue } from './../../lib/types-interfaces';
+import { PredictionValue } from '../../lib/common/types-interfaces';
 import { Bathingspot } from './Bathingspot';
 
 @Entity()

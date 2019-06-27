@@ -8,11 +8,11 @@ import { BathingspotPrediction } from './BathingspotPrediction';
 // import { BathingspotRawModelData } from './BathingspotRawModelData';
 import { Region } from './Region';
 import { User } from './User';
-import { PurificationPlant } from './prediction-measurements/pplants/PurificationPlant';
-import { Discharge } from './prediction-measurements/Discharge';
-import { Rain } from './prediction-measurements/Rain';
-import { GlobalIrradiance } from './prediction-measurements/GlobalIrradiance';
-import { GenericInput } from './prediction-measurements/generic-input/GenericInput';
+import { PurificationPlant } from './PurificationPlant';
+import { Discharge } from './Discharge';
+import { Rain } from './Rain';
+import { GlobalIrradiance } from './GlobalIrradiance';
+import { GenericInput } from './GenericInput';
 export const criteriaBathingspot = [
   { type: 'object', key: 'apiEndpoints' },
   { type: 'object', key: 'state' },
