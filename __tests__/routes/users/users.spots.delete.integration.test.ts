@@ -43,7 +43,6 @@ describe('testing users/[:userId]/bathingspots/[:spotId] delete', () => {
   //     done();
   //   } catch (err) {
   //     console.warn(err.message);
-  //     console.warn(err.stack);
   //   }
   // });
   afterAll(async (done) => {
@@ -53,7 +52,6 @@ describe('testing users/[:userId]/bathingspots/[:spotId] delete', () => {
       done();
     } catch (err) {
       console.warn(err.message);
-      console.warn(err.stack);
       throw err;
     }
   });

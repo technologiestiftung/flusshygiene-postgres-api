@@ -8,7 +8,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   VersionColumn,
-  JoinTable,
 } from 'typeorm';
 import { UserRole } from './../../lib/types-interfaces';
 import { Bathingspot } from './Bathingspot';
@@ -55,7 +54,6 @@ export class User {
   @ManyToMany(_type => Region, region => region.users, {
     eager: true,
   })
-  @JoinTable()
   public regions!: Region[];
 
   // listenres

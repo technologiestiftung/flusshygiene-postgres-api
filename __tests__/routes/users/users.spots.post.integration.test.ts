@@ -45,7 +45,6 @@ describe('testing bathingspots post for a specific user', () => {
   //     done();
   //   } catch (err) {
   //     console.warn(err.message);
-  //     console.warn(err.stack);
   //   }
   // });
   afterAll(async (done) => {
@@ -55,7 +54,6 @@ describe('testing bathingspots post for a specific user', () => {
       done();
     } catch (err) {
       console.warn(err.message);
-      console.warn(err.stack);
       throw err;
     }
   });

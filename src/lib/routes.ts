@@ -1,3 +1,4 @@
+import { defaultGetResponse } from './request-handlers/defaults';
 import { postPrediction } from './request-handlers/users/bathingspots/prediction/post';
 import jwtAuthz from 'express-jwt-authz';
 import Router from 'express-promise-router';
@@ -25,7 +26,6 @@ import {
   updateBathingspotOfUser,
 } from './request-handlers/users/bathingspots/';
 import { getOneUsersBathingspotsByRegion } from './request-handlers/users/bathingspots/get';
-import { getResponse } from './types-interfaces';
 import { getPredictions } from './request-handlers/users/bathingspots/prediction/get';
 
 const checkScopes = jwtAuthz(['admin', 'read:bathingspots']);
@@ -33,10 +33,11 @@ const checkScopes = jwtAuthz(['admin', 'read:bathingspots']);
 const router = Router();
 
 // endpoint for testing if API is live and tokens work
-const getPing : getResponse = async (request, response) =>{
-  response.status(200).json(request);
-}
-router.get('/ping',checkJwt, checkScopes, getPing);
+// const getPing : getResponse = async (request, response) =>{
+//   response.status(200).json(request.body);
+// }
+router.get('/',checkJwt, checkScopes, defaultGetResponse);
+
 
 router.get('/users', checkJwt, checkScopes, getUsers);
 // get user by id

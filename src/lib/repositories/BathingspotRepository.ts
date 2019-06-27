@@ -17,8 +17,6 @@ export class BathingspotRepository extends Repository<Bathingspot> {
     return query.getMany();
   }
   public findByUserAndRegion(userId: number, regionId: number) {
-    // const pRegion = this.manager.getCustomRepository(RegionRepository).findByName(region);
-    // pRegion.then(reg => {
     const query = this.createQueryBuilder('bathingspot')
       .innerJoin('bathingspot.user', 'user')
       .where('user.id = :uid', { uid: userId })
@@ -27,9 +25,6 @@ export class BathingspotRepository extends Repository<Bathingspot> {
 
     return query.getMany();
 
-    // }).catch(_err => {
-    //   return undefined;
-    // });
   }
   public findByUserAndSpotId(userId: number, spotId: number) {
 

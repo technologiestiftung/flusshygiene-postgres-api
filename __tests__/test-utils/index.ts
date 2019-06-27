@@ -1,21 +1,32 @@
 import  rq  from 'request-promise-native';
 import fs from 'fs';
-import { Connection, createConnection, getCustomRepository } from 'typeorm';
 import util from 'util';
-import { RegionRepository } from '../../src/lib/repositories/RegionRepository';
-import { DefaultRegions, UserRole } from '../../src/lib/types-interfaces';
-import { Bathingspot } from '../../src/orm/entity/Bathingspot';
-import { BathingspotModel } from '../../src/orm/entity/BathingspotModel';
-import { BathingspotPrediction } from '../../src/orm/entity/BathingspotPrediction';
-import { BathingspotRawModelData } from '../../src/orm/entity/BathingspotRawModelData';
-import { Questionaire } from '../../src/orm/entity/Questionaire';
-import { Region } from '../../src/orm/entity/Region';
-import { User } from '../../src/orm/entity/User';
-import {createUser } from '../../src/orm/fixtures/create-test-user';
-import { BathingspotMeasurement } from './../../src/orm/entity/BathingspotMeasurement';
-import { Event } from './../../src/orm/entity/Event';
 import path from 'path';
 import { config } from 'dotenv';
+import { Connection, createConnection, getCustomRepository } from 'typeorm';
+
+import { RegionRepository } from '../../src/lib/repositories/RegionRepository';
+import { DefaultRegions, UserRole } from '../../src/lib/types-interfaces';
+import { Rain,
+  GlobalIrradiance,
+  Discharge,
+  PurificationPlant,
+  PPlantMeasurement,
+  GenericInput,
+  GInputMeasurement,
+  Event,
+  User,
+  Region,
+  Questionaire,
+  Bathingspot,
+  BathingspotModel,
+  BathingspotPrediction,
+  BathingspotRawModelData,
+  BathingspotMeasurement} from '../../src/orm/entity';
+
+import {createUser } from '../../src/orm/fixtures/create-test-user';
+
+
 
 config({ path: path.resolve(__dirname, '../.env.test') });
 
@@ -38,6 +49,13 @@ export async function createTestingConnections() {
       BathingspotRawModelData,
       BathingspotMeasurement,
       Event,
+      Rain,
+      GlobalIrradiance,
+      Discharge,
+      PurificationPlant,
+      PPlantMeasurement,
+      GenericInput,
+      GInputMeasurement,
     ],
     host: 'localhost',
     logging: false,

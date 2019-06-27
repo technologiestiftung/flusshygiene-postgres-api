@@ -33,6 +33,7 @@ if (process.env.NODE_DOCKER_ENV === '1') {
 }
 
 const opts = {
+  name: 'default',
   cli: {
     entitiesDir: 'src/orm/entity',
     migrationsDir: 'src/orm/migration',
@@ -58,5 +59,7 @@ const opts = {
   username: process.env[`PG_USER_${ENV_SUFFIX}`],
 };
 
-console.log(opts);
+if(NODE_ENV === 'test' || NODE_ENV === 'development'){
+  console.log(opts);
+}
 module.exports = opts;

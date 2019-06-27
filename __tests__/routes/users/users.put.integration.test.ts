@@ -41,7 +41,6 @@ describe('testing put users', () => {
   //     done();
   //   } catch (err) {
   //     console.warn(err.message);
-  //     console.warn(err.stack);
   //   }
   // });
   afterAll(async (done) => {
@@ -51,7 +50,6 @@ describe('testing put users', () => {
       done();
     } catch (err) {
       console.warn(err.message);
-      console.warn(err.stack);
       throw err;
     }
   });
@@ -100,10 +98,10 @@ describe('testing put users', () => {
     role: UserRole.creator,
   })
     .set(headers);
-  console.log(newUserRes.body);
+  // console.log(newUserRes.body);
   // const usersres = await request(app).get('/api/v1/users');
   // const id = usersres.body.data[usersres.body.data.length - 1].id;
-  const spotRes = await request(app).post(`/api/v1/users/${newUserRes.body.data[0].id}/bathingspots`).send({
+  await request(app).post(`/api/v1/users/${newUserRes.body.data[0].id}/bathingspots`).send({
     isPublic: false,
     name: 'intermidiante spot',
   }).set(headers);
