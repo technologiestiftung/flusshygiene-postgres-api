@@ -26,7 +26,9 @@ import {
   updateBathingspotOfUser,
 } from './request-handlers/users/bathingspots/';
 import { getOneUsersBathingspotsByRegion } from './request-handlers/users/bathingspots/get';
-import { getPredictions } from './request-handlers/users/bathingspots/prediction/get';
+import { getCollection, postCollection } from './request-handlers/users/bathingspots/collections';
+// import { getPredictions } from './request-handlers/users/bathingspots/prediction/get';
+
 
 const checkScopes = jwtAuthz(['admin', 'read:bathingspots']);
 
@@ -60,10 +62,17 @@ router.put('/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)',  checkJwt, che
 
 router.delete('/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)',  checkJwt, checkScopes, deleteBathingspotOfUser);
 
-// POST and GET predictions to spot
+// POST and GET predictions from/to spot
 
 router.post('/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)/predictions', checkJwt, checkScopes, postPrediction);
-router.get('/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)/predictions', checkJwt, checkScopes, getPredictions);
+
+//GET measurements, predictions from
+// router.get('/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)/predictions', checkJwt, checkScopes, getPredictions);
+router.get('/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)/:collection([A-Za-z]+)',checkJwt, checkScopes, getCollection);
+
+router.post('/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)/:collection([A-Za-z]+)',checkJwt, checkScopes, postCollection);
+
+
 // add new user
 
 router.post('/users', checkJwt, checkScopes, addUser);
