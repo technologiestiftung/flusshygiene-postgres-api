@@ -65,7 +65,6 @@ export async function createTestingConnections() {
     type: 'postgres',
     username: 'postgres',
   });
-  const us = await connection.manager.save(createUser());
   const user = new User();
   user.firstName = 'James';
   user.lastName = 'Bond';
@@ -74,13 +73,13 @@ export async function createTestingConnections() {
   const spot = new Bathingspot();
   const regions: Region[] = [];
   for (const key in DefaultRegions) {
-        if (DefaultRegions.hasOwnProperty(key)) {
-          const r = new Region();
-          r.name = key;
-          r.displayName = key;
-          regions.push(r);
-        }
-      }
+    if (DefaultRegions.hasOwnProperty(key)) {
+      const r = new Region();
+      r.name = key;
+      r.displayName = key;
+      regions.push(r);
+    }
+  }
   spot.region = regions[0];
   spot.isPublic = true;
   spot.name = 'billabong';
@@ -91,6 +90,7 @@ export async function createTestingConnections() {
   await connection.manager.save(spot);
   // console.log(resspot);
   await connection.manager.save(user);
+  const us = await connection.manager.save(createUser());
   // console.log(resuser);
 
   await getCustomRepository(RegionRepository).find();

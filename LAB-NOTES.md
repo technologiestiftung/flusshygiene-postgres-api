@@ -38,8 +38,11 @@ See the following links:
 - https://typeorm.io/#/migrations/generating-migrations
 
 
+Prepare DB
 
-Tablles
+see flusshygiene-postgres-db
+
+Tables
 
 Topic: Rohdaten Tabelle
 =======================
