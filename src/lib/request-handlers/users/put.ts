@@ -4,9 +4,9 @@ import { User } from '../../../orm/entity/User';
 import { SUCCESS } from '../../messages';
 import { getRegionsList } from '../../utils/custom-repo-helpers';
 import { RegionRepository } from '../../repositories/RegionRepository';
-import { HttpCodes, putResponse } from '../../common/types-interfaces';
+import { HttpCodes, putResponse } from '../../common';
 import { errorResponse, responder, responderWrongId, successResponse } from '../responders';
-import { RegionExsists } from '../../common/types-interfaces';
+import { RegionExsists } from '../../common';
 
 // ██████╗ ██╗   ██╗████████╗
 // ██╔══██╗██║   ██║╚══██╔══╝

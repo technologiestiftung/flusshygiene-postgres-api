@@ -3,7 +3,7 @@ import { GenericInput } from '../../../orm/entity/GenericInput';
 import { BathingspotModel } from '../../../orm/entity/BathingspotModel';
 import { BathingspotMeasurement } from '../../../orm/entity/BathingspotMeasurement';
 import { BathingspotPrediction } from '../../../orm/entity/BathingspotPrediction';
-import { getResponse, HttpCodes, postResponse, IObject } from '../../common/types-interfaces';
+import { getResponse, HttpCodes, postResponse, IObject } from '../../common';
 import { responder, responderWrongId, successResponse, errorResponse } from '../responders';
 import { getSpot, getSpotWithRelation } from '../../utils/repo-helpers';
 import { getRepository } from 'typeorm';

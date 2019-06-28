@@ -7,7 +7,7 @@ import routes from '../../../src/lib/routes';
 import path from 'path';
 import {
   DefaultRegions, UserRole,
-} from '../../../src/lib/types-interfaces';
+} from '../../../src/lib/common';
 import {
   closeTestingConnections,
   createTestingConnections,

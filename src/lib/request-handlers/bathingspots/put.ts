@@ -3,7 +3,7 @@ import { Bathingspot } from '../../../orm/entity/Bathingspot';
 import { Region } from '../../../orm/entity/Region';
 import { SUCCESS } from '../../messages';
 import { RegionRepository } from '../../repositories/RegionRepository';
-import { HttpCodes, putResponse } from '../../common/types-interfaces';
+import { HttpCodes, putResponse } from '../../common';
 import {createSpotWithValues} from '../../utils/bathingspot-helpers';
 import { getEntityFields } from '../../utils/get-entity-fields';
 import { getMatchingValues } from '../../utils/get-matching-values-from-request';

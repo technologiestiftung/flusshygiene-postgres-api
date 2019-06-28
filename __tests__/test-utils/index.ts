@@ -6,7 +6,7 @@ import { config } from 'dotenv';
 import { Connection, createConnection, getCustomRepository } from 'typeorm';
 
 import { RegionRepository } from '../../src/lib/repositories/RegionRepository';
-import { DefaultRegions, UserRole } from '../../src/lib/types-interfaces';
+import { DefaultRegions, UserRole } from '../../src/lib/common';
 import { Rain,
   GlobalIrradiance,
   Discharge,
@@ -24,7 +24,7 @@ import { Rain,
   BathingspotRawModelData,
   BathingspotMeasurement} from '../../src/orm/entity';
 
-import {createUser } from '../../src/orm/fixtures/create-test-user';
+import {createUser } from '../../src/setup/create-test-user';
 
 
 

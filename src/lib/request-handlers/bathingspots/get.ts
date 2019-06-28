@@ -4,7 +4,7 @@ import { getCustomRepository } from 'typeorm';
 import { SUCCESS } from '../../messages';
 import { getRegionsList, getSpotByUserAndId, getUserWithRelations } from '../../utils/custom-repo-helpers';
 import { RegionRepository } from '../../repositories/RegionRepository';
-import { getResponse, HttpCodes } from '../../common/types-interfaces';
+import { getResponse, HttpCodes } from '../../common';
 import { errorResponse, responder, responderWrongId, successResponse } from '../responders';
 import { BathingspotRepository } from '../../repositories/BathingspotRepository';
 import { responderWrongIdOrSuccess } from '../responders';

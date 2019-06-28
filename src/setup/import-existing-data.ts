@@ -2,7 +2,7 @@ import { readdir, readFile, statSync } from 'fs';
 import { extname, resolve } from 'path';
 import proj4 from 'proj4';
 import { promisify } from 'util';
-import { IObject } from '../lib/common/types-interfaces';
+import { IObject } from '../lib/common';
 import { createSpotWithValues } from '../lib/utils/bathingspot-helpers';
 import { createMeasurementWithValues } from '../lib/utils/measurement-helpers';
 import { Bathingspot } from '../orm/entity/Bathingspot';

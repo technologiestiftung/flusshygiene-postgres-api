@@ -1,4 +1,4 @@
-import { HttpCodes } from './../../../src/lib/types-interfaces';
+import { HttpCodes } from './../../../src/lib/common';
 jest.useFakeTimers();
 import express, { Application } from 'express';
 import 'reflect-metadata';
@@ -7,7 +7,7 @@ import { Connection, getCustomRepository, getRepository } from 'typeorm';
 import { ERRORS, SUGGESTIONS } from '../../../src/lib/messages';
 import { UserRepository } from '../../../src/lib/repositories/UserRepository';
 import routes from '../../../src/lib/routes';
-import { DefaultRegions, UserRole } from '../../../src/lib/types-interfaces';
+import { DefaultRegions, UserRole } from '../../../src/lib/common';
 import { Bathingspot } from '../../../src/orm/entity/Bathingspot';
 import { User } from '../../../src/orm/entity/User';
 import path from 'path';

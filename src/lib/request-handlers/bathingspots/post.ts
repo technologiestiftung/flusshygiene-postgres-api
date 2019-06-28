@@ -1,7 +1,7 @@
 import { getManager } from 'typeorm';
 import { User } from '../../../orm/entity/User';
 import { getUserWithRelations } from '../../utils/custom-repo-helpers';
-import { HttpCodes, postResponse, UserRole } from '../../common/types-interfaces';
+import { HttpCodes, postResponse, UserRole } from '../../common';
 import { getEntityFields, getMatchingValues } from '../../utils';
 import {
   errorResponse,

@@ -1,4 +1,4 @@
-import { GetPropsValueGeneric } from '../common/types-interfaces';
+import { GetPropsValueGeneric } from '../common';
 
 // /**
 //  * assumes that you want true or false as result

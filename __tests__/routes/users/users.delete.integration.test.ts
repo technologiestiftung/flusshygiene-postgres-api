@@ -1,4 +1,4 @@
-import { UserRole } from './../../../src/lib/types-interfaces';
+import { UserRole } from './../../../src/lib/common';
 jest.useFakeTimers();
 import express, { Application } from 'express';
 import 'reflect-metadata';

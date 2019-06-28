@@ -2,7 +2,7 @@ import { getRepository } from 'typeorm';
 import { Bathingspot } from '../../../orm/entity/Bathingspot';
 import { SUCCESS } from '../../messages';
 import { getSpotByUserAndId } from '../../utils/custom-repo-helpers';
-import { deleteResponse, HttpCodes } from '../../common/types-interfaces';
+import { deleteResponse, HttpCodes } from '../../common';
 import { getPropsValueGeneric } from '../../utils/get-properties-values-generic';
 import {
   errorResponse,

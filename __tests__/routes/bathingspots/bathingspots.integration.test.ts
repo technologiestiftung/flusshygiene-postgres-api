@@ -4,7 +4,7 @@ import 'reflect-metadata';
 import request from 'supertest';
 import { Connection } from 'typeorm';
 import routes from '../../../src/lib/routes';
-import { DefaultRegions, HttpCodes } from '../../../src/lib/types-interfaces';
+import { DefaultRegions, HttpCodes } from '../../../src/lib/common';
 import path from 'path';
 import {
   closeTestingConnections,

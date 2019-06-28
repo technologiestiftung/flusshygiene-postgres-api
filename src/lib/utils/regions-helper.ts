@@ -1,5 +1,5 @@
 import { isObject } from '.';
-import { IObject } from '../common/types-interfaces';
+import { IObject } from '../common';
 
 const criteria = [
   {type: 'string', key: 'name'},

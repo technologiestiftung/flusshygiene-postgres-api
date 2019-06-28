@@ -1,4 +1,4 @@
-import { UserRole } from '../lib/common/types-interfaces';
+import { UserRole } from '../lib/common';
 import { User } from '../orm/entity/User';
 
 // export const createProtectedUser = (): User => {

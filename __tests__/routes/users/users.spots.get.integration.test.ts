@@ -6,7 +6,7 @@ import request from 'supertest';
 import { Connection, getCustomRepository } from 'typeorm';
 import { UserRepository } from '../../../src/lib/repositories/UserRepository';
 import routes from '../../../src/lib/routes';
-import { DefaultRegions } from '../../../src/lib/types-interfaces';
+import { DefaultRegions } from '../../../src/lib/common';
 import {
   closeTestingConnections,
   createTestingConnections,
