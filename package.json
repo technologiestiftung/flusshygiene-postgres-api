@@ -7,7 +7,7 @@
     "test": "jest --runInBand",
     "snyk": "synk test",
     "testWithCoverage": "jest --coverage --setupFiles ./__tests__/setupFiles/config",
-    "populatedb":"node dist/setup/populate-db.js",
+    "populatedb": "node dist/setup/populate-db.js",
     "dev": "npm run clean && nodemon",
     "clean": "rimraf ./dist && mkdirp ./dist",
     "dev:docker": "nodemon --config nodemon.docker.json",
@@ -15,7 +15,9 @@
     "start": "node dist/index.js",
     "majestic": "majestic",
     "docs": "typedoc --mode modules --out docs ./src",
-    "typeorm": "typeorm"
+    "typeorm": "typeorm",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -54,7 +56,6 @@
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
     "rimraf": "^2.6.3",
-    "snyk": "^1.184.0",
     "supertest": "^4.0.2",
     "ts-jest": "^24.0.2",
     "ts-node": "^8.3.0",
@@ -82,7 +83,8 @@
     "pg": "^7.11.0",
     "proj4": "^2.5.0",
     "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.2.18"
+    "typeorm": "^0.2.18",
+    "snyk": "^1.189.0"
   },
   "config": {
     "commitizen": {
@@ -93,5 +95,6 @@
     "args": [
       "--runInBand"
     ]
-  }
+  },
+  "snyk": true
 }
