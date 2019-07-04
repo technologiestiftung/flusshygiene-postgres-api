@@ -1,9 +1,8 @@
 import { validate } from 'class-validator';
-import { getCustomRepository, getRepository } from 'typeorm';
+import { getRepository } from 'typeorm';
 import { Region } from '../../../orm/entity/Region';
 import { User } from '../../../orm/entity/User';
 import { getRegionsList } from '../../utils/custom-repo-helpers';
-import { UserRepository } from '../../repositories/UserRepository';
 import { HttpCodes, IObject, postResponse, UserRole } from '../../common';
 import { getEntityFields } from '../../utils/get-entity-fields';
 import { errorResponse, responder, responderMissingBodyValue, responderSuccessCreated } from '../responders';
@@ -16,13 +15,15 @@ import { errorResponse, responder, responderMissingBodyValue, responderSuccessCr
 // ╚═╝  ╚═╝╚═════╝ ╚═════╝
 
 const createUser = async (obj: any) => {
-  const userRepo = getCustomRepository(UserRepository);
+  const userRepo = getRepository('user');// getCustomRepository(UserRepository);
+
   const user: User = new User();
   userRepo.merge(user, obj);
   try {
     const errors = await validate(user);
     if (errors.length > 0) {
-      throw new Error(`User validation failed ${JSON.stringify(errors)}`);
+      const msgs = errors.map(e => e.constraints);
+      throw new Error(`User validation failed ${JSON.stringify(msgs, null, 2)}`);
     }
     return user;
   } catch (e) {
@@ -42,6 +43,35 @@ const checkRequiredFileds: (obj: IObject) => boolean = (obj) => {
     return true;
   }
 };
+
+export const postUser: postResponse = async (request, response) => {
+  try {
+    const userRepo = getRepository('user');
+    console.log(request.body);
+    const user = await createUser(request.body);
+    let region: Region | undefined;
+    const regionsList = await getRegionsList();
+    console.log(regionsList);
+    if (request.body.region !== undefined) {
+      console.log('has region');
+      if (regionsList.includes(request.body.region) === true) {
+        console.log('found region');
+        region = await getRepository(Region).findOne({ where: { name: request.body.region } });
+        user.regions = [region!];
+      }
+    }
+    console.log(user.regions);
+    const res = await userRepo.save(user);
+    responderSuccessCreated(response, 'User was created', [res]);
+  } catch (error) {
+    responder(response, HttpCodes.internalError, errorResponse(error));
+  }
+}
+
+/**
+ * @deprecated
+ * rewrite because overly complicated
+ */
 export const addUser: postResponse = async (request, response) => {
   try {
     const list = await getRegionsList();

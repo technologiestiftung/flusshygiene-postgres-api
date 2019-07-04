@@ -5,6 +5,7 @@ export {
 
 export {
   addUser,
+  postUser,
 } from './post';
 
 export { updateUser } from './put';
