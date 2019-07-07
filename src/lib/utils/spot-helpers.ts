@@ -1,13 +1,10 @@
 import { getRepository } from 'typeorm';
 import { Bathingspot, criteriaBathingspot, geomCriteria } from '../../orm/entity/Bathingspot';
-import { Region } from '../../orm/entity/Region';
 import { IObject } from '../common';
-import { BathingspotMeasurement } from '../../orm/entity/BathingspotMeasurement';
 
-import { BathingspotPrediction } from '../../orm/entity/BathingspotPrediction';
-import { AddEntitiesToSpot } from '../common';
 import { isObject } from './is-object';
 import { findByName } from './region-repo-helpers';
+import { Region } from '../../orm/entity';
 
 const allowedFeatureTypes = ['Point', 'Polygon'];
 
@@ -92,70 +89,6 @@ const getAndVerifyRegion = async (obj: any) => {
       }
     }
     return region;
-  } catch (error) {
-    throw error;
-  }
-};
-
-// const isPrediction = (entity: BathingspotMeasurement|BathingspotPrediction): entity is BathingspotPrediction {
-//   return (<BathingspotPrediction>entity).prediction !== undefined;
-// }
-
-// ███████╗███████╗████████╗██╗   ██╗██████╗
-// ██╔════╝██╔════╝╚══██╔══╝██║   ██║██╔══██╗
-// ███████╗█████╗     ██║   ██║   ██║██████╔╝
-// ╚════██║██╔══╝     ██║   ██║   ██║██╔═══╝
-// ███████║███████╗   ██║   ╚██████╔╝██║
-// ╚══════╝╚══════╝   ╚═╝    ╚═════╝ ╚═╝
-
-// used in app.ts for setup
-export const addEntitiesToSpot: AddEntitiesToSpot = async (options) => {
-  try {
-    const spotRepo = getRepository(Bathingspot);
-    for (const entity of options.entities) {
-      const fOpts = { where: {} };
-
-      switch (true) {
-        case entity instanceof BathingspotMeasurement:
-          fOpts.where = {
-            detailId: (entity as BathingspotMeasurement).detailId,
-          };
-          break;
-        case entity instanceof BathingspotPrediction:
-          // console.log('case is prediction');
-
-          fOpts.where = {
-            oldId: (entity as BathingspotPrediction).oldId,
-          };
-          break;
-      }
-
-      const bspot = await spotRepo.findOne(fOpts);
-
-      if (bspot !== undefined) {
-        if (entity instanceof BathingspotPrediction) {
-          // console.log('got prediction');
-          if (bspot.predictions === undefined) {
-            bspot.predictions = [entity];
-          } else {
-            bspot.predictions.push(entity);
-          }
-
-        } else if (entity instanceof BathingspotMeasurement) {
-          if (bspot.measurements === undefined) {
-            bspot.measurements = [entity];
-          } else {
-            bspot.measurements.push(entity);
-          }
-        }
-        // const spot =  await spotRepo.findById(bspot.id);
-        // if(spot !== undefined){
-        //   entity.bathingspot = spot;
-        // }
-        await options.connection.manager.save(entity);
-        await options.connection.manager.save(bspot);
-      }
-    }
   } catch (error) {
     throw error;
   }

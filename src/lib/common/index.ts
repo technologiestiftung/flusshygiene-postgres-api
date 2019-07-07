@@ -109,11 +109,7 @@ export type GetPropsValueGeneric = <T>(obj: any, key: string) => T;
 
 // utils/bathingspot-helpers.ts
 
-export interface IAddEntitiesToSpotOptions {
-  entities: BathingspotMeasurement[] | BathingspotPrediction[];
-  connection: Connection;
-}
-export type AddEntitiesToSpot = (options: IAddEntitiesToSpotOptions) => Promise<void>;
+
 
 // ███████╗███╗   ██╗██╗   ██╗███╗   ███╗███████╗
 // ██╔════╝████╗  ██║██║   ██║████╗ ████║██╔════╝
