@@ -36,10 +36,10 @@ export class BathingspotMeasurement {
   @Column({ nullable: true, type: 'float8'})
   public conc_ie!: number;
 
-  @Column({ nullable: true, type: 'float8'})
+  @Column({ nullable: true})
   public conc_ie_txt!: string;
 
-  @Column({type: 'float', nullable: true})
+  @Column({type: 'float8', nullable: true})
   public temp!: number;
 
   @Column({ nullable: true})
@@ -69,8 +69,8 @@ export class BathingspotMeasurement {
   @Column({ nullable: true, type: 'float8'})
   public wasserqualitaet!: number;
 
-  @Column({ nullable: true, type: 'float8'})
-  public wasserqualitaetTxt!: number;
+  @Column({ nullable: true})
+  public wasserqualitaetTxt!: string;
 
   @ManyToOne( _type => Bathingspot, bathingspot => bathingspot.measurements , {
     cascade: true,
