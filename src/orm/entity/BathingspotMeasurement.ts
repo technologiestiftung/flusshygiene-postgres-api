@@ -15,28 +15,28 @@ export class BathingspotMeasurement {
   @UpdateDateColumn()
   public updatedAt!: Date;
 
-  @Column({ nullable: true})
+  @Column({ nullable: true, type: 'float8'})
   public sicht!: number;
 
   @Column({type: 'timestamp', nullable: true})
   public date!: Date;
 
-  @Column({ nullable: true})
+  @Column({ nullable: true, type: 'float8'})
   public conc_ec!: number;
 
   @Column({ nullable: true})
   public conc_ec_txt!: string;
 
-  @Column({ nullable: true})
+  @Column({ nullable: true, type: 'float8'})
   public oldId!: number;
 
-  @Column({ nullable: true})
+  @Column({ nullable: true, type: 'float8'})
   public detailId!: number;
 
-  @Column({ nullable: true})
+  @Column({ nullable: true, type: 'float8'})
   public conc_ie!: number;
 
-  @Column({ nullable: true})
+  @Column({ nullable: true, type: 'float8'})
   public conc_ie_txt!: string;
 
   @Column({type: 'float', nullable: true})
@@ -45,7 +45,7 @@ export class BathingspotMeasurement {
   @Column({ nullable: true})
   public algen!: boolean;
 
-  @Column({ nullable: true})
+  @Column({ nullable: true, type: 'float8'})
   public cb!: number;
 
   @Column({ nullable: true})
@@ -66,10 +66,10 @@ export class BathingspotMeasurement {
   @Column({ nullable: true})
   public state!: string;
 
-  @Column({ nullable: true})
+  @Column({ nullable: true, type: 'float8'})
   public wasserqualitaet!: number;
 
-  @Column({ nullable: true})
+  @Column({ nullable: true, type: 'float8'})
   public wasserqualitaetTxt!: number;
 
   @ManyToOne( _type => Bathingspot, bathingspot => bathingspot.measurements , {
