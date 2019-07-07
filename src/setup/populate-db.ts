@@ -1,7 +1,7 @@
 import ora = require('ora');
 import { createConnection, getRepository, getConnectionOptions } from 'typeorm';
 import { DefaultRegions, IAddEntitiesToSpotOptions, UserRole } from '../lib/common';
-import { addEntitiesToSpot } from '../lib/utils/bathingspot-helpers';
+import { addEntitiesToSpot } from '../lib/utils/spot-helpers';
 import { Region } from '../orm/entity/Region';
 import { User } from '../orm/entity/User';
 import { createUser } from './create-test-user';

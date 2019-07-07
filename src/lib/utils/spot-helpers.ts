@@ -1,14 +1,13 @@
-import { getCustomRepository } from 'typeorm';
+import { getRepository } from 'typeorm';
 import { Bathingspot, criteriaBathingspot, geomCriteria } from '../../orm/entity/Bathingspot';
 import { Region } from '../../orm/entity/Region';
-import { BathingspotRepository } from '../repositories/BathingspotRepository';
-import { RegionRepository } from '../repositories/RegionRepository';
 import { IObject } from '../common';
-import { BathingspotMeasurement } from './../../orm/entity/BathingspotMeasurement';
+import { BathingspotMeasurement } from '../../orm/entity/BathingspotMeasurement';
 
-import { BathingspotPrediction } from './../../orm/entity/BathingspotPrediction';
+import { BathingspotPrediction } from '../../orm/entity/BathingspotPrediction';
 import { AddEntitiesToSpot } from '../common';
 import { isObject } from './is-object';
+import { findByName } from './region-repo-helpers';
 
 const allowedFeatureTypes = ['Point', 'Polygon'];
 
@@ -43,7 +42,7 @@ const setupGeom: (obj: { value: any, criterion: any }) => any = (obj) => {
   return res;
 };
 export const createSpotWithValues = async (providedValues: IObject): Promise<Bathingspot> => {
-  const spotRepo = getCustomRepository(BathingspotRepository);
+  const spotRepo = getRepository(Bathingspot);
   const spot = new Bathingspot();
   criteriaBathingspot.forEach(criterion => {
     const value = providedValues[criterion.key];
@@ -84,11 +83,10 @@ export const createSpotWithValues = async (providedValues: IObject): Promise<Bat
 };
 
 const getAndVerifyRegion = async (obj: any) => {
-  const regionRepo = getCustomRepository(RegionRepository);
   try {
     let region: Region | undefined;
     if (obj.hasOwnProperty('region') === true) {
-      region = await regionRepo.findByName(obj.region);
+      region = await findByName(obj.region);
       if (region instanceof Region) {
         return region;
       }
@@ -113,7 +111,7 @@ const getAndVerifyRegion = async (obj: any) => {
 // used in app.ts for setup
 export const addEntitiesToSpot: AddEntitiesToSpot = async (options) => {
   try {
-    const spotRepo = getCustomRepository(BathingspotRepository);
+    const spotRepo = getRepository(Bathingspot);
     for (const entity of options.entities) {
       const fOpts = { where: {} };
 
