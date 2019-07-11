@@ -15,6 +15,7 @@ import { GlobalIrradiance } from './GlobalIrradiance';
 import { GenericInput } from './GenericInput';
 import { GeometryObject, Polygon } from '@turf/turf';
 import buffer from '@turf/buffer'
+import { BathingspotCategory } from './BathingspotCategory';
 
 export const criteriaBathingspot = [
   { type: 'object', key: 'apiEndpoints' },
@@ -62,6 +63,9 @@ export const criteriaBathingspot = [
   { type: 'string', key: 'website' },
   { type: 'string', key: 'lastClassification' },
   { type: 'string', key: 'image' },
+  {type: 'string', key: 'bwId'},
+  {type: 'string', key: 'type'},
+  {type: 'string', key: 'coordinateSystem'},
 ];
 
 export const geomCriteria = [
@@ -88,11 +92,27 @@ export class Bathingspot {
   @Column({ type: 'boolean', nullable: true })
   public hasPrediction!: boolean;
 
+  // this id comes from BWB or Lageso
   @Column({ nullable: true})
   public detailId!: number;
 
+  // official id from the EU
+  @Column({nullable: true})
+  public bwId!: string
+
+  // Ids used on badestellen-berlin.de
   @Column({ nullable: true })
   public oldId!: number;
+
+  /**
+   * @todo Which ones are we using create enum?
+   */
+  @Column({nullable: true})
+  public coordinateSystem!: string;
+
+  @Column({nullable: true})
+  public type!: string;
+
 
   @Column({ nullable: true })
   public measuringPoint!: string;
@@ -229,6 +249,11 @@ export class Bathingspot {
   })
   public predictions!: BathingspotPrediction[];
 
+  @OneToMany(_type => BathingspotCategory, (category) => category.bathingspot, {
+    // cascade: true,
+    eager: true,
+  })
+  public categories!: BathingspotPrediction[];
 
   @OneToMany(_type => BathingspotModel, (model) => model.bathingspot, {
     eager: true,
