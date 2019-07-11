@@ -15,7 +15,6 @@ import { GlobalIrradiance } from './GlobalIrradiance';
 import { GenericInput } from './GenericInput';
 import { GeometryObject, Polygon } from '@turf/turf';
 import buffer from '@turf/buffer'
-import { BathingspotCategory } from './BathingspotCategory';
 
 export const criteriaBathingspot = [
   { type: 'object', key: 'apiEndpoints' },
@@ -109,6 +108,13 @@ export class Bathingspot {
    */
   @Column({nullable: true})
   public coordinateSystem!: string;
+
+  /**
+   * @todo Which ones are we using create enum?
+   */
+  @Column({nullable: true})
+  public category!: string;
+
 
   @Column({nullable: true})
   public type!: string;
@@ -249,11 +255,11 @@ export class Bathingspot {
   })
   public predictions!: BathingspotPrediction[];
 
-  @OneToMany(_type => BathingspotCategory, (category) => category.bathingspot, {
-    // cascade: true,
-    eager: true,
-  })
-  public categories!: BathingspotPrediction[];
+  // @OneToMany(_type => BathingspotCategory, (category) => category.bathingspot, {
+  //   // cascade: true,
+  //   eager: true,
+  // })
+  // public categories!: BathingspotPrediction[];
 
   @OneToMany(_type => BathingspotModel, (model) => model.bathingspot, {
     eager: true,
