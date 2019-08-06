@@ -28,7 +28,7 @@ const headers = {
   Accept: 'application/json',
 };
 
-describe('testing public bathingspots', () => {
+describe('testing bathingspots collection', () => {
   let app: Application;
   let connections: Connection[];
 
@@ -79,50 +79,73 @@ describe('testing public bathingspots', () => {
   // ██████╔╝╚██████╔╝██║ ╚████║███████╗
   // ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚══════╝
 
-  test.skip('route should fail due to wrong route', async (done) => {
-    const res = await request(app).get('/api/v1/');
-    expect(res.status).toBe(404);
-    expect(res.body.success).toBe(false);
-    done();
-  });
-
-  test('route get bathingspots', async (done) => {
-    const res = await request(app).get('/api/v1/bathingspots');
+  test('route get users bathingspots collection rains', async (done) => {
+    const res = await request(app)
+      .get('/api/v1/users/1/bathingspots/1/rains')
+      .set(headers);
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body.data)).toBe(true);
     expect(res.body.success).toBe(true);
     done();
   });
 
-  test('route get bathingspot by id', async (done) => {
-    // expect.assertions(2);
-    const res = await request(app).get('/api/v1/bathingspots/1');
-    expect(res.status).toBe(200);
-    expect(res.body.success).toBe(true);
+  test('route POST users bathingspots collection rains', async (done) => {
+    const obj = {
+      value: Math.random() * 10,
+      dateTime: '12:00:01',
+      date: '2019-12-31',
+      comment: 'This is a test',
+    };
+    const res = await request(app)
+      .post('/api/v1/users/1/bathingspots/1/rains')
+      .send(obj)
+      .set(headers);
+    expect(res.status).toBe(201);
     expect(Array.isArray(res.body.data)).toBe(true);
-    done();
-  });
-
-  test('route get single bathingspot should fail due to worng id', async (done) => {
-    // expect.assertions(2);
-    const res = await request(app).get(`/api/v1/bathingspots/${100000}`);
-    expect(res.status).toBe(404);
-    expect(res.body.success).toBe(false);
-    done();
-  });
-  test('should fail due to wrong spot region id', async (done) => {
-    const res = await request(app).get(`/api/v1/bathingspots/foo`);
-    expect(res.status).toBe(HttpCodes.badRequestNotFound);
-    expect(res.body.success).toBe(false);
-    done();
-  });
-  test('should return empty spot array', async (done) => {
-    const res = await request(app).get(
-      `/api/v1/bathingspots/${DefaultRegions.schleswigholstein}`,
-    );
-    expect(res.status).toBe(HttpCodes.success);
     expect(res.body.success).toBe(true);
-    expect(res.body.data.length).toBe(0);
+    expect(res.body.data[0].comment).toBe(obj.comment);
+    done();
+  });
+  test('route DELETE users bathingspots collection rains', async (done) => {
+    const obj = {
+      value: Math.random() * 10,
+      dateTime: '12:00:01',
+      date: '2019-12-31',
+      comment: 'This is a test',
+    };
+    const resPost = await request(app)
+      .post('/api/v1/users/1/bathingspots/1/rains')
+      .send(obj)
+      .set(headers);
+    const res = await request(app)
+      .delete(`/api/v1/users/1/bathingspots/1/rains/${resPost.body.data[0].id}`)
+      .set(headers);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body.data)).toBe(true);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data[0].comment).toBe(obj.comment);
+    done();
+  });
+  test('route POST users bathingspots collection genericInputs measurements', async (done) => {
+    const obj = {
+      value: Math.random() * 10,
+      dateTime: '12:00:01',
+      date: '2019-12-31',
+      comment: 'This is a test',
+    };
+    await request(app)
+      .post('/api/v1/users/1/bathingspots/1/genericInputs/')
+      .send({ name: 'foo' })
+      .set(headers);
+    // console.log(resg.body);
+    const res = await request(app)
+      .post('/api/v1/users/1/bathingspots/1/genericInputs/1/measurements')
+      .send(obj)
+      .set(headers);
+    expect(res.status).toBe(201);
+    expect(Array.isArray(res.body.data)).toBe(true);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data[0].comment).toBe(obj.comment);
     done();
   });
 });

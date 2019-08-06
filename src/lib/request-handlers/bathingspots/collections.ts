@@ -78,6 +78,7 @@ export const postCollectionsSubItem: postResponse = async (
         responderWrongId(response);
       } else {
         // const repo: any = getRepository(repoName);
+        let res;
         switch (repoName) {
           case 'GenericInput':
             const measurement = await repoGInputMeasurement.create();
@@ -91,14 +92,14 @@ export const postCollectionsSubItem: postResponse = async (
             // } else {
             gi.measurements.push(mergedEntity);
             // }
-            await repoGInputMeasurement.save(mergedEntity);
+            res = await repoGInputMeasurement.save(mergedEntity);
             await repoGenericInput.save(gi);
             break;
         }
         responder(
           response,
-          HttpCodes.success,
-          successResponse(`${repoName} measurement posted.`, [mergedEntity]),
+          HttpCodes.successCreated,
+          successResponse(`${repoName} measurement posted.`, [res]),
         );
       }
     }
@@ -364,12 +365,12 @@ export const postCollection: postResponse = async (request, response) => {
               }
               break;
           }
-          await repo.save(mergedEntity);
+          const res = await repo.save(mergedEntity);
           await getRepository(Bathingspot).save(spotWithRelation);
           responder(
             response,
             HttpCodes.successCreated,
-            successResponse(`${repoName} Posted`, [mergedEntity]),
+            successResponse(`${repoName} Posted`, [res]),
           );
         }
       }
@@ -400,6 +401,7 @@ export const deleteCollectionSubItem: postResponse = async (
     } else {
       const spot = await getSpot(userId, spotId); // await query.getOne();
       if (spot === undefined) {
+        console.log('no spot');
         responderWrongId(response);
       } else {
         const repoName = collectionRepoMapping[collectionId];
@@ -413,6 +415,7 @@ export const deleteCollectionSubItem: postResponse = async (
             successResponse(SUCCESS.successDelete200, [res]),
           );
         } else {
+          console.log(entity);
           responderWrongId(response);
         }
       }
