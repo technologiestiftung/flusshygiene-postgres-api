@@ -1,10 +1,13 @@
+import { PredictionValue } from './../../../src/lib/common/index';
+import { BathingspotPrediction } from './../../../src/orm/entity/BathingspotPrediction';
+import { Discharge } from './../../../src/orm/entity/Discharge';
+import { GenericInput } from './../../../src/orm/entity/GenericInput';
 jest.useFakeTimers();
 import express, { Application } from 'express';
 import 'reflect-metadata';
 import request from 'supertest';
 import { Connection } from 'typeorm';
 import routes from '../../../src/lib/routes';
-import { DefaultRegions, HttpCodes } from '../../../src/lib/common';
 import path from 'path';
 import {
   closeTestingConnections,
@@ -12,6 +15,19 @@ import {
   reloadTestingDatabases,
   readTokenFromDisc,
 } from '../../test-utils';
+import { async } from 'rxjs/internal/scheduler/async';
+import {
+  getColletionItemById,
+  getPPlantWithRelations,
+  getGIWithRelations,
+} from '../../../src/lib/utils/collection-repo-helpers';
+import {
+  Discharge,
+  GlobalIrradiance,
+  BathingspotModel,
+  BathingspotMeasurement,
+  PurificationPlant,
+} from '../../../src/orm/entity';
 
 // ███████╗███████╗████████╗██╗   ██╗██████╗
 // ██╔════╝██╔════╝╚══██╔══╝██║   ██║██╔══██╗
@@ -146,6 +162,120 @@ describe('testing bathingspots collection', () => {
     expect(Array.isArray(res.body.data)).toBe(true);
     expect(res.body.success).toBe(true);
     expect(res.body.data[0].comment).toBe(obj.comment);
+    done();
+  });
+
+  test('getColletionItemById should return specific entitiy GenericInput', async (done) => {
+    const res = await request(app)
+      .post('/api/v1/users/1/bathingspots/1/genericInputs/')
+      .send({ name: 'foo' })
+      .set(headers);
+    const entity = await getColletionItemById(
+      res.body.data[0].id,
+      'GenericInput',
+    );
+    expect(entity instanceof GenericInput).toBe(true);
+    done();
+  });
+  test('getColletionItemById should return specific entitiy PurificationPlant', async (done) => {
+    const res = await request(app)
+      .post('/api/v1/users/1/bathingspots/1/purificationPlants/')
+      .send({ name: 'foo' })
+      .set(headers);
+    const entity = await getColletionItemById(
+      res.body.data[0].id,
+      'PurificationPlant',
+    );
+    expect(entity instanceof PurificationPlant).toBe(true);
+    done();
+  });
+  test('getColletionItemById should return specific entitiy Discharge', async (done) => {
+    const res = await request(app)
+      .post('/api/v1/users/1/bathingspots/1/discharges/')
+      .send({ dateTime: '12:00:00', date: '2019-12-31', value: 1 })
+      .set(headers);
+    const entity = await getColletionItemById(res.body.data[0].id, 'Discharge');
+    expect(entity instanceof Discharge).toBe(true);
+    done();
+  });
+  test('getColletionItemById should return specific entitiy GlobalIrradiance', async (done) => {
+    const res = await request(app)
+      .post('/api/v1/users/1/bathingspots/1/globalIrradiances/')
+      .send({ dateTime: '12:00:00', date: '2019-12-31', value: 1 })
+      .set(headers);
+    const entity = await getColletionItemById(
+      res.body.data[0].id,
+      'GlobalIrradiance',
+    );
+    expect(entity instanceof GlobalIrradiance).toBe(true);
+    done();
+  });
+  test('getColletionItemById should return specific entitiy BathingspotMeasurement', async (done) => {
+    const res = await request(app)
+      .post('/api/v1/users/1/bathingspots/1/measurements/')
+      .send({ dateTime: '12:00:00', date: '2019-12-31', value: 1 })
+      .set(headers);
+    const entity = await getColletionItemById(
+      res.body.data[0].id,
+      'BathingspotMeasurement',
+    );
+    expect(entity instanceof BathingspotMeasurement).toBe(true);
+    done();
+  });
+  test('getColletionItemById should return specific entitiy BathingspotModel', async (done) => {
+    const res = await request(app)
+      .post('/api/v1/users/1/bathingspots/1/models/')
+      .send({ dateTime: '12:00:00', date: '2019-12-31', rmodel: '' })
+      .set(headers);
+    const entity = await getColletionItemById(
+      res.body.data[0].id,
+      'BathingspotModel',
+    );
+    expect(entity instanceof BathingspotModel).toBe(true);
+    done();
+  });
+
+  test('getColletionItemById should return specific entitiy BathingspotPrediction', async (done) => {
+    const res = await request(app)
+      .post('/api/v1/users/1/bathingspots/1/predictions/')
+      .send({
+        dateTime: '12:00:00',
+        date: '2019-12-31',
+        prediction: PredictionValue.ausgezeichnet,
+      })
+      .set(headers);
+    const entity = await getColletionItemById(
+      res.body.data[0].id,
+      'BathingspotPrediction',
+    );
+    expect(entity instanceof BathingspotPrediction).toBe(true);
+    done();
+  });
+  test('getColletionItemById should throw an error', async (done) => {
+    // const res = await request(app)
+    //   .post('/api/v1/users/1/bathingspots/1/genericInputs/')
+    //   .send({ name: 'foo' })
+    //   .set(headers);
+    // const entity = await
+    expect(getColletionItemById('1', 'foo')).rejects.toThrow(Error);
+    done();
+  });
+  test('getColletionItemById should throw an error', async (done) => {
+    // const res = await request(app)
+    //   .post('/api/v1/users/1/bathingspots/1/genericInputs/')
+    //   .send({ name: 'foo' })
+    //   .set(headers);
+    // const entity = await
+    expect(getPPlantWithRelations('1')).rejects.toThrow(Error);
+    done();
+  });
+  test('getColletionItemById should throw an error', async (done) => {
+    // const res = await request(app)
+    //   .post('/api/v1/users/1/bathingspots/1/genericInputs/')
+    //   .send({ name: 'foo' })
+    //   .set(headers);
+    // const entity = await
+    expect(getGIWithRelations('1')).rejects.toThrow(Error);
     done();
   });
 });

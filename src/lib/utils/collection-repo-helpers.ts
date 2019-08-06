@@ -24,7 +24,7 @@ export const collectionRepoMapping: IObject = {
 
 export const getGIWithRelations: (
   itemId: string,
-) => Promise<GenericInput | undefined> = async itemId => {
+) => Promise<GenericInput | undefined> = async (itemId) => {
   try {
     const repo = getRepository(GenericInput);
     const query = repo
@@ -40,13 +40,13 @@ export const getGIWithRelations: (
 
 export const getPPlantWithRelations: (
   itemId: string,
-) => Promise<PurificationPlant | undefined> = async itemId => {
+) => Promise<PurificationPlant | undefined> = async (itemId) => {
   try {
     const repo = getRepository(PurificationPlant);
     const query = repo
-      .createQueryBuilder('gpurufication_plant')
-      .leftJoinAndSelect('gpurufication_plant.measurements', 'measurements')
-      .where('gpurufication_plant.id = :itemId', { itemId });
+      .createQueryBuilder('purufication_plant')
+      .leftJoinAndSelect('purufication_plant.measurements', 'measurements')
+      .where('purufication_plant.id = :itemId', { itemId });
     const ppWithRelation = await query.getOne();
     return ppWithRelation;
   } catch (error) {
@@ -79,32 +79,23 @@ export const getColletionItemById: (
     switch (repoName) {
       case 'BathingspotPrediction':
         return entity as BathingspotPrediction;
-        break;
       case 'BathingspotMeasurement':
         return entity as BathingspotMeasurement;
-        break;
       case 'BathingspotModel':
         return entity as BathingspotModel;
-        break;
+
       case 'PurificationPlant':
         return entity as PurificationPlant;
-        break;
       case 'GenericInput':
         return entity as GenericInput;
-        break;
       case 'Rain':
         return entity as Rain;
-        break;
       case 'GlobalIrradiance':
         return entity as GlobalIrradiance;
-        break;
       case 'Discharge':
         return entity as Discharge;
-        break;
-      default:
-        return undefined;
-        break;
     }
+    return undefined;
   } catch (error) {
     throw error;
   }
