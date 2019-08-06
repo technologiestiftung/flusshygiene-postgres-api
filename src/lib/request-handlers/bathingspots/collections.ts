@@ -401,7 +401,6 @@ export const deleteCollectionSubItem: postResponse = async (
     } else {
       const spot = await getSpot(userId, spotId); // await query.getOne();
       if (spot === undefined) {
-        console.log('no spot');
         responderWrongId(response);
       } else {
         const repoName = collectionRepoMapping[collectionId];
