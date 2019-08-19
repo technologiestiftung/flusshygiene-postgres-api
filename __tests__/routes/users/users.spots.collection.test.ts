@@ -23,8 +23,8 @@ const token = readTokenFromDisc(
   path.resolve(__dirname, '../../.test.token.json'),
 );
 const headers = {
-  authorization: `${token.token_type} ${token.access_token}`,
   Accept: 'application/json',
+  authorization: `${token.token_type} ${token.access_token}`,
 };
 
 describe('GET all collection tyoe', () => {
@@ -227,22 +227,22 @@ describe('GET all collection tyoe', () => {
     const res = await request(app)
       .post('/api/v1/users/1/bathingspots/1/measurements')
       .send({
-        sicht: 1000000,
-        date: '2000-05-16T00:00:00.000Z',
-        conc_ec: 126000,
-        conc_ec_txt: '126000',
-        oldId: 18,
-        detailId: 344351,
-        conc_ie: 15000,
-        conc_ie_txt: '<15000',
-        temp: 21000,
         algen: false,
-        cb: 720000,
-        sichtTxt: '>100000',
-        tempTxt: '21,00000',
         algenTxt: '',
         bsl: 'B329',
+        cb: 720000,
+        conc_ec: 126000,
+        conc_ec_txt: '126000',
+        conc_ie: 15000,
+        conc_ie_txt: '<15000',
+        date: '2000-05-16T00:00:00.000Z',
+        detailId: 344351,
+        oldId: 18,
+        sicht: 1000000,
+        sichtTxt: '>100000',
         state: 'gruen',
+        temp: 21000,
+        tempTxt: '21,00000',
         wasserqualitaet: 1000,
         wasserqualitaetTxt: 1000,
       })
@@ -255,10 +255,10 @@ describe('GET all collection tyoe', () => {
     const res = await request(app)
       .post('/api/v1/users/1/bathingspots/1/discharges')
       .send({
-        value: 1000,
-        dateTime: '05:23:42',
-        date: '08-Jan-1999',
         comment: 'This is a comment, can be NULL',
+        date: '08-Jan-1999',
+        dateTime: '05:23:42',
+        value: 1000,
       })
       .set(headers);
     expect(res.status).toBe(201);
@@ -269,10 +269,10 @@ describe('GET all collection tyoe', () => {
     const res = await request(app)
       .post('/api/v1/users/1/bathingspots/1/rains')
       .send({
-        value: 1000,
-        dateTime: '05:23:42',
-        date: '08-Jan-1999',
         comment: 'This is a comment, can be NULL',
+        date: '08-Jan-1999',
+        dateTime: '05:23:42',
+        value: 1000,
       })
       .set(headers);
     expect(res.status).toBe(201);
@@ -283,10 +283,10 @@ describe('GET all collection tyoe', () => {
     const res = await request(app)
       .post('/api/v1/users/1/bathingspots/1/globalIrradiances')
       .send({
-        value: 1000,
-        dateTime: '05:23:42',
-        date: '08-Jan-1999',
         comment: 'This is a comment, can be NULL',
+        date: '08-Jan-1999',
+        dateTime: '05:23:42',
+        value: 1000,
       })
       .set(headers);
     expect(res.status).toBe(201);
@@ -297,8 +297,8 @@ describe('GET all collection tyoe', () => {
     const res = await request(app)
       .post('/api/v1/users/1/bathingspots/1/models')
       .send({
-        rmodel: 'string dataaaa',
         comment: 'This is another test',
+        rmodel: 'string dataaaa',
       })
       .set(headers);
     expect(res.status).toBe(201);
