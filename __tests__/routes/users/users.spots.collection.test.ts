@@ -1,5 +1,6 @@
 jest.useFakeTimers();
 import express, { Application } from 'express';
+import path from 'path';
 import 'reflect-metadata';
 import request from 'supertest';
 import { Connection } from 'typeorm';
@@ -7,10 +8,9 @@ import routes from '../../../src/lib/routes';
 import {
   closeTestingConnections,
   createTestingConnections,
-  reloadTestingDatabases,
   readTokenFromDisc,
+  reloadTestingDatabases,
 } from '../../test-utils';
-import path from 'path';
 
 // ███████╗███████╗████████╗██╗   ██╗██████╗
 // ██╔════╝██╔════╝╚══██╔══╝██║   ██║██╔══██╗
@@ -155,6 +155,7 @@ describe('GET all collection tyoe', () => {
     expect(Array.isArray(res.body.data)).toBe(true);
     done();
   });
+
   test('route GET user by id spot by id models', async (done) => {
     const res = await request(app)
       .get('/api/v1/users/1/bathingspots/1/models')
@@ -163,6 +164,21 @@ describe('GET all collection tyoe', () => {
     expect(Array.isArray(res.body.data)).toBe(true);
     done();
   });
+
+  test('route GET user by id spot by id models should not have field rmodel', async (done) => {
+    await request(app)
+      .post('/api/v1/users/1/bathingspots/1/models')
+      .send({ rmodel: 'foo bah baz' })
+      .set(headers);
+
+    const res = await request(app)
+      .get('/api/v1/users/1/bathingspots/1/models')
+      .set(headers);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body.data[0].rmodel)).toBeUndefined();
+    done();
+  });
+
   test('route GET user by id spot by id purificationPlants', async (done) => {
     const res = await request(app)
       .get('/api/v1/users/1/bathingspots/1/purificationPlants')
