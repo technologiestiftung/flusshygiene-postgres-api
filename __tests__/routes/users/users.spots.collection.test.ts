@@ -175,7 +175,7 @@ describe('GET all collection tyoe', () => {
       .get('/api/v1/users/1/bathingspots/1/models')
       .set(headers);
     expect(res.status).toBe(200);
-    expect(Array.isArray(res.body.data[0].rmodel)).toBeUndefined();
+    expect(res.body.data[0].rmodel).toBeUndefined();
     done();
   });
 
