@@ -11,7 +11,10 @@ jobs:
         uses: actions/setup-node@master
         with:
           node-version: 10.x
-      - run: npm install
+      - run: npm ci
+      - run: docker-compose up -d postgres
+      - run: npm test
+      - run: npm run build
       - name: Docker login
         uses: actions/docker/login@master
         env:
