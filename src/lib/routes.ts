@@ -12,14 +12,22 @@ import {
   getUserBathingspots,
   updateBathingspotOfUser,
 } from './request-handlers/bathingspots/';
+
+import { deleteCollectionSubItem } from './request-handlers/bathingspots/collections/delete';
 import {
-  deleteCollectionSubItem,
   getCollection,
   getCollectionsSubItem,
   getGenericInputMeasurements,
+} from './request-handlers/bathingspots/collections/get';
+import {
   postCollection,
   postCollectionsSubItem,
-} from './request-handlers/bathingspots/collections';
+} from './request-handlers/bathingspots/collections/post';
+import {
+  postFile,
+  postFileMiddleWare,
+  upload,
+} from './request-handlers/bathingspots/collections/post-file';
 import { getOneUsersBathingspotsByRegion } from './request-handlers/bathingspots/get';
 import { getBathingspotsByRegion } from './request-handlers/bathingspots/public-get';
 import { defaultGetResponse } from './request-handlers/defaults';
@@ -104,7 +112,7 @@ router.delete(
 // GET measurements, predictions from
 // router.get('/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)/predictions', checkJwt, checkScopes, getPredictions);
 router.get(
-  '/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)/:collection([A-Za-z]+)',
+  '/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)/:collectionName([A-Za-z]+)',
   checkJwt,
   checkScopes,
   getCollection,
@@ -133,19 +141,34 @@ router.post(
 );
 
 router.post(
-  '/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)/:collection([A-Za-z]+)',
+  '/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)/:collectionName([A-Za-z]+)',
   checkJwt,
   checkScopes,
   postCollection,
 );
+
 router.delete(
-  '/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)/:collection([A-Za-z]+)/:itemId([0-9]+)',
+  '/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)/:collectionName([A-Za-z]+)/:itemId([0-9]+)',
   checkJwt,
   checkScopes,
   deleteCollectionSubItem,
 );
 
-// add new user
+// ╦ ╦╔═╗╦  ╔═╗╔═╗╔╦╗
+// ║ ║╠═╝║  ║ ║╠═╣ ║║
+// ╚═╝╩  ╩═╝╚═╝╩ ╩═╩╝
+router.post(
+  '/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)/:collectionName([A-Za-z]+)/upload/',
+  checkJwt,
+  checkScopes,
+  postFileMiddleWare,
+  upload.single('upload'),
+  postFile,
+);
+
+//  ╦ ╦╔═╗╔═╗╦═╗
+//  ║ ║╚═╗║╣ ╠╦╝
+//  ╚═╝╚═╝╚═╝╩╚═
 
 router.post('/users', checkJwt, checkScopes, postUser);
 // update user
