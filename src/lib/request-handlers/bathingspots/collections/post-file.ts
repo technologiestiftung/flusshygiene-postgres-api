@@ -19,38 +19,34 @@ import {
 
 const ENV_SUFFIX = process.env.NODE_ENV === 'production' ? 'PROD' : 'DEV';
 const bucket: string = process.env[`AWS_BUCKET_${ENV_SUFFIX}`]!;
-const credentials = new AWS.Credentials({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-});
 
-const s3 = new AWS.S3({ credentials });
+export const upload = (s3: AWS.S3) => {
+  const storages3 = multerS3({
+    acl: 'public-read',
+    bucket,
+    key: (
+      req: Request,
+      file: any,
+      cb: (error: any, key?: string | undefined) => void,
+    ) => {
+      const folders = req.url.substring(1);
+      crypto.pseudoRandomBytes(16, (_err, raw) => {
+        cb(
+          null,
+          `${folders}/${raw.toString('hex')}-${Date.now()}.${mime.getExtension(
+            file.mimetype,
+          )}`,
+        );
+      });
+    },
+    metadata: (_req, file, cb) => {
+      cb(null, { fieldName: file.fieldname });
+    },
+    s3,
+  });
 
-const storages3 = multerS3({
-  acl: 'public-read',
-  bucket,
-  key: (
-    req: Request,
-    file: any,
-    cb: (error: any, key?: string | undefined) => void,
-  ) => {
-    const folders = req.url.substring(1);
-    crypto.pseudoRandomBytes(16, (_err, raw) => {
-      cb(
-        null,
-        `${folders}/${raw.toString('hex')}-${Date.now()}.${mime.getExtension(
-          file.mimetype,
-        )}`,
-      );
-    });
-  },
-  metadata: (_req, file, cb) => {
-    cb(null, { fieldName: file.fieldname });
-  },
-  s3,
-});
-
-export const upload = multer({ storage: storages3 });
+  return multer({ storage: storages3 });
+};
 
 export const postFileMiddleWare = async (
   request: Request,

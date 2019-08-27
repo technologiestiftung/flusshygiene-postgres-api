@@ -47,6 +47,7 @@ import {
   postUser,
   updateUser,
 } from './request-handlers/users/';
+import { s3 } from './s3';
 // import { getPredictions } from './request-handlers/users/bathingspots/prediction/get';
 
 const checkScopes = jwtAuthz(['admin', 'read:bathingspots']);
@@ -157,12 +158,14 @@ router.delete(
 // ╦ ╦╔═╗╦  ╔═╗╔═╗╔╦╗
 // ║ ║╠═╝║  ║ ║╠═╣ ║║
 // ╚═╝╩  ╩═╝╚═╝╩ ╩═╩╝
+
+const ul = upload(s3);
 router.post(
   '/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)/:collectionName([A-Za-z]+)/upload/',
   checkJwt,
   checkScopes,
   postFileMiddleWare,
-  upload.single('upload'),
+  ul.single('upload'),
   postFile,
 );
 
