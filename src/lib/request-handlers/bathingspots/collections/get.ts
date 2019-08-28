@@ -52,6 +52,7 @@ export const getGenericInputMeasurements: getResponse = async (
             collection = await getPPlantWithRelations(itemId);
             break;
         }
+        console.log('collection', collection);
         if (collection === undefined) {
           responderWrongId(response);
         } else {
@@ -138,21 +139,21 @@ export const getCollection: getResponse = async (request, response) => {
           spot.id,
           collectionId,
         ); // await query.getOne();
-        if (spotWithRelation === undefined) {
-          throw new Error(
-            `Spot with id ${spot.id} could not be loaded even though it exists`,
-          );
-        } else {
-          const entityObj = JSON.parse(JSON.stringify(spotWithRelation));
-          responder(
-            response,
-            HttpCodes.success,
-            successResponse(
-              `spot ${spotId} with ${collectionId}`,
-              entityObj[collectionId],
-            ),
-          );
-        }
+        // if (spotWithRelation === undefined) {
+        //   throw new Error(
+        //     `Spot with id ${spot.id} could not be loaded even though it exists`,
+        //   );
+        // } else {
+        const entityObj = JSON.parse(JSON.stringify(spotWithRelation));
+        responder(
+          response,
+          HttpCodes.success,
+          successResponse(
+            `spot ${spotId} with ${collectionId}`,
+            entityObj[collectionId],
+          ),
+        );
+        // }
       }
     }
   } catch (error) {

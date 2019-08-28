@@ -133,7 +133,7 @@ export class Bathingspot {
   @Column({ nullable: true })
   public measuringPoint!: string;
 
-  @Column()
+  @Column({ nullable: false })
   public name!: string;
 
   @Column({ nullable: true })
