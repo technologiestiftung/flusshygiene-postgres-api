@@ -44,7 +44,7 @@ export const updateBathingspotOfUser: putResponse = async (
         }
         // const tmpSpot = await createSpotWithValues(providedValues);
         spotRepo.merge(spotFromUser, request.body);
-        console.log(spotFromUser);
+        // console.log(spotFromUser);
         const res = await spotRepo.save(spotFromUser);
         responder(
           response,
