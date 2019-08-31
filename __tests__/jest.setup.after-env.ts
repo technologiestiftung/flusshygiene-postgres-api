@@ -1,5 +1,6 @@
 jest.mock('aws-sdk');
+jest.useFakeTimers();
+jest.setTimeout(30000);
 module.exports = async () => {
-  jest.setTimeout(20000);
   console.log('setup after env');
 };
