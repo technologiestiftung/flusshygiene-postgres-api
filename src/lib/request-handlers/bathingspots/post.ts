@@ -2,9 +2,7 @@ import { getManager, getRepository } from 'typeorm';
 import { Region } from '../../../orm/entity/Region';
 import { User } from '../../../orm/entity/User';
 import { HttpCodes, postResponse, UserRole } from '../../common';
-import { getAndVerifyRegion } from '../../utils/spot-helpers';
-// import { getEntityFields, getMatchingValues } from '../../utils';
-// import { createSpotWithValues } from '../../utils/spot-helpers';
+import { getAndVerifyRegion } from '../../utils/get-verify-region';
 import { getUserByIdWithSpots } from '../../utils/user-repo-helpers';
 import {
   errorResponse,
