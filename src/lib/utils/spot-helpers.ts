@@ -57,6 +57,7 @@ export const createSpotWithValues = async (
         break;
       case 'geometry':
         const geom = setupGeom({ value, criterion });
+        console.log('this is geom', geom);
         if (geom !== undefined) {
           spotRepo.merge(spot, geom);
         }
@@ -84,7 +85,7 @@ export const createSpotWithValues = async (
   return spot;
 };
 
-const getAndVerifyRegion = async (obj: any) => {
+export const getAndVerifyRegion = async (obj: any) => {
   try {
     let region: Region | undefined;
     if (obj.hasOwnProperty('region') === true) {
