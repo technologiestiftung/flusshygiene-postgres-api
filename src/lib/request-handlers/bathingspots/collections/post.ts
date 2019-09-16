@@ -1,4 +1,9 @@
-import { HttpCodes, postResponse } from '../../../common';
+import {
+  apiVersion,
+  HttpCodes,
+  IDefaultResponsePayload,
+  postResponse,
+} from '../../../common';
 
 import { collectionNames } from './collections';
 
@@ -263,14 +268,30 @@ export const postCollection: postResponse = async (request, response) => {
             }
             mergedEntities.push(mergedEntity);
           }
-          const res = await repo.save(mergedEntities);
-
-          await getRepository(Bathingspot).save(spotWithRelation);
-          responder(
-            response,
-            HttpCodes.successCreated,
-            successResponse(`${repoName} Posted`, res),
-          );
+          let res: any;
+          try {
+            res = await repo.save(mergedEntities);
+            await getRepository(Bathingspot).save(spotWithRelation);
+            responder(
+              response,
+              HttpCodes.successCreated,
+              successResponse(`${repoName} Posted`, res),
+            );
+          } catch (e) {
+            // console.error(e);
+            if (e.code === '23505') {
+              const payload: IDefaultResponsePayload = {
+                success: false,
+                message: e.detail,
+                data: e.parameters,
+                apiVersion,
+              };
+              responder(response, HttpCodes.badRequestConflict, payload);
+            } else {
+              throw e;
+            }
+          }
+          // const query = await repo.createQueryBuilder().insert().into(repo).c
         }
       }
     }
