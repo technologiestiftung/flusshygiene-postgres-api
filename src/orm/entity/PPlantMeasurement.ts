@@ -4,7 +4,7 @@ import { Measurement } from './Measurement';
 import { PurificationPlant } from './PurificationPlant';
 
 @Entity()
-@Unique(['date', 'time', 'purificationPlant'])
+@Unique(['date', 'purificationPlant', 'dateTime'])
 export class PPlantMeasurement extends Measurement {
   @Column({ nullable: true })
   public comment!: string;

@@ -4,7 +4,7 @@ import { Bathingspot } from './Bathingspot';
 import { Measurement } from './Measurement';
 
 @Entity()
-@Unique(['date', 'time', 'bathingspot'])
+@Unique(['date', 'bathingspot', 'dateTime'])
 export class Rain extends Measurement {
   @Column({ nullable: true })
   public comment!: string;
