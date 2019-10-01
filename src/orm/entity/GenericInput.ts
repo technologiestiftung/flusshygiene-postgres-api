@@ -1,9 +1,11 @@
-import { Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, ManyToOne, OneToMany, Unique } from 'typeorm';
+
 import { Bathingspot } from './Bathingspot';
 import { GInputMeasurement } from './GInputMeasurement';
 import { MeasurementType } from './MeasurementType';
 
 @Entity()
+@Unique(['date', 'itme', 'bathingspot'])
 export class GenericInput extends MeasurementType {
   @OneToMany(
     (_type) => GInputMeasurement,
