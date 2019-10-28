@@ -27,6 +27,7 @@ import {
   postFile,
   postFileMiddleWare,
   upload,
+  postPlot,
 } from './request-handlers/bathingspots/collections/post-file';
 import { getOneUsersBathingspotsByRegion } from './request-handlers/bathingspots/get';
 import { getBathingspotsByRegion } from './request-handlers/bathingspots/public-get';
@@ -160,6 +161,16 @@ router.delete(
   deleteCollectionSubItem,
 );
 
+// Model Reports
+
+// router.get(
+//   '/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)/:collectionName([A-Za-z]+)/:itemId([0-9]+)/report',
+//   checkJwt,
+//   checkScopes,
+//   checkUserAndSpot,
+//   getModelReport,
+// );
+
 // ╦ ╦╔═╗╦  ╔═╗╔═╗╔╦╗
 // ║ ║╠═╝║  ║ ║╠═╣ ║║
 // ╚═╝╩  ╩═╝╚═╝╩ ╩═╩╝
@@ -177,7 +188,7 @@ router.post(
 );
 
 router.post(
-  '/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)/:collectionName([A-Za-z]+)/:modelId([0-9]+)/upload/',
+  '/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)/:collectionName([A-Za-z]+)/:modelId([0-9]+)/uploadmodel/',
   checkJwt,
   checkScopes,
   postFileMiddleWare,
@@ -185,6 +196,14 @@ router.post(
   postFile,
 );
 
+router.post(
+  '/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)/:collectionName([A-Za-z]+)/:modelId([0-9]+)/uploadplot/',
+  checkJwt,
+  checkScopes,
+  postFileMiddleWare,
+  ul.single('upload'),
+  postPlot,
+);
 //  ╦ ╦╔═╗╔═╗╦═╗
 //  ║ ║╚═╗║╣ ╠╦╝
 //  ╚═╝╚═╝╚═╝╩╚═

@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { Bathingspot } from './Bathingspot';
 import { RModelFile } from './RModelFile';
+import { PlotFile } from './PlotFile';
 
 @Entity()
 export class BathingspotModel {
@@ -31,6 +32,8 @@ export class BathingspotModel {
   @OneToMany((_type) => RModelFile, (file) => file.model, { eager: true })
   public rmodelfiles!: RModelFile[];
 
+  @OneToMany((_type) => PlotFile, (plotFile) => plotFile.model, { eager: true })
+  public plotfiles!: PlotFile[];
   @Column({ type: 'text', nullable: true })
   public comment!: string;
   @Column({ type: 'text', nullable: true })
@@ -40,4 +43,8 @@ export class BathingspotModel {
     cascade: true,
   })
   public bathingspot!: Bathingspot;
+
+  // @OneToOne((_type) => Report, { eager: true })
+  // @JoinColumn()
+  // public report!: Report;
 }

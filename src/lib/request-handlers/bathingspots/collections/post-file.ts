@@ -5,7 +5,8 @@ import mime from 'mime';
 import multer from 'multer';
 import multerS3 from 'multer-s3';
 import { getRepository } from 'typeorm';
-import { RModelFile } from '../../../../orm/entity';
+import { RModelFile } from '../../../../orm/entity/';
+import { PlotFile } from './../../../../orm/entity/PlotFile';
 import { Bathingspot } from '../../../../orm/entity/Bathingspot';
 import { ImageFile } from '../../../../orm/entity/ImageFile';
 import { HttpCodes, postResponse } from '../../../common';
@@ -71,6 +72,7 @@ export const postFileMiddleWare = async (
       if (spot !== undefined) {
         // check user
         // check spot
+        response.locals.spot = spot;
         next();
       } else {
         responderWrongId(response);
@@ -81,10 +83,44 @@ export const postFileMiddleWare = async (
   }
 };
 
+export const postPlot: postResponse = async (request, response) => {
+  try {
+    const modelId = parseInt(request.params.modelId, 10);
+    // const modelRepo = getRepository(BathingspotModel);
+    const plotfileRepo = getRepository(PlotFile);
+    const rmodel = await getRModelWithRelation(modelId);
+    if (rmodel === undefined) {
+      responderWrongId(response);
+      return;
+    }
+    const plotFile = plotfileRepo.create();
+    const mergedPlotFile: PlotFile = plotfileRepo.merge(plotFile, {
+      metaData: request.file,
+      url: request.file.location,
+      title: request.body.title,
+      description: request.body.description,
+    });
+    if (rmodel.plotfiles === undefined) {
+      rmodel.plotfiles = [mergedPlotFile];
+    } else {
+      rmodel.plotfiles.push(mergedPlotFile);
+    }
+    const res = await plotfileRepo.save(mergedPlotFile);
+    await getRepository(BathingspotModel).save(rmodel);
+    responder(
+      response,
+      HttpCodes.successCreated,
+      successResponse(`Plotfile posted.`, [res]),
+    );
+  } catch (error) {
+    responder(response, HttpCodes.internalError, errorResponse(error));
+  }
+};
 export const postFile: postResponse = async (request, response) => {
   try {
     const spotId = parseInt(request.params.spotId, 10);
     const modelId = parseInt(request.params.modelId, 10);
+    // console.log(request.body);
     // const userId = parseInt(request.params.spotId, 10);
     const collectionName = request.params.collectionName;
     // console.log('modelId', modelId);
