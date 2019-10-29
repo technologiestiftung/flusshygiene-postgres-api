@@ -35,7 +35,12 @@ export class BathingspotModel {
   @Column({ type: 'text', nullable: true, select: false })
   public rmodel!: string;
 
-  @Column({ type: 'enum', enum: ModelParamter, nullable: false })
+  @Column({
+    type: 'enum',
+    enum: ModelParamter,
+    nullable: false,
+    /*default: ModelParamter.conc_ec,*/
+  })
   parameter!: string;
   @OneToMany((_type) => RModelFile, (file) => file.model, {
     eager: true,
