@@ -85,7 +85,7 @@ more infos coming soon(-ish).
 
 ### Migrations
 
-See the typeorm guide for further explanation. In short ():
+See the [typeorm migration guide](https://typeorm.io/#/migrations) for further explanation. In short:
 
 ```fish
 # this is fish shell. Remove the `env` for bash
