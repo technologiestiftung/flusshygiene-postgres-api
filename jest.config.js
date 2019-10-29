@@ -27,6 +27,7 @@ module.exports = {
     '!**/build/**',
     '!**/coverage/**',
     '!src/setup/**',
+    '!src/lib/middleware/user-spot-check.ts',
   ],
   coverageThreshold: {
     global: {

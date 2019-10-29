@@ -1,6 +1,6 @@
 import AWS from 'aws-sdk';
 import crypto from 'crypto';
-import { NextFunction, Request, Response } from 'express';
+import { Request } from 'express';
 import mime from 'mime';
 import multer from 'multer';
 import multerS3 from 'multer-s3';
@@ -11,7 +11,7 @@ import { Bathingspot } from '../../../../orm/entity/Bathingspot';
 import { ImageFile } from '../../../../orm/entity/ImageFile';
 import { HttpCodes, postResponse } from '../../../common';
 import { collectionRepoMapping } from '../../../utils/collection-repo-helpers';
-import { getSpot, getSpotWithRelation } from '../../../utils/spot-repo-helpers';
+import { getSpotWithRelation } from '../../../utils/spot-repo-helpers';
 import {
   errorResponse,
   responder,
@@ -50,37 +50,6 @@ export const upload = (s3: AWS.S3) => {
   });
 
   return multer({ storage: storages3 });
-};
-
-export const postFileMiddleWare = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
-  try {
-    const spotId = parseInt(request.params.spotId, 10);
-    const userId = parseInt(request.params.userId, 10);
-    const collectionName = request.params.collectionName;
-    if (collectionName !== 'images' && collectionName !== 'models') {
-      responder(response, HttpCodes.badRequest, {
-        message: `"${collectionName}" can't process uploads`,
-        success: false,
-      });
-    } else {
-      const spot = await getSpot(userId, spotId);
-      // console.log(spot);
-      if (spot !== undefined) {
-        // check user
-        // check spot
-        response.locals.spot = spot;
-        next();
-      } else {
-        responderWrongId(response);
-      }
-    }
-  } catch (error) {
-    responder(response, HttpCodes.internalError, errorResponse(error));
-  }
 };
 
 export const postPlot: postResponse = async (request, response) => {

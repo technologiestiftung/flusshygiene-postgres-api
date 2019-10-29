@@ -25,10 +25,10 @@ import {
 } from './request-handlers/bathingspots/collections/post';
 import {
   postFile,
-  postFileMiddleWare,
   upload,
   postPlot,
 } from './request-handlers/bathingspots/collections/post-file';
+import { postFileMiddleWare } from './middleware/post-file-mw';
 import { getOneUsersBathingspotsByRegion } from './request-handlers/bathingspots/get';
 import { getBathingspotsByRegion } from './request-handlers/bathingspots/public-get';
 import { defaultGetResponse } from './request-handlers/defaults';
@@ -188,7 +188,7 @@ router.post(
 );
 
 router.post(
-  '/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)/:collectionName([A-Za-z]+)/:modelId([0-9]+)/uploadmodel/',
+  '/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)/:collectionName([A-Za-z]+)/:modelId([0-9]+)/upload/rmodel/',
   checkJwt,
   checkScopes,
   postFileMiddleWare,
@@ -197,7 +197,7 @@ router.post(
 );
 
 router.post(
-  '/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)/:collectionName([A-Za-z]+)/:modelId([0-9]+)/uploadplot/',
+  '/users/:userId([0-9]+)/bathingspots/:spotId([0-9]+)/:collectionName([A-Za-z]+)/:modelId([0-9]+)/upload/plot/',
   checkJwt,
   checkScopes,
   postFileMiddleWare,
