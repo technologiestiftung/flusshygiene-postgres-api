@@ -15,6 +15,7 @@ import { RModelFile } from './RModelFile';
 import { PlotFile } from './PlotFile';
 import { S3 } from 'aws-sdk';
 import { s3 as awss3 } from '../../lib/s3';
+import { IMetaData } from '../../lib/common';
 
 @Entity()
 export class BathingspotModel {
@@ -60,11 +61,6 @@ export class BathingspotModel {
 
   @BeforeRemove()
   async removeAllRelations() {
-    interface IMetaData {
-      [key: string]: any;
-      bucket: string;
-      key: string;
-    }
     try {
       const plotRepo = getRepository(PlotFile);
       const modelFilesRepo = getRepository(RModelFile);
