@@ -13,6 +13,8 @@ import {
 import { Bathingspot } from './Bathingspot';
 import { RModelFile } from './RModelFile';
 import { PlotFile } from './PlotFile';
+import { S3 } from 'aws-sdk';
+import { s3 as awss3 } from '../../lib/s3';
 
 @Entity()
 export class BathingspotModel {
@@ -58,6 +60,11 @@ export class BathingspotModel {
 
   @BeforeRemove()
   async removeAllRelations() {
+    interface IMetaData {
+      [key: string]: any;
+      bucket: string;
+      key: string;
+    }
     try {
       const plotRepo = getRepository(PlotFile);
       const modelFilesRepo = getRepository(RModelFile);
@@ -66,44 +73,24 @@ export class BathingspotModel {
         where: { modelId: this.id },
       });
       for (const plot of plotFiles) {
-        plotRepo.remove(plot);
+        const metaData = (plot.metaData as unknown) as IMetaData;
+        const params: S3.Types.DeleteObjectRequest = {
+          Bucket: metaData.bucket,
+          Key: metaData.key,
+        };
+        await awss3.deleteObject(params).promise();
+        await plotRepo.remove(plot);
       }
       for (const rmodel of rmodelFiles) {
-        modelFilesRepo.remove(rmodel);
+        const metaData = (rmodel.metaData as unknown) as IMetaData;
+        const params: S3.Types.DeleteObjectRequest = {
+          Bucket: metaData.bucket,
+          Key: metaData.key,
+        };
+        await awss3.deleteObject(params).promise();
+        await modelFilesRepo.remove(rmodel);
       }
       // plotFiles
     } catch (error) {}
-    //   .then((plots) => {
-    //     plots.forEach((plot) => {
-    //       plotRepo
-    //         .remove(plot)
-    //         .then((res) => {
-    //           console.info(res);
-    //         })
-    //         .catch((err) => {
-    //           console.error(err);
-    //         });
-    //     });
-    //   })
-    //   .catch((err) => {
-    //     console.error('Error removing plot files');
-
-    //     console.error(err);
-    //   });
-
-    // rmodelFiles
-    //   .then((files) => {
-    //     files.forEach((file) => {
-    //       modelFilesRepo
-    //         .remove(file)
-    //         .then()
-    //         .catch((err) => console.error(err));
-    //     });
-    //   })
-    //   .catch((err) => {
-    //     console.error('Error removing model files');
-
-    //     console.error(err);
-    //   });
   }
 }

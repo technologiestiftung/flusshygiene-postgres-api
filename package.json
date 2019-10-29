@@ -20,7 +20,8 @@
     "prettier:write": "npm run prettier -- --write",
     "validate": "npm run build",
     "lint-staged": "lint-staged",
-    "lint": "eslint './src/**/*.ts'"
+    "lint": "eslint './src/**/*.ts'",
+    "playground": "npm run build && node -r dotenv/config"
   },
   "repository": {
     "type": "git",
